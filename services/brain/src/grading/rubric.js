@@ -40,11 +40,25 @@ export function composite(scores) {
 }
 
 /**
- * Decide pass/fail from scores + AI-tells. `human` and an empty aiTells list
- * are the anti-cringe gate: any caught AI-tell, or a sub-floor human score,
- * fails outright regardless of how funny it is.
+ * Decide pass/fail from scores + AI-tells. The anti-cringe gate is severity-
+ * aware: a single MAJOR AI-tell (genuinely corny / sounds-like-AI) fails the set
+ * outright, as do two or more minor tells. A clean set, or one with a single
+ * minor nit that lands, can pass — provided it also clears every score gate.
+ *
+ * AI-tells are `{ severity: "minor"|"major", note }` objects; a bare string (or
+ * a tell with no severity) is treated as MAJOR — conservative by default.
  */
+export const MAX_MINOR_TELLS = 1;
+
 export function passes(scores, aiTells) {
-  if (aiTells && aiTells.length > 0) return false;
+  const tells = aiTells || [];
+  let major = 0;
+  let minor = 0;
+  for (const t of tells) {
+    if (t && t.severity === "minor") minor += 1;
+    else major += 1; // "major", or any untagged/string tell
+  }
+  if (major > 0) return false;
+  if (minor > MAX_MINOR_TELLS) return false;
   return AXES.every((a) => (scores[a] || 0) >= GATES[a]);
 }

@@ -115,7 +115,8 @@ for (const res of results) {
     `(funny ${g.scores.funny}, human ${g.scores.human}, specific ${g.scores.specific}, ` +
     `edge ${g.scores.edge}, voice ${g.scores.voice}) · ${g.candidates} candidate(s), ${g.rounds} round(s)`
   );
-  if (g.aiTells.length) log(`**AI-tells caught:** ${g.aiTells.join("; ")}`);
+  if (g.aiTells.length)
+    log(`**AI-tells caught:** ${g.aiTells.map((t) => `${(t.severity || "major").toUpperCase()} — ${t.note || t}`).join("; ")}`);
   log(`**Callie reacts:** ${res.reaction} → [${res.reactionSequence.join(", ")}]`);
   log(``);
 }

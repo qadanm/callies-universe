@@ -95,14 +95,14 @@ clearCache();
   assert(res.set.beats.length === 4, "case1: structured set assembled");
 }
 
-// --- Case 2: AI-tells fail the gate even with high scores → regenerates ---
+// --- Case 2: a MAJOR AI-tell fails the gate even with high scores → regenerates ---
 clearCache();
 {
   const grades = [
-    // round 1: all have AI-tells → must fail despite high scores
-    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: ["'let's just say'"], reasoning: "smells AI" },
-    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: ["tidy bow"], reasoning: "smells AI" },
-    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: ["over-explained"], reasoning: "smells AI" },
+    // round 1: all have a MAJOR tell → must fail despite high scores
+    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: [{ severity: "major", note: "'let's just say'" }], reasoning: "smells AI" },
+    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: [{ severity: "major", note: "tidy bow" }], reasoning: "smells AI" },
+    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: [{ severity: "major", note: "over-explained" }], reasoning: "smells AI" },
     // round 2: a clean pass appears
     { scores: { funny: 8, human: 8, specific: 7, edge: 6, voice: 8 }, aiTells: [], reasoning: "clean" },
     { scores: { funny: 7, human: 8, specific: 6, edge: 6, voice: 7 }, aiTells: [], reasoning: "clean" },
@@ -110,9 +110,23 @@ clearCache();
   ];
   const res = await generateRoast({ ...baseInput, config: { _model: fakeModel({ grades }), candidates: 3, maxRounds: 2 } });
   assert(res.grade.pass === true, "case2: should find a clean pass in round 2");
-  assert(res.grade.aiTells.length === 0, "case2: chosen set must have zero AI-tells (the anti-cringe gate)");
   assert(res.grade.rounds === 2, `case2: should take 2 rounds, got ${res.grade.rounds}`);
   assert(res.grade.candidates === 6, `case2: should have graded 6 candidates, got ${res.grade.candidates}`);
+}
+
+// --- Case 2b: a single MINOR tell still PASSES; two minors do NOT ---
+clearCache();
+{
+  const grades = [
+    // one minor nit + clearing scores → shippable (the severity-aware gate)
+    { scores: { funny: 8, human: 8, specific: 7, edge: 6, voice: 8 }, aiTells: [{ severity: "minor", note: "slightly cute button" }], reasoning: "mostly lands" },
+    // two minors → fails
+    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: [{ severity: "minor", note: "a" }, { severity: "minor", note: "b" }], reasoning: "nitty" },
+    { scores: { funny: 9, human: 9, specific: 9, edge: 8, voice: 9 }, aiTells: [{ severity: "minor", note: "a" }, { severity: "minor", note: "b" }], reasoning: "nitty" },
+  ];
+  const res = await generateRoast({ ...baseInput, config: { _model: fakeModel({ grades }), candidates: 3, maxRounds: 1 } });
+  assert(res.grade.pass === true, "case2b: a single minor tell with clearing scores should PASS");
+  assert(res.grade.aiTells.length === 1 && res.grade.aiTells[0].severity === "minor", "case2b: should ship the single-minor-tell candidate, not a two-minor one");
 }
 
 // --- Case 3: nothing passes after all rounds → best-effort, flagged not-passing ---

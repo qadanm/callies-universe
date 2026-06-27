@@ -68,8 +68,11 @@ Five axes scored 0–10, with hard pass-gates ([src/grading/rubric.js](src/gradi
 | `edge` | 5 | Pushes PG-13 hard without crossing; aimed at the car, never a group/culture. |
 | `voice` | 7 | In *this* character's voice **and** comedic structure. |
 
-A set passes only if it clears **every** gate **and** the grader caught **zero**
-AI-tells. Composite weights `human` and `funny` highest.
+A set passes only if it clears **every** score gate **and** the grader caught no
+**major** AI-tell and at most one **minor** one. The grader tags each tell
+`minor` (a small nit that mostly lands) or `major` (genuinely corny / sounds-like-
+AI) — a single major tell, or two+ minor ones, sinks the set. Composite weights
+`human` and `funny` highest.
 
 ## Model & efficiency
 

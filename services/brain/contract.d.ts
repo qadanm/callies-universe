@@ -149,14 +149,21 @@ export interface RubricScores {
   voice: number;
 }
 
+/** A corny / sounds-like-AI phrasing the grader caught, with its severity. */
+export interface AiTell {
+  /** major = genuinely corny, sinks the set; minor = a small nit that mostly lands. */
+  severity: "minor" | "major";
+  note: string;
+}
+
 export interface Grade {
   scores: RubricScores;
   /** Weighted composite (0–10). */
   composite: number;
-  /** Did it clear the bar on every gate? */
+  /** Did it clear the bar on every gate? (1 major tell, or >1 minor, fails.) */
   pass: boolean;
-  /** Specific AI-tells / corny phrasings the grader caught (empty on a clean pass). */
-  aiTells: string[];
+  /** Specific AI-tells the grader caught, with severity (empty on a clean pass). */
+  aiTells: AiTell[];
   /** The grader's one-line justification. */
   reasoning: string;
   /** How many candidates were generated and how many rounds it took. */
