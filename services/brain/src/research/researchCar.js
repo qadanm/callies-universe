@@ -13,7 +13,7 @@
 // Research is cached per car (see cache.js) so the whole cast can roast one car
 // off a single research pass.
 
-import { memo, cacheKey } from "../cache.js";
+import { cacheKey } from "../cache.js";
 
 const RESEARCH_SCHEMA = {
   type: "object",
@@ -36,13 +36,14 @@ export function carLabel(car) {
 /**
  * @param {import("../../contract").CarIdentity} car
  * @param {object} model  the Claude-backed model interface
+ * @param {object} cache  a research cache (see cache.js) with .memo()
  * @returns {Promise<import("../../contract").CarResearch>}
  */
-export async function researchCar(car, model) {
+export async function researchCar(car, model, cache) {
   const label = carLabel(car);
   const noSearch =
     typeof process !== "undefined" && process.env && process.env.BRAIN_NO_SEARCH;
-  return memo(cacheKey(car), async () => {
+  return cache.memo(cacheKey(car), async () => {
     // Escape hatch (BRAIN_NO_SEARCH=1): skip the web entirely and ground from
     // the model's own knowledge. Guaranteed memory-bounded — one small json call,
     // no server tools, no page content. Less current than live search, but safe.
@@ -68,7 +69,7 @@ export async function researchCar(car, model) {
         whatPeopleSay: known.whatPeopleSay || [],
         sources: [],
         defaulted: !!car?._defaulted,
-        offline: false,
+        offline: true, // model-only knowledge, no live web search — flag it honestly
       };
     }
 

@@ -76,7 +76,7 @@ const baseInput = {
 };
 
 // --- Case 1: best-of-N picks the highest-composite PASSING candidate ---
-clearCache();
+await clearCache();
 {
   const grades = [
     { scores: { funny: 7, human: 8, specific: 6, edge: 6, voice: 7 }, aiTells: [], reasoning: "ok" },
@@ -96,7 +96,7 @@ clearCache();
 }
 
 // --- Case 2: a MAJOR AI-tell fails the gate even with high scores → regenerates ---
-clearCache();
+await clearCache();
 {
   const grades = [
     // round 1: all have a MAJOR tell → must fail despite high scores
@@ -115,7 +115,7 @@ clearCache();
 }
 
 // --- Case 2b: a single MINOR tell still PASSES; two minors do NOT ---
-clearCache();
+await clearCache();
 {
   const grades = [
     // one minor nit + clearing scores → shippable (the severity-aware gate)
@@ -130,7 +130,7 @@ clearCache();
 }
 
 // --- Case 3: nothing passes after all rounds → best-effort, flagged not-passing ---
-clearCache();
+await clearCache();
 {
   const grades = [
     { scores: { funny: 6, human: 9, specific: 6, edge: 6, voice: 7 }, aiTells: [], reasoning: "not funny enough" }, // funny < gate 7

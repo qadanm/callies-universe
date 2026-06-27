@@ -22,4 +22,6 @@ export { gradeSet, pickBest } from "./src/grading/gradeSet.js";
 export { resolvePerformer, allPerformers, COMEDIC_PROFILES } from "./src/persona.js";
 export { GATES, WEIGHTS, AXES, composite, passes } from "./src/grading/rubric.js";
 export { buildResult } from "./src/assemble.js";
-export { clearCache } from "./src/cache.js";
+// Research cache — clearCache busts the default; createResearchCache lets you
+// inject a shared/persistent store (Redis/Upstash/Supabase) via config.researchCache.
+export { clearCache, createResearchCache, defaultResearchCache, cacheKey } from "./src/cache.js";

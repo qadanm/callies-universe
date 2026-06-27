@@ -81,6 +81,18 @@ export interface BrainConfig {
   maxRounds?: number;
   /** Force the offline path even if a key is present (deterministic tests). */
   offline?: boolean;
+
+  /* --- research cache --- */
+  /** Inject a shared/persistent store so a car is researched once across all
+   *  users. Any object with async get(key)/set(key,value) (Redis, Upstash,
+   *  Supabase, KV…). When set, it supersedes the default filesystem cache. */
+  researchCache?: { get(key: string): Promise<any>; set(key: string, value: any): Promise<void> };
+  /** Force in-process-only caching (no disk). Mainly for tests. */
+  cacheMode?: "memory";
+  /** Override the filesystem cache directory (Node). Env: BRAIN_CACHE_DIR. */
+  cacheDir?: string;
+  /** Research freshness TTL in ms (default 30 days). Env: BRAIN_CACHE_TTL_MS. */
+  cacheTtlMs?: number;
 }
 
 /* ============================ RESEARCH ============================ */

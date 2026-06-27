@@ -13,6 +13,7 @@
 import { createClaudeModel } from "./model/claude.js";
 import { resolvePerformer } from "./persona.js";
 import { researchCar } from "./research/researchCar.js";
+import { defaultResearchCache, createResearchCache } from "./cache.js";
 import { writeSet } from "./writing/writeSet.js";
 import { gradeSet, pickBest } from "./grading/gradeSet.js";
 import { buildResult } from "./assemble.js";
@@ -49,12 +50,20 @@ export async function generateRoast(input) {
     return offlineBrain(input);
   }
 
+  // Resolve the research cache. Tests with an injected model use a hermetic
+  // in-memory cache (never touches disk); real runs reuse the persistent default
+  // (filesystem, or an injected store via config.researchCache).
+  const cache = config._model
+    ? createResearchCache({ cacheMode: "memory" })
+    : defaultResearchCache(config);
+
   const started = Date.now();
   try {
     const performer = resolvePerformer(input.roasterId);
     const car = normalizeCar(input);
     // Research + grading run on the cheap utility model; writing on the writer.
-    const research = await researchCar(car, models.utility);
+    // Research is cached per car, so the whole cast roasts one car off one pass.
+    const research = await researchCar(car, models.utility, cache);
 
     const N = clamp(config.candidates ?? 2, 1, 6);
     const maxRounds = clamp(config.maxRounds ?? 2, 1, 4);
