@@ -96,6 +96,9 @@ importers:
 
   services/render:
     dependencies:
+      '@callies-universe/voice':
+        specifier: workspace:*
+        version: link:../voice
       '@remotion/bundler':
         specifier: ^4.0.484
         version: 4.0.484(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -105,6 +108,12 @@ importers:
       remotion:
         specifier: ^4.0.484
         version: 4.0.484(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+
+  services/voice:
+    dependencies:
+      '@callies-universe/core':
+        specifier: workspace:*
+        version: link:../../core
 
 packages:
 

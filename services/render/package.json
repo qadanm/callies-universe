@@ -11,6 +11,7 @@
     "render": "node scripts/render.mjs"
   },
   "dependencies": {
+    "@callies-universe/voice": "workspace:*",
     "@remotion/bundler": "^4.0.484",
     "@remotion/renderer": "^4.0.484",
     "remotion": "^4.0.484"

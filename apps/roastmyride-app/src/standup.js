@@ -89,10 +89,17 @@ function beatDurationMs(beat) {
  * live stage playback and (next milestone) the exported video — same timeline.
  * @returns {{ segments: Array<{beat, index, startMs, endMs}>, totalMs: number }}
  */
-export function buildTimeline(beats) {
+export function buildTimeline(beats, opts = {}) {
+  // When real per-beat audio durations are supplied (voiced render), pace the
+  // timeline to the SPOKEN audio so captions + scene track the performance.
+  // Otherwise fall back to the word-count estimate (live / silent).
+  const durationsMs = opts.durationsMs;
   let t = 0;
   const segments = (beats || []).map((beat, index) => {
-    const dur = beatDurationMs(beat);
+    const dur =
+      durationsMs && Number.isFinite(durationsMs[index]) && durationsMs[index] > 0
+        ? durationsMs[index]
+        : beatDurationMs(beat);
     const startMs = t;
     const endMs = t + dur;
     t = endMs + GAP_MS;

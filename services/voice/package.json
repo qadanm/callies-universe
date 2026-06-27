@@ -1,0 +1,17 @@
+{
+  "name": "@callies-universe/voice",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The voice capability: turns a stand-up set into per-beat spoken audio in each comedian's voice, with real clip durations so the video syncs to the performance. Swappable TTS provider (ElevenLabs reference) behind a thin interface; deterministic silent fallback when no key.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.js",
+  "exports": { ".": "./index.js", "./contract": "./contract.d.ts" },
+  "types": "./contract.d.ts",
+  "scripts": {
+    "smoke": "node scripts/offline-check.mjs"
+  },
+  "dependencies": {
+    "@callies-universe/core": "workspace:*"
+  }
+}

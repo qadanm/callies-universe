@@ -24,6 +24,21 @@ const scale = Number(arg("scale", "1")) || 1;
 const framesArg = arg("frames");
 const frameRange = framesArg ? framesArg.split("-").map((n) => Number(n)) : undefined;
 const inputProps = propsPath ? JSON.parse(readFileSync(resolve(propsPath), "utf8")) : {};
+const withVoice = process.argv.includes("--voice");
+
+// Voice: synthesize per-beat audio (the comedian performing the set) and inject
+// it into the spec so the composition plays it, synced to the beats. Uses
+// ELEVENLABS_API_KEY when present; otherwise deterministic silent clips.
+if (withVoice) {
+  const { synthesizeSet } = await import("@callies-universe/voice");
+  const v = await synthesizeSet(
+    inputProps.beats || [],
+    { id: inputProps.comedianId, name: inputProps.performerName },
+    { offline: !process.env.ELEVENLABS_API_KEY }
+  );
+  inputProps.audio = v.clips.map((c) => ({ index: c.index, dataUrl: c.dataUrl, durationMs: c.durationMs }));
+  console.log(`[render] voice: ${v.engine} (${v.clips.length} clips, ${v.voiced ? "spoken" : "silent"})`);
+}
 
 console.log(`[render] entry=${entry}`);
 console.log(`[render] out=${out} scale=${scale}${frameRange ? ` frames=${frameRange.join("-")}` : ""}`);

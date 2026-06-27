@@ -9,7 +9,7 @@
 //   { comedianId, performerName, bit, reaction, carLabel, engineLabel,
 //     beats: StandupBeat[], carPhoto: dataUrl|null, profile: {dataUrl,blur,kind}|null }
 import React from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
 import { buildTimeline } from "../src/standup.js";
 
@@ -17,9 +17,27 @@ export function StageVideo(props) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const timeMs = (frame / fps) * 1000;
-  const { segments } = buildTimeline(props.beats || []);
+  const audio = Array.isArray(props.audio) ? props.audio : null;
+  // When voiced, pace the timeline to the real per-beat audio durations so the
+  // captions + scene motion track the spoken performance exactly.
+  const durationsMs = audio ? audio.map((a) => a && a.durationMs) : undefined;
+  const { segments } = buildTimeline(props.beats || [], { durationsMs });
+  const msToFrames = (ms) => Math.max(1, Math.round((ms / 1000) * fps));
+
   return (
     <AbsoluteFill style={{ background: "#0d0805" }}>
+      {/* the comedian's voice — one clip per beat, started at the beat's time */}
+      {audio &&
+        audio.map((clip, i) => {
+          const seg = segments[i];
+          if (!seg || !clip || !clip.dataUrl) return null;
+          return (
+            <Sequence key={i} from={msToFrames(seg.startMs)} durationInFrames={msToFrames(clip.durationMs)}>
+              <Audio src={clip.dataUrl} />
+            </Sequence>
+          );
+        })}
+
       <StageScene
         comedianId={props.comedianId}
         performerName={props.performerName}

@@ -38,7 +38,8 @@ export function RemotionRoot() {
       height={HEIGHT}
       defaultProps={DEFAULT_PROPS}
       calculateMetadata={({ props }) => {
-        const { totalMs } = buildTimeline(props.beats || []);
+        const durationsMs = Array.isArray(props.audio) ? props.audio.map((a) => a && a.durationMs) : undefined;
+        const { totalMs } = buildTimeline(props.beats || [], { durationsMs });
         return { durationInFrames: Math.max(1, Math.round((totalMs / 1000) * FPS)) };
       }}
     />
