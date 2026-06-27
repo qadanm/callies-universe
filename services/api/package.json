@@ -1,0 +1,19 @@
+{
+  "name": "@callies-universe/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The roast backend: a tiny HTTP host over the voice + render capabilities. POST /voice synthesizes the comedian's set; POST /render returns the exact MP4. Keys stay server-side. Built on node:http (no framework). The app reaches it via VITE_ROAST_API and degrades gracefully when it's absent.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.js",
+  "exports": { ".": "./index.js" },
+  "scripts": {
+    "start": "node server.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "render-smoke": "node scripts/render-smoke.mjs"
+  },
+  "dependencies": {
+    "@callies-universe/voice": "workspace:*",
+    "@callies-universe/render": "workspace:*"
+  }
+}

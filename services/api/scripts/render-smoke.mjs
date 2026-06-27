@@ -1,0 +1,41 @@
+// services/api OPT-IN render smoke — actually renders a tiny MP4 through POST /render.
+// Remotion needs a Chromium, so this is GATED on CHROMIUM_BIN/CHROME and is NOT in
+// the default `verify` chain. Run where Chrome exists:
+//
+//   CHROMIUM_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+//     pnpm --filter @callies-universe/api render-smoke
+import { createApiServer } from "../index.js";
+
+const browser = process.env.CHROMIUM_BIN || process.env.CHROME;
+if (!browser) {
+  console.log("· api render-smoke skipped (set CHROMIUM_BIN/CHROME to run a real render)");
+  process.exit(0);
+}
+
+const SPEC = {
+  comedianId: "mama", performerName: "Mama Denièce", bit: "Baby, No", reaction: "savage", carLabel: "your ride",
+  beats: [
+    { type: "setup", text: "Mm-mm-MM. Baby. Come here." },
+    { type: "punch", text: "This paint job is ", punch: "a cry for help", tail: "." },
+  ],
+  carPhoto: null, profile: null,
+};
+
+const srv = createApiServer({ offline: true }); // silent voice, REAL render
+await new Promise((r) => srv.listen(0, r));
+const base = `http://localhost:${srv.address().port}`;
+let ok = false;
+try {
+  console.log("[render-smoke] rendering 6 frames at scale 0.5 …");
+  const res = await fetch(`${base}/render?frames=0-5&scale=0.5`, {
+    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(SPEC),
+  });
+  const buf = Buffer.from(await res.arrayBuffer());
+  // MP4 magic: bytes 4..8 == "ftyp"
+  ok = res.status === 200 && buf.length > 1000 && buf.toString("ascii", 4, 8) === "ftyp";
+  console.log(`  ${ok ? "✓" : "✗"} POST /render → ${res.status}, ${buf.length} bytes, ftyp=${buf.toString("ascii", 4, 8)}`);
+} finally {
+  srv.close();
+}
+console.log(ok ? "\n✓ api render-smoke passed" : "\n✗ api render-smoke failed");
+process.exit(ok ? 0 : 1);

@@ -84,6 +84,15 @@ importers:
         specifier: ^5.4.11
         version: 5.4.21(@types/node@26.0.1)(terser@5.48.0)
 
+  services/api:
+    dependencies:
+      '@callies-universe/render':
+        specifier: workspace:*
+        version: link:../render
+      '@callies-universe/voice':
+        specifier: workspace:*
+        version: link:../voice
+
   services/brain:
     dependencies:
       '@callies-universe/core':

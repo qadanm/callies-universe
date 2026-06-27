@@ -21,8 +21,9 @@
     "brain:smoke": "pnpm --filter @callies-universe/brain smoke",
     "brain:demo": "pnpm --filter @callies-universe/brain demo",
     "voice:smoke": "pnpm --filter @callies-universe/voice smoke",
+    "api:smoke": "pnpm --filter @callies-universe/api smoke",
     "lint": "eslint .",
-    "verify": "pnpm run lint && pnpm run smoke && pnpm run brain:smoke && pnpm run voice:smoke && pnpm run preview:build && pnpm run app:build"
+    "verify": "pnpm run lint && pnpm run smoke && pnpm run brain:smoke && pnpm run voice:smoke && pnpm run api:smoke && pnpm run preview:build && pnpm run app:build"
   },
   "devDependencies": {
     "eslint": "^9.17.0",
