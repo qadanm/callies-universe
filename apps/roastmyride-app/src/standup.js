@@ -10,6 +10,7 @@
 // the brain's persona layer (which reads core's Roaster seed) — no duplication.
 
 import { resolvePerformer } from "@callies-universe/brain";
+import { pickBackground } from "./gameplayBackgrounds.js";
 
 // Brain beat type → HANDOFF display type.
 const BEAT_TYPE = {
@@ -156,6 +157,9 @@ export function buildRenderSpec(result, input) {
   const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || "your ride";
   const p = input && input.personal;
   const profile = p && p.present && p.dataUrl ? { dataUrl: p.dataUrl, blur: !!p.blur, kind: p.kind || null } : null;
+  // The gameplay backdrop is chosen deterministically from the roast, so the saved
+  // video uses the exact same backdrop the live reel shows.
+  const bg = pickBackground(result);
   return {
     comedianId: result.roasterId,
     performerName: result.roasterName || "the comic",
@@ -166,5 +170,7 @@ export function buildRenderSpec(result, input) {
     beats: su.beats,
     carPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
     profile,
+    backgroundUrl: bg.backgroundUrl,
+    fauxStyle: bg.fauxStyle,
   };
 }

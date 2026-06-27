@@ -12,10 +12,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
 import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
+import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
 
 export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
+
+  // Same deterministic backdrop the saved video uses (buildRenderSpec). A real
+  // licensed loop (bgUrl) is layered as <video>; otherwise the scene draws fauxStyle.
+  const pick = useMemo(() => pickBackground(result), [result]);
+  const bgUrl = backgroundUrl ?? pick.backgroundUrl;
 
   // When a backend is configured, fetch the comedian's per-beat audio (cached) so
   // the live reel is voiced — and pace the timeline to the REAL spoken durations,
@@ -121,8 +127,8 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
     <div style={{ width: "100%", maxWidth: 340, margin: "0 auto" }}>
       {/* the 9:16 reel box: optional gameplay video behind the transparent scene */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "9 / 16", borderRadius: "var(--radius-xl)", overflow: "hidden", boxShadow: "var(--elev-4)", background: "#06101f" }}>
-        {backgroundUrl && (
-          <video ref={videoRef} src={backgroundUrl} muted loop playsInline autoPlay aria-hidden="true" data-testid="stage-background-video" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        {bgUrl && (
+          <video ref={videoRef} src={bgUrl} muted loop playsInline autoPlay aria-hidden="true" data-testid="stage-background-video" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         )}
         <StageScene
           comedianId={standup.comedianId}
@@ -133,7 +139,8 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
           segments={segments}
           timeMs={timeMs}
           reaction={result.reaction || "savage"}
-          backgroundUrl={backgroundUrl}
+          backgroundUrl={bgUrl}
+          fauxStyle={pick.fauxStyle}
           reduceMotion={reduceMotion}
         />
       </div>

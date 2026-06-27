@@ -35,6 +35,7 @@ export const StageScene = React.memo(function StageScene({
   timeMs = 0,
   reaction = "savage",
   backgroundUrl, // when set, the HOST layers the real gameplay video; we go transparent
+  fauxStyle = "blocks", // which faux-gameplay backdrop to draw when there's no real loop
   reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
 }) {
   const idx = activeIndexAt(segments, timeMs);
@@ -49,7 +50,7 @@ export const StageScene = React.memo(function StageScene({
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden", color: "#fff", fontFamily: "var(--font-display, inherit)" }} data-testid="stage-scene">
       {/* background: real gameplay is layered by the host; else faux fallback */}
-      {!backgroundUrl && <FauxGameplay timeMs={timeMs} />}
+      {!backgroundUrl && <FauxGameplay timeMs={timeMs} style={fauxStyle} />}
       <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 22%, transparent 62%, rgba(0,0,0,0.55) 100%)" }} />
 
       {/* brand chip */}
@@ -160,15 +161,51 @@ function Captions({ beat, startMs, endMs, timeMs, reduceMotion = false }) {
 
 /* --------------------------- background --------------------------- */
 
-function FauxGameplay({ timeMs }) {
-  // Deterministic endless-runner-ish backdrop: a tiled block field scrolling up,
-  // with parallax bands. Stand-in for a licensed gameplay loop (backgroundUrl).
-  const y1 = (timeMs * 0.12) % 120;
-  const y2 = (timeMs * 0.22) % 80;
+// Deterministic faux-gameplay backdrops (timeMs-driven, so live === export). A
+// stand-in for a licensed loop (backgroundUrl); three distinct looks so different
+// reels read differently. We ship no copyrighted footage.
+function FauxGameplay({ timeMs, style = "blocks" }) {
+  if (style === "runner") return <RunnerBg timeMs={timeMs} />;
+  if (style === "parkour") return <ParkourBg timeMs={timeMs} />;
+  return <BlocksBg timeMs={timeMs} />;
+}
+
+const bgBase = { position: "absolute", inset: 0, zIndex: 0 };
+
+function BlocksBg({ timeMs }) {
+  // Mining/voxel vibe: a blocky grid + parallax ore-dots scrolling up.
+  const y1 = (timeMs * 0.1) % 112;
+  const y2 = (timeMs * 0.2) % 220;
   return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(180deg, #1f6feb 0%, #0b1f3a 55%, #06101f 100%)" }}>
-      <div style={{ position: "absolute", inset: "-20% 0", backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 60px), repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 2px, transparent 2px 60px)", backgroundPosition: `0 ${-y1}px, 0 0`, opacity: 0.6 }} />
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(8px 8px at 20% 30%, #7ee787 30%, transparent 32%), radial-gradient(10px 10px at 70% 60%, #ffd33d 30%, transparent 32%), radial-gradient(7px 7px at 45% 80%, #ff7b72 30%, transparent 32%)", backgroundSize: "100% 240px", backgroundPosition: `0 ${-y2}px`, opacity: 0.5 }} />
+    <div aria-hidden="true" style={{ ...bgBase, background: "linear-gradient(180deg, #3a7bd5 0%, #0b2545 55%, #050b16 100%)" }}>
+      <div style={{ position: "absolute", inset: "-20% 0", backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 56px), repeating-linear-gradient(90deg, rgba(0,0,0,0.22) 0 2px, transparent 2px 56px)", backgroundPosition: `0 ${-y1}px, 0 0`, opacity: 0.7 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(7px 7px at 18% 30%, #7ee787 30%, transparent 32%), radial-gradient(9px 9px at 68% 60%, #ffd33d 30%, transparent 32%), radial-gradient(6px 6px at 44% 82%, #ff7b72 30%, transparent 32%), radial-gradient(8px 8px at 84% 22%, #a371f7 30%, transparent 32%)", backgroundSize: "100% 220px", backgroundPosition: `0 ${-y2}px`, opacity: 0.5 }} />
+    </div>
+  );
+}
+
+function RunnerBg({ timeMs }) {
+  // Endless-runner vibe: a track with converging lanes + speed stripes rushing down.
+  const s = (timeMs * 0.4) % 64;
+  return (
+    <div aria-hidden="true" style={{ ...bgBase, background: "linear-gradient(180deg, #10243f 0%, #16324f 38%, #244a6e 100%)" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "62%", background: "linear-gradient(180deg, #2a3550 0%, #3a4a6b 100%)", clipPath: "polygon(38% 0, 62% 0, 100% 100%, 0% 100%)" }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(180deg, rgba(255,255,255,0.18) 0 6px, transparent 6px 64px)", backgroundPosition: `0 ${s}px` }} />
+      </div>
+      <div style={{ position: "absolute", left: "50%", bottom: 0, top: "38%", width: 2, background: "rgba(255,255,255,0.22)", transform: "translateX(-50%) rotate(12deg)", transformOrigin: "top" }} />
+      <div style={{ position: "absolute", left: "50%", bottom: 0, top: "38%", width: 2, background: "rgba(255,255,255,0.22)", transform: "translateX(-50%) rotate(-12deg)", transformOrigin: "top" }} />
+    </div>
+  );
+}
+
+function ParkourBg({ timeMs }) {
+  // Neon-platform vibe: glowing bars drifting up at two parallax speeds.
+  const y1 = (timeMs * 0.16) % 160;
+  const y2 = (timeMs * 0.26) % 240;
+  return (
+    <div aria-hidden="true" style={{ ...bgBase, background: "radial-gradient(120% 80% at 50% 0%, #2a1a52 0%, #160d33 50%, #090616 100%)" }}>
+      <div style={{ position: "absolute", inset: "-20% 0", backgroundImage: "repeating-linear-gradient(180deg, transparent 0 120px, rgba(126,231,135,0.55) 120px 132px, transparent 132px 160px)", backgroundPosition: `0 ${-y1}px`, filter: "drop-shadow(0 0 6px rgba(126,231,135,0.6))" }} />
+      <div style={{ position: "absolute", inset: "-20% 0", backgroundImage: "repeating-linear-gradient(180deg, transparent 0 200px, rgba(255,79,163,0.4) 200px 210px, transparent 210px 240px)", backgroundPosition: `0 ${-y2}px`, opacity: 0.8 }} />
     </div>
   );
 }

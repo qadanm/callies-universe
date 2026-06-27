@@ -53,6 +53,7 @@ export function StageVideo(props) {
         timeMs={timeMs}
         reaction={props.reaction || "savage"}
         backgroundUrl={props.backgroundUrl}
+        fauxStyle={props.fauxStyle}
       />
     </AbsoluteFill>
   );
