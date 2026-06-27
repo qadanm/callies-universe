@@ -18,6 +18,22 @@
 // Writes a markdown report next to stdout for easy sharing.
 
 import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+// Re-exec once with a roomier heap. The live path holds large web-search
+// responses in memory while researching; the default heap can be tight on
+// search-heavy cars. This guarantees the headroom regardless of how the demo
+// is invoked, on any OS.
+if (!process.env.__BRAIN_DEMO_REEXEC) {
+  const { spawnSync } = await import("node:child_process");
+  const r = spawnSync(
+    process.execPath,
+    ["--max-old-space-size=4096", fileURLToPath(import.meta.url), ...process.argv.slice(2)],
+    { stdio: "inherit", env: { ...process.env, __BRAIN_DEMO_REEXEC: "1" } }
+  );
+  process.exit(r.status ?? 0);
+}
+
 import { generateRoast } from "../index.js";
 import { Roaster } from "@callies-universe/core";
 
@@ -45,7 +61,9 @@ for (const id of requested) {
     car,
     roasterId: id,
     context: ["brutal"],
-    config: live ? { candidates: 3, maxRounds: 2 } : { offline: true },
+    // Snappy proof defaults: best-of-3, one round. The brain's own defaults
+    // (3 × 2 rounds) still apply in the app/server; this just keeps the demo light.
+    config: live ? { candidates: 3, maxRounds: 1 } : { offline: true },
   });
   results.push(res);
 }

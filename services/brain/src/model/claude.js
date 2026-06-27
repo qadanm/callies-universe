@@ -80,16 +80,22 @@ export async function createClaudeModel(config = {}) {
      * Live web research. Runs the server-side web_search tool, handling the
      * pause_turn continuation loop, and returns the synthesized text plus the
      * sources the model actually pulled from.
+     *
+     * `maxUses` is kept low and the resume loop short on purpose: web_search
+     * results carry the fetched page content, and resuming a pause_turn re-sends
+     * the whole growing assistant turn back to the API. Letting that compound
+     * over many rounds is what blew the heap on search-heavy cars — so we cap
+     * searches and rounds, accumulate only the small text + source list we need,
+     * and never retain the large content blocks beyond the resume that needs them.
      */
-    async search({ system, user, maxTokens = 4096, maxUses = 6 }) {
+    async search({ system, user, maxTokens = 3000, maxUses = 4, maxRounds = 3 }) {
       const tools = [{ type: "web_search_20260209", name: "web_search", max_uses: maxUses }];
       let messages = [{ role: "user", content: user }];
-      let message;
       const sources = [];
+      let text = "";
 
-      // Server-tool loop: resume on pause_turn (cap iterations).
-      for (let i = 0; i < 6; i++) {
-        message = await client.messages.create({
+      for (let i = 0; i < maxRounds; i++) {
+        const message = await client.messages.create({
           model: modelId,
           max_tokens: maxTokens,
           system,
@@ -98,18 +104,18 @@ export async function createClaudeModel(config = {}) {
           tools,
         });
         collectSources(message, sources);
-        if (message.stop_reason !== "pause_turn") break;
-        messages = [
-          ...messages,
-          { role: "assistant", content: message.content },
-        ];
-      }
+        // Keep the synthesized prose; drop everything else from our retained state.
+        const prose = message.content
+          .filter((b) => b.type === "text" && b.text)
+          .map((b) => b.text)
+          .join("\n")
+          .trim();
+        if (prose) text = prose;
 
-      const text = message.content
-        .filter((b) => b.type === "text")
-        .map((b) => b.text)
-        .join("\n")
-        .trim();
+        if (message.stop_reason !== "pause_turn") break;
+        // Resume the server-tool turn (the API requires the assistant content back).
+        messages = [...messages, { role: "assistant", content: message.content }];
+      }
 
       return { text, sources: dedupeSources(sources) };
     },

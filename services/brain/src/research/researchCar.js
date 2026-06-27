@@ -57,8 +57,9 @@ export async function researchCar(car, model) {
         `stereotypes about it, and recent things people say about owning/driving ` +
         `one. Pull specific, true details (not vague generalities). Then write a ` +
         `tight briefing of the funniest TRUE material — the stuff a stand-up could ` +
-        `actually use.`,
-      maxTokens: 4096,
+        `actually use. Keep it to a handful of focused searches.`,
+      maxTokens: 3000,
+      maxUses: 4,
     });
 
     // --- Pass 2: structure the briefing into typed research ---
