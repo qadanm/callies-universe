@@ -66,3 +66,73 @@ export function toStandupSet(result) {
     beats,
   };
 }
+
+/* ----------------------------- performance timeline ----------------------------- */
+
+const WPS = 2.6; // speaking pace (words/sec)
+const MIN_BEAT_MS = 1500;
+const MAX_BEAT_MS = 6500;
+const GAP_MS = 320; // breath between beats
+// extra "let it land / laugh" beat after the funny ones
+const LAUGH_MS = { punch: 750, closer: 900, crowd: 650, setup: 150 };
+
+function beatDurationMs(beat) {
+  const words = beat.text ? beat.text.trim().split(/\s+/).filter(Boolean).length : 0;
+  const speak = (words / WPS) * 1000;
+  const land = LAUGH_MS[beat.type] ?? 200;
+  return Math.round(Math.max(MIN_BEAT_MS, Math.min(MAX_BEAT_MS, speak + land)));
+}
+
+/**
+ * Turn the display beats into a timed performance: each beat gets a start/end
+ * (ms) proportional to its length, with a breath between. This drives both the
+ * live stage playback and (next milestone) the exported video — same timeline.
+ * @returns {{ segments: Array<{beat, index, startMs, endMs}>, totalMs: number }}
+ */
+export function buildTimeline(beats) {
+  let t = 0;
+  const segments = (beats || []).map((beat, index) => {
+    const dur = beatDurationMs(beat);
+    const startMs = t;
+    const endMs = t + dur;
+    t = endMs + GAP_MS;
+    return { beat, index, startMs, endMs };
+  });
+  // totalMs INCLUDES the final gap (t), so the scrubber reaches 100% exactly when
+  // the last beat's breath ends. 0 segments → 0 (StagePlayer guards on this).
+  return { segments, totalMs: segments.length ? t : 0 };
+}
+
+/**
+ * The active segment index at a given time. Caption N stays active from its own
+ * start until the NEXT beat's start — so a beat naturally lingers through the
+ * breath/gap that follows it rather than blanking out. Returns -1 for an empty
+ * timeline; the last index once past the final start.
+ */
+export function activeIndexAt(segments, timeMs) {
+  if (!segments.length) return -1;
+  let idx = 0;
+  for (let i = 0; i < segments.length; i++) {
+    if (timeMs >= segments[i].startMs) idx = i;
+    else break;
+  }
+  return idx;
+}
+
+/**
+ * Which of Callie's 9 core states she shows as the audience for a given beat.
+ * Crowd work + the hard-landing beats pop her to the roast's reaction; setups
+ * are curious; everything else delighted. `reaction` is the result's headline state.
+ */
+export function callieStateForBeat(beatType, reaction = "savage") {
+  if (!beatType) return "delighted";
+  if (beatType === "crowd") return "savage";
+  if (beatType === "punch" || beatType === "closer") return reaction || "savage";
+  if (beatType === "setup") return "curious";
+  return "delighted";
+}
+
+export function mmss(totalMs) {
+  const secs = Math.max(0, Math.round(totalMs / 1000));
+  return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+}

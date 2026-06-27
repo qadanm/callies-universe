@@ -1,17 +1,18 @@
-// Screen 6 — Reveal: the SET (the hero moment), reworked as a comedy special.
-// CORE-REUSED: Callie, Confetti, Button (+ Roaster inside StageFrame).
-// ROASTMYRIDE-NEW (app-layer): StageFrame (perf-video placeholder), billing bar,
-// the set transcript (SetBeat), the standup ShareCard clip.
+// Screen 6 — Reveal: the SET (the hero moment), the comedy special.
+// CORE-REUSED: Callie, Button.
+// ROASTMYRIDE-NEW (app-layer): StagePlayer (the animated stage scene — car on a
+// screen, profile if present, comic performing, Callie in the crowd), the
+// grader verdict, the standup ShareCard clip, and the full set transcript below.
 //
-// The set, the performer, the research and the grade all come from the brain's
-// RoastResult (flow.result); the app adapts it to the StandupSet display shape
-// (standup.js). The cast comedian performs; Callie only reacts, as the crowd
-// (the two-performer rule, now literal — comic on stage, Callie in the audience).
-import React, { useEffect, useState } from "react";
+// The set, performer, research and grade come from the brain's RoastResult
+// (flow.result); the photos come from flow.input (carried, never sent to the
+// model). The StagePlayer's scene is the single source of truth that the saved
+// video will render identically (next milestone).
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Callie, Confetti } from "@callies-universe/core";
+import { Button, Callie } from "@callies-universe/core";
 import { ShareCard } from "../components/ShareCard.jsx";
-import { StageFrame } from "../components/StageFrame.jsx";
+import { StagePlayer } from "../components/StagePlayer.jsx";
 import { SetBeat } from "../components/SetBeat.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
 import { toStandupSet, comicStyle } from "../standup.js";
@@ -19,17 +20,13 @@ import { useFlow } from "../flow/FlowContext.jsx";
 
 export function Reveal() {
   const go = useNavigate();
-  const { result, previewResult } = useFlow();
+  const { result, previewResult, input } = useFlow();
   const roast = result || previewResult; // fallback so a direct /reveal still renders
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setRevealed(true), 250);
-    return () => clearTimeout(t);
-  }, []);
 
   const set = toStandupSet(roast);
   const act = roast.performer?.comedicIdentity || comicStyle(roast.roasterId);
+  const carPhoto = input?.carPhoto?.dataUrl || null;
+  const profile = input?.personal?.present && input?.personal?.dataUrl ? input.personal : null;
   const closer = set.beats.find((b) => b.type === "closer");
   const clipSegments = closer
     ? [
@@ -41,30 +38,10 @@ export function Reveal() {
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", background: "radial-gradient(120% 60% at 50% 0%, var(--heat-300) 0%, var(--canvas) 50%)" }}>
-      {revealed && <Confetti count={34} />}
-
       <ScreenScroll style={{ paddingBottom: "var(--space-4)" }}>
-        {/* billing bar — now performing */}
-        <div>
-          <Eyebrow>🎤 Now performing{roast.engine === "live" ? "" : " · offline"}</Eyebrow>
-          <h1 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "2px 0 0", lineHeight: 1.05 }}>
-            "{set.bit}"
-          </h1>
-          <p style={{ font: "var(--type-cap)", color: "var(--text-muted)", margin: "4px 0 0" }}>
-            {roast.roasterName} · {act} · {set.runtime}
-          </p>
-        </div>
-
-        {/* the stage (perf-video placeholder) */}
-        <div style={{ animation: revealed ? "rmr-pop-in var(--dur-4) var(--ease-spring) both" : "none" }}>
-          <StageFrame comedianId={roast.roasterId} runtime={set.runtime} callieState={roast.reaction} />
-        </div>
-
-        {/* the set transcript */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-          {set.beats.map((b, i) => (
-            <SetBeat key={i} beat={b} />
-          ))}
+        {/* the stage scene — the show plays here (and is what the video will be) */}
+        <div style={{ animation: "rmr-pop-in var(--dur-4) var(--ease-spring) both" }}>
+          <StagePlayer result={roast} carPhoto={carPhoto} profile={profile} />
         </div>
 
         {/* grader verdict — the anti-cringe guarantee, made visible */}
@@ -87,6 +64,16 @@ export function Reveal() {
             mascot={<Callie state={roast.reaction} size={76} />}
             roast={clipSegments}
           />
+        </div>
+
+        {/* the full set — text transcript (accessible, skimmable) */}
+        <div>
+          <Eyebrow>The full set</Eyebrow>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+            {set.beats.map((b, i) => (
+              <SetBeat key={i} beat={b} />
+            ))}
+          </div>
         </div>
       </ScreenScroll>
 
