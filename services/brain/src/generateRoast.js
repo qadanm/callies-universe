@@ -93,8 +93,12 @@ export async function generateRoast(input) {
     });
   } catch (err) {
     // Network / API failure mid-flight → don't break the app; fall back offline.
+    // Always surface a one-line reason (silent degradation hid a 401 once);
+    // full stack only under BRAIN_DEBUG.
     const debug = typeof process !== "undefined" && process.env && process.env.BRAIN_DEBUG;
-    if (debug) console.error("[brain] live path failed, falling back:", err);
+    const msg = (err && err.message) || String(err);
+    console.error(`[brain] live generation failed — using offline fallback: ${msg}`);
+    if (debug) console.error(err);
     return offlineBrain(input, { degraded: true });
   }
 }

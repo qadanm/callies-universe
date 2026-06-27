@@ -47,13 +47,9 @@ const label = car.label || [car.year, car.make, car.model].filter(Boolean).join(
 const out = [];
 const log = (s = "") => { console.log(s); out.push(s); };
 
-log(`# RoastMyRide — cross-character proof`);
-log(``);
-log(`**Car:** ${label}`);
-log(`**Engine:** ${live ? "LIVE (Claude research + grading)" : "OFFLINE (no API key — deterministic fallback)"}`);
-log(`**Characters:** ${requested.join(", ")}`);
-log(``);
-
+// Generate first, THEN report — so the header reflects the engine that ACTUALLY
+// ran (a live attempt can fall back to offline on an API error; don't claim LIVE
+// when we silently degraded).
 const results = [];
 for (const id of requested) {
   const res = await generateRoast({
@@ -66,6 +62,26 @@ for (const id of requested) {
     config: live ? { candidates: 3, maxRounds: 1 } : { offline: true },
   });
   results.push(res);
+}
+
+const liveCount = results.filter((r) => r.engine === "live").length;
+const engineLine =
+  liveCount === results.length && live
+    ? "LIVE (Claude research + grading)"
+    : liveCount > 0
+      ? `MIXED — ${liveCount}/${results.length} live, the rest fell back offline`
+      : live
+        ? "OFFLINE — the live attempt FAILED and fell back (re-run with BRAIN_DEBUG=1 to see why; common cause: invalid/missing ANTHROPIC_API_KEY)"
+        : "OFFLINE (no API key — deterministic fallback)";
+
+log(`# RoastMyRide — cross-character proof`);
+log(``);
+log(`**Car:** ${label}`);
+log(`**Engine:** ${engineLine}`);
+log(`**Characters:** ${requested.join(", ")}`);
+log(``);
+if (live && liveCount < results.length) {
+  console.error(`\n⚠️  Live was requested but ${results.length - liveCount}/${results.length} set(s) fell back to OFFLINE. Re-run with BRAIN_DEBUG=1 for the error (most often an invalid ANTHROPIC_API_KEY).\n`);
 }
 
 // Research is shared across the cast — show it once.
