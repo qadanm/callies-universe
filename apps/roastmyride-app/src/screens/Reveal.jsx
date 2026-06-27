@@ -8,40 +8,83 @@
 // (flow.result); the photos come from flow.input (carried, never sent to the
 // model). The StagePlayer's scene is the single source of truth that the saved
 // video will render identically (next milestone).
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Callie } from "@callies-universe/core";
 import { ShareCard } from "../components/ShareCard.jsx";
 import { StagePlayer } from "../components/StagePlayer.jsx";
 import { SetBeat } from "../components/SetBeat.jsx";
+import { CookingProgress } from "../components/CookingProgress.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
 import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
+import { hasRoastApi, renderVideo } from "../services/roastApi.js";
 import { useFlow } from "../flow/FlowContext.jsx";
+
+const slugOf = (spec) => String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase();
+const firstNameOf = (name) => String(name || "The comic").replace(/[“"].*$/, "").split(" ")[0];
 
 export function Reveal() {
   const go = useNavigate();
   const { result, previewResult, input } = useFlow();
   const roast = result || previewResult; // fallback so a direct /reveal still renders
 
-  // Save-as-video: build the exact render spec (the Remotion composition's
-  // inputProps) and download it. The render service turns this into a frame-
-  // identical MP4 (locally: `pnpm --filter @callies-universe/render render`;
-  // one tap once the render endpoint is hosted).
-  const saveVideo = () => {
-    const spec = buildRenderSpec(roast, input);
+  const [saving, setSaving] = useState(false);
+  const [renderStep, setRenderStep] = useState(0);
+
+  // Save-as-video. When a render backend is configured (VITE_ROAST_API), POST the
+  // exact render spec and get back the frame-identical MP4 in one tap (share on
+  // mobile, else download). With no backend — or on any failure — fall back to
+  // downloading the render spec JSON (the CLI turns it into the same MP4).
+  const downloadSpec = (spec) => {
     const blob = new Blob([JSON.stringify(spec, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `roastmyride-${String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase()}.json`;
+    a.download = `roastmyride-${slugOf(spec)}.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   };
 
+  const saveVideo = async () => {
+    const spec = buildRenderSpec(roast, input);
+    if (!hasRoastApi()) return downloadSpec(spec);
+    setSaving(true);
+    try {
+      const blob = await renderVideo(spec);
+      const file = new File([blob], `roastmyride-${slugOf(spec)}.mp4`, { type: "video/mp4" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "RoastMyRide" }).catch(() => {});
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      console.warn(`[reveal] render failed (${e && e.message}); downloading spec instead`);
+      downloadSpec(spec);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Step the render overlay's status line while saving (time-based — the render is
+  // a single request; this is honest indeterminate progress, like Warming-up).
+  useEffect(() => {
+    if (!saving) { setRenderStep(0); return undefined; }
+    const t = setInterval(() => setRenderStep((s) => s + 1), 1200);
+    return () => clearInterval(t);
+  }, [saving]);
+
   const set = toStandupSet(roast);
   const act = roast.performer?.comedicIdentity || comicStyle(roast.roasterId);
+  const renderSteps = ["Rolling the tape…", `${firstNameOf(roast.roasterName)} is performing…`, "Mixing the audio…", "Rendering your reel…"];
   const carPhoto = input?.carPhoto?.dataUrl || null;
   const profile = input?.personal?.present && input?.personal?.dataUrl ? input.personal : null;
   const closer = set.beats.find((b) => b.type === "closer");
@@ -100,15 +143,22 @@ export function Reveal() {
             Share the clip
           </Button>
           <div style={{ display: "flex", gap: "var(--space-3)" }}>
-            <Button variant="secondary" style={{ flex: 1 }} onClick={saveVideo}>
-              ⤓ Save video
+            <Button variant="secondary" style={{ flex: 1 }} onClick={saveVideo} disabled={saving}>
+              {saving ? "Rendering…" : "⤓ Save video"}
             </Button>
-            <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/cooking")}>
+            <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/cooking")} disabled={saving}>
               New set
             </Button>
           </div>
         </div>
       </div>
+
+      {/* render overlay — shown while the backend produces the exact MP4 */}
+      {saving && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(120% 70% at 50% 30%, var(--heat-300) 0%, var(--canvas) 60%)" }}>
+          <CookingProgress title="Rendering your reel…" steps={renderSteps} step={renderStep} hint="Saving the exact video you see" size={180} />
+        </div>
+      )}
     </div>
   );
 }

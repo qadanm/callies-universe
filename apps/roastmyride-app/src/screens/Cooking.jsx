@@ -7,9 +7,8 @@
 // the reveal. Swapping behind the seam changed nothing here.
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CallieHost } from "@callies-universe/core";
 import { resolvePerformer } from "@callies-universe/brain";
-import { H } from "../components/ui.jsx";
+import { CookingProgress } from "../components/CookingProgress.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 const STEPS = (name) => [
@@ -42,8 +41,6 @@ export function Cooking() {
     // NOTE: run once on mount — generate() is stable for this screen's lifetime.
   }, []);
 
-  const pct = Math.min(100, (step + 1) * 25);
-
   return (
     <div
       style={{
@@ -52,34 +49,10 @@ export function Cooking() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "var(--space-6)",
-        padding: "var(--space-6)",
         background: "radial-gradient(120% 70% at 50% 30%, var(--heat-300) 0%, var(--canvas) 60%)",
       }}
     >
-      <CallieHost context="cooking" size={200} />
-      <div style={{ textAlign: "center" }}>
-        <H style={{ fontSize: 34 }}>Warming up…</H>
-        <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: "8px 0 0", minHeight: 26 }}>
-          {steps[Math.min(step, steps.length - 1)]}
-        </p>
-      </div>
-      <div style={{ width: "100%", maxWidth: 280 }}>
-        <div style={{ height: 16, borderRadius: 999, background: "var(--surface)", boxShadow: "var(--elev-1)", overflow: "hidden" }}>
-          <div
-            style={{
-              height: "100%",
-              width: pct + "%",
-              borderRadius: 999,
-              background: "linear-gradient(90deg,var(--flame-500),var(--ember-600))",
-              transition: "width var(--dur-3) var(--ease-out)",
-            }}
-          />
-        </div>
-        <div style={{ textAlign: "center", font: "var(--type-cap)", color: "var(--text-hint)", marginTop: 8 }}>
-          This usually takes ~10 seconds
-        </div>
-      </div>
+      <CookingProgress title="Warming up…" steps={steps} step={step} hint="This usually takes ~10 seconds" size={200} />
     </div>
   );
 }
