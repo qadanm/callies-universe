@@ -1,232 +1,210 @@
-// RoastMyRide — StageScene [ROASTMYRIDE-NEW: app-layer]. THE comedy special.
+// RoastMyRide — StageScene [ROASTMYRIDE-NEW: app-layer]. THE roast reel.
 //
-// One declarative, PROP-DRIVEN scene = the single source of truth, rendered two ways:
-//   • LIVE  (StagePlayer passes `activeIndex`): ambient motion runs via cheap CSS
-//     animations; React re-renders only on beat change.
-//   • DRIVEN (Remotion passes `timeMs`): every motion — ambient sway/bob/marquee,
-//     the per-beat enters, and the confetti — is computed deterministically from
-//     timeMs (sceneMotion.js), so the exported video is frame-identical to the
-//     scene. Same component, same props, two clocks.
+// The viral "gameplay + voiceover + big subtitles" format: the comedian's roast
+// plays as a VO over looping gameplay, with the comic as a static sticker, the
+// car (and profile, if given) as stickers, and BIG word-by-word captions in the
+// social-video style. One declarative, PROP-DRIVEN scene = the single source of
+// truth: deterministic from `timeMs`, so the same scene the app plays live drives
+// the exported video frame-identically (live = StagePlayer's rAF clock; video =
+// Remotion's frame clock).
 //
-// Fixed slots (the product rules, made structural):
-//   • the CAR is ALWAYS on screen — a "monitor" on stage (placeholder if no photo).
-//   • the PROFILE appears only if submitted (blurred if the user asked).
-//   • the COMIC performs under the spotlight; Callie reacts from the crowd.
+// The gameplay BACKGROUND is a host-layered, user-supplied licensed video
+// (`backgroundUrl` → the host renders <video>/<OffthreadVideo> behind this scene,
+// which then goes transparent). With no asset, a deterministic faux-gameplay
+// backdrop renders so it always works. We do NOT ship copyrighted footage.
 //
-// CORE-REUSED: Roaster (the comic), Callie (audience), Confetti (live only).
-import React from "react";
-import { Roaster, Callie, Confetti } from "@callies-universe/core";
+// Product rules kept structural: the CAR is ALWAYS shown (sticker); the PROFILE
+// shows only if submitted (blurred per the toggle). Two-performer rule: the comic
+// performs (VO); Callie only reacts (sticker).
+//
+// CORE-REUSED: Roaster (comic sticker), Callie (reaction sticker).
+import React, { useMemo } from "react";
+import { Roaster, Callie } from "@callies-universe/core";
 import { activeIndexAt, callieStateForBeat } from "../standup.js";
-import { ambientAt, bulbOpacity, enterProgress, popPulse, confettiParticles, confettiAt } from "../sceneMotion.js";
+import { popPulse } from "../sceneMotion.js";
+
+const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
 export const StageScene = React.memo(function StageScene({
   comedianId,
   performerName,
-  bit,
   carLabel,
-  carPhoto, // dataUrl | null
-  profile, // { dataUrl, blur, kind } | null
+  carPhoto,
+  profile,
   segments = [],
-  activeIndex = 0,
-  timeMs, // when a number → DRIVEN (deterministic) mode for video export
+  timeMs = 0,
   reaction = "savage",
-  engineLabel,
+  backgroundUrl, // when set, the HOST layers the real gameplay video; we go transparent
+  reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
 }) {
-  const driven = typeof timeMs === "number";
-  const idx = driven ? activeIndexAt(segments, timeMs) : activeIndex >= 0 ? activeIndex : 0;
+  const idx = activeIndexAt(segments, timeMs);
   const seg = idx >= 0 && idx < segments.length ? segments[idx] : null;
   const beat = seg ? seg.beat : null;
   const type = beat ? beat.type : "setup";
-  const delivering = type === "punch" || type === "closer";
-  const callieState = callieStateForBeat(type, reaction);
   const hasProfile = !!(profile && profile.dataUrl);
-  const amb = driven ? ambientAt(timeMs) : null;
-  const startMs = seg ? seg.startMs : 0;
-
-  // Driven inline styles (deterministic); live → undefined (CSS class drives it).
-  const spotStyle = driven
-    ? { animation: "none", transform: `translateX(-50%) rotate(${amb.spotRotateDeg}deg)`, opacity: amb.spotOpacity }
-    : undefined;
-  const comicStyle = driven
-    ? {
-        position: "relative",
-        animation: "none",
-        transform: `translateY(${amb.comicBobY + (delivering ? -4 * popPulse(timeMs, startMs, 600) : 0)}px) rotate(${amb.comicTiltDeg}deg) scale(${delivering ? 1 + 0.08 * popPulse(timeMs, startMs, 600) : 1})`,
-      }
-    : { position: "relative" };
-  const captionStyle = driven
-    ? (() => {
-        const p = enterProgress(timeMs, startMs, 420);
-        return { animation: "none", opacity: p, transform: `translateY(${(1 - p) * 14}px) scale(${0.96 + 0.04 * p})` };
-      })()
-    : undefined;
-  const crowdPop = driven && type === "crowd" ? popPulse(timeMs, startMs, 700) : 0;
-  const callieStyle = driven
-    ? { animation: "none", transform: `translateY(${-7 * crowdPop}px) scale(${1 + 0.12 * crowdPop})` }
-    : undefined;
+  const reacts = type === "punch" || type === "closer" || type === "crowd";
+  const callieState = callieStateForBeat(type, reaction);
+  const calliePop = reacts && !reduceMotion ? popPulse(timeMs, seg ? seg.startMs : 0, 700) : 0;
 
   return (
-    <div className="rmr-stage" data-testid="stage-scene">
-      <div className="rmr-stage__spot" aria-hidden="true" style={spotStyle} />
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", color: "#fff", fontFamily: "var(--font-display, inherit)" }} data-testid="stage-scene">
+      {/* background: real gameplay is layered by the host; else faux fallback */}
+      {!backgroundUrl && <FauxGameplay timeMs={timeMs} />}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 22%, transparent 62%, rgba(0,0,0,0.55) 100%)" }} />
 
-      {/* marquee / billing */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, padding: "10px 12px 6px", textAlign: "center", zIndex: 3 }}>
-        <Bulbs driven={driven} timeMs={timeMs} />
-        <div style={{ font: "var(--type-cap)", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sticker-yellow)", fontWeight: 800 }}>
-          🎤 Now performing{engineLabel ? ` · ${engineLabel}` : ""}
-        </div>
-        <div style={{ font: "var(--type-d3)", fontSize: "clamp(18px, 6vw, 26px)", lineHeight: 1.05, color: "#fff", textShadow: "0 2px 0 rgba(0,0,0,0.4)" }}>
-          “{bit}”
-        </div>
-        <div style={{ font: "var(--type-cap)", color: "rgba(255,255,255,0.85)" }}>{performerName}</div>
+      {/* brand chip */}
+      <div style={{ position: "absolute", top: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5 }}>
+        <span style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", color: "var(--sticker-yellow)", padding: "5px 12px", borderRadius: "var(--radius-pill)" }}>
+          🔥 RoastMyRide
+        </span>
       </div>
 
-      {/* the screens flanking the stage — car ALWAYS, profile IF present */}
-      <div style={{ position: "absolute", top: "21%", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "6%", padding: "0 8px", zIndex: 2 }}>
-        <Screen label="The ride" tone="#FFC98A">
-          {carPhoto ? <img src={carPhoto} alt="The car on trial" style={imgFill} /> : <Placeholder glyph="🚗" caption={carLabel || "your ride"} />}
-        </Screen>
-        {hasProfile && (
-          <Screen label={profile.kind === "profile" ? "The profile" : "The owner"} tone="#8FC2FF">
-            <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
-          </Screen>
-        )}
-      </div>
+      {/* the car — ALWAYS on screen, as a tilted polaroid sticker */}
+      <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)" }} tag="🚗 the ride" tone="var(--sticker-yellow)">
+        {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
+      </Sticker>
 
-      {/* the comic on stage under the spotlight */}
-      <div style={{ position: "absolute", top: "40%", left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 2 }}>
-        <div
-          className={driven ? "" : `rmr-comic${delivering ? " rmr-comic--deliver" : ""}`}
-          key={driven ? undefined : `comic-${delivering ? activeIndex : "idle"}`}
-          style={comicStyle}
-        >
-          <Comic comedianId={comedianId} />
+      {/* the owner — only if a profile was submitted */}
+      {hasProfile && (
+        <Sticker style={{ top: "8%", right: "4%", transform: "rotate(5deg)" }} tag="the owner" tone="#8FC2FF">
+          <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
+        </Sticker>
+      )}
+
+      {/* BIG viral word-by-word captions */}
+      <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} reduceMotion={reduceMotion} />
+
+      {/* the comic — static sticker, the performer */}
+      <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center" }}>
+        <Comic comedianId={comedianId} />
+        <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
+          🎤 {firstName(performerName)}
         </div>
       </div>
 
-      {/* caption lower-third (the active beat) */}
-      <div style={{ position: "absolute", left: 12, right: 12, bottom: "16%", zIndex: 3 }}>
-        {beat && (
-          <div
-            className={driven ? "" : "rmr-caption"}
-            key={driven ? undefined : `cap-${activeIndex}`}
-            style={{ background: "rgba(20,12,5,0.78)", borderRadius: "var(--radius-lg)", padding: "12px 14px", border: "1px solid rgba(255,201,138,0.35)", ...(captionStyle || {}) }}
-          >
-            <BeatTag type={type} />
-            <p style={{ margin: "4px 0 0", font: "var(--type-d4)", fontSize: "clamp(15px, 4.6vw, 20px)", lineHeight: 1.25, color: "#fff" }}>
-              <Caption beat={beat} />
-            </p>
-          </div>
-        )}
+      {/* Callie reacts (mascot, never the performer) */}
+      <div style={{ position: "absolute", bottom: "9%", right: "4%", zIndex: 5, transform: `translateY(${-10 * calliePop}px) scale(${1 + 0.14 * calliePop})` }}>
+        <Reaction state={callieState} />
       </div>
 
-      {/* the crowd — Callie reacting among silhouettes */}
-      <div aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "12%", background: "repeating-linear-gradient(90deg, #0a0604 0 20px, #140a05 20px 38px)", maskImage: "radial-gradient(16px 22px at 10px 0, #000 60%, transparent 62%)", WebkitMaskImage: "radial-gradient(16px 22px at 10px 0, #000 60%, transparent 62%)", maskSize: "38px 100%", WebkitMaskSize: "38px 100%", zIndex: 2 }} />
-      <div
-        style={{ position: "absolute", left: "10%", bottom: "1%", zIndex: 3, ...(callieStyle || {}) }}
-        className={!driven && type === "crowd" ? "rmr-crowd-callie--pop" : ""}
-        key={driven ? undefined : `callie-${type === "crowd" ? activeIndex : "idle"}`}
-      >
-        <Audience state={callieState} />
+      {/* watermark */}
+      <div style={{ position: "absolute", bottom: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5, font: "var(--type-cap)", fontWeight: 800, color: "rgba(255,255,255,0.92)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+        @roastmyride
       </div>
-
-      {type === "closer" &&
-        (driven ? <DrivenConfetti seed={comedianId || bit} sinceMs={timeMs - startMs} /> : <Confetti count={26} />)}
     </div>
   );
 });
 
-// Memoized avatars: in driven mode the scene re-renders every frame, but these
-// only re-render when their (discrete) props change.
-const Comic = React.memo(function Comic({ comedianId }) {
-  return (
-    <>
-      <Roaster id={comedianId} size={130} />
-      <div aria-hidden="true" style={{ position: "absolute", bottom: 14, left: "calc(50% + 52px)", width: 4, height: 64, background: "#15100a", borderRadius: 4 }}>
-        <div style={{ position: "absolute", top: -9, left: -6, width: 16, height: 16, borderRadius: "50%", background: "#15100a" }} />
-      </div>
-    </>
-  );
-});
-const Audience = React.memo(function Audience({ state }) {
-  return <Callie state={state} size={52} />;
-});
+/* --------------------------- captions --------------------------- */
 
-function DrivenConfetti({ seed, sinceMs }) {
-  const particles = confettiParticles(seed, 26);
+function tokenize(beat) {
+  if (!beat) return [];
+  const out = [];
+  const push = (s, punch) => {
+    String(s || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .forEach((w) => out.push({ w, punch }));
+  };
+  push(beat.text, false);
+  if (beat.punch) push(beat.punch, true);
+  push(beat.tail, false);
+  return out;
+}
+
+function Captions({ beat, startMs, endMs, timeMs, reduceMotion = false }) {
+  // tokenize is keyed on the beat (stable within a segment), so we don't re-split
+  // the same text every animation frame as timeMs ticks.
+  const words = useMemo(() => tokenize(beat), [beat]);
+  if (!beat || !words.length) return null;
+  const dur = Math.max(1, endMs - startMs);
+  const prog = clamp01((timeMs - startMs) / dur);
+  const active = Math.min(words.length - 1, Math.floor(prog * words.length));
+
   return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 4, overflow: "hidden" }}>
-      {particles.map((p, i) => {
-        const s = confettiAt(p, sinceMs);
-        if (!s) return null;
+    <div style={{ position: "absolute", left: "6%", right: "6%", top: "52%", transform: "translateY(-50%)", zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
+      {words.map((tok, i) => {
+        const revealed = i <= active;
+        const isActive = i === active;
+        const hot = tok.punch || isActive;
+        // Reduced motion: show the whole caption, static (no per-word pop/reveal);
+        // the active word is still color-highlighted (color ≠ motion).
+        const scale = reduceMotion ? 1 : revealed ? (isActive ? 1.0 + 0.12 * (1 - Math.abs(prog * words.length - i)) : 1) : 0.7;
         return (
           <span
             key={i}
             style={{
-              position: "absolute", top: `${s.topPct}%`, left: `${s.leftPct}%`, width: s.size, height: s.size,
-              background: s.color, opacity: s.opacity, borderRadius: 2, transform: `rotate(${s.rotateDeg}deg)`,
+              font: "var(--type-d2)",
+              fontWeight: 900,
+              fontSize: "clamp(26px, 9vw, 52px)",
+              lineHeight: 1.04,
+              textTransform: "uppercase",
+              color: hot ? "var(--ink)" : "#fff",
+              background: hot ? "var(--sticker-yellow)" : "transparent",
+              padding: hot ? "0 0.12em" : 0,
+              borderRadius: 8,
+              WebkitTextStroke: hot ? "0" : "2px #1a1008",
+              textShadow: hot ? "none" : "0 3px 0 rgba(0,0,0,0.55)",
+              opacity: reduceMotion || revealed ? 1 : 0,
+              transform: `scale(${scale})`,
+              transition: "none",
             }}
-          />
+          >
+            {tok.w}
+          </span>
         );
       })}
     </div>
   );
 }
 
+/* --------------------------- background --------------------------- */
+
+function FauxGameplay({ timeMs }) {
+  // Deterministic endless-runner-ish backdrop: a tiled block field scrolling up,
+  // with parallax bands. Stand-in for a licensed gameplay loop (backgroundUrl).
+  const y1 = (timeMs * 0.12) % 120;
+  const y2 = (timeMs * 0.22) % 80;
+  return (
+    <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(180deg, #1f6feb 0%, #0b1f3a 55%, #06101f 100%)" }}>
+      <div style={{ position: "absolute", inset: "-20% 0", backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 60px), repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 2px, transparent 2px 60px)", backgroundPosition: `0 ${-y1}px, 0 0`, opacity: 0.6 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(8px 8px at 20% 30%, #7ee787 30%, transparent 32%), radial-gradient(10px 10px at 70% 60%, #ffd33d 30%, transparent 32%), radial-gradient(7px 7px at 45% 80%, #ff7b72 30%, transparent 32%)", backgroundSize: "100% 240px", backgroundPosition: `0 ${-y2}px`, opacity: 0.5 }} />
+    </div>
+  );
+}
+
+/* --------------------------- stickers --------------------------- */
+
+function Sticker({ style, tag, tone, children }) {
+  return (
+    <div style={{ position: "absolute", width: "30%", maxWidth: 130, zIndex: 5, ...style }}>
+      <div style={{ background: "#fff", padding: 5, paddingBottom: 18, borderRadius: 8, boxShadow: "0 8px 22px rgba(0,0,0,0.5)" }}>
+        <div style={{ aspectRatio: "1 / 1", borderRadius: 4, overflow: "hidden", background: "#0c0805" }}>{children}</div>
+        <div style={{ marginTop: 3, font: "var(--type-legal)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink)", textAlign: "center" }}>{tag}</div>
+      </div>
+      <span aria-hidden="true" style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 22, height: 14, background: tone, opacity: 0.85, borderRadius: 2 }} />
+    </div>
+  );
+}
+
 const imgFill = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
 
-function Screen({ label, tone, children }) {
-  return (
-    <div style={{ width: "40%", maxWidth: 150, textAlign: "center" }}>
-      <div className="rmr-screen" style={{ width: "100%", aspectRatio: "4 / 3", borderRadius: 10, overflow: "hidden", background: "#0c0805", border: "3px solid #15100a", outline: `2px solid ${tone}` }}>
-        {children}
-      </div>
-      <div style={{ font: "var(--type-legal)", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 800, color: tone, marginTop: 4 }}>{label}</div>
-    </div>
-  );
-}
-
-function Placeholder({ glyph, caption }) {
+function PlaceholderCar({ label }) {
   return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, color: "rgba(255,255,255,0.7)" }}>
-      <span style={{ fontSize: 34, lineHeight: 1 }}>{glyph}</span>
-      <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{caption}</span>
+      <span style={{ fontSize: 30 }}>🚗</span>
+      <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || "your ride"}</span>
     </div>
   );
 }
 
-function BeatTag({ type }) {
-  const tag = type === "crowd" ? "🎤 Crowd work" : type === "closer" ? "🎤 Mic drop" : type === "punch" ? "Punchline" : "Setup";
-  return <span style={{ font: "var(--type-legal)", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 800, color: "var(--sticker-yellow)" }}>{tag}</span>;
-}
+const Comic = React.memo(function Comic({ comedianId }) {
+  return <Roaster id={comedianId} size={96} />;
+});
+const Reaction = React.memo(function Reaction({ state }) {
+  return <Callie state={state} size={64} />;
+});
 
-function Caption({ beat }) {
-  if (beat.punch) {
-    return (
-      <>
-        {beat.text}
-        <mark style={{ background: "var(--sticker-yellow)", color: "var(--ink)", padding: "0 6px", borderRadius: 6, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}>{beat.punch}</mark>
-        {beat.tail}
-      </>
-    );
-  }
-  return <>{beat.text}</>;
-}
-
-function Bulbs({ driven, timeMs }) {
-  return (
-    <div aria-hidden="true" style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 4 }}>
-      {Array.from({ length: 7 }).map((_, i) => (
-        <span
-          key={i}
-          style={{
-            width: 6, height: 6, borderRadius: "50%", background: "var(--sticker-yellow)", boxShadow: "0 0 6px var(--sticker-yellow)",
-            ...(driven
-              ? { opacity: bulbOpacity(timeMs, i) }
-              : { animation: "rmr-marquee-bulb 1.6s ease-in-out infinite", animationDelay: `${i * 0.12}s` }),
-          }}
-        />
-      ))}
-    </div>
-  );
+function firstName(name) {
+  return String(name || "").replace(/[“"].*$/, "").split(" ")[0] || "Comic";
 }

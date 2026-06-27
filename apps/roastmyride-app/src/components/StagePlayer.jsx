@@ -1,29 +1,32 @@
 // RoastMyRide — StagePlayer [ROASTMYRIDE-NEW: app-layer].
 //
-// Plays the StageScene over its performance timeline: a requestAnimationFrame
-// clock advances `activeIndex` beat-by-beat while the scrubber fills. The scene
-// itself is deterministic from `activeIndex`, so the SAME scene + timeline will
-// drive the exported video next milestone (live = this player; video = the same
-// frames). Controls: auto-plays, with play/pause + replay.
+// Plays the roast reel (StageScene) over its performance timeline: a
+// requestAnimationFrame clock advances `timeMs`, which drives the deterministic
+// scene (word-by-word captions, sticker reactions). The SAME scene + timeline
+// drives the exported video (live = this rAF clock; video = Remotion's frame
+// clock). Auto-plays; play/pause + replay; scrubber via ref.
 //
-// StrictMode-safe: each effect run owns its rAF and cancels it on cleanup;
-// elapsed time lives in a ref so pause/resume/replay don't lose position.
+// If `backgroundUrl` is set, a looping gameplay <video> is layered behind the
+// (transparent) scene — the same asset Remotion layers with <OffthreadVideo>.
+// StrictMode-safe: each effect owns its rAF; elapsed lives in a ref.
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
-import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
+import { toStandupSet, buildTimeline, mmss } from "../standup.js";
 
-export function StagePlayer({ result, carPhoto, profile }) {
+export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
   const { segments, totalMs } = useMemo(() => buildTimeline(standup.beats), [standup]);
 
   const hasShow = segments.length > 0 && totalMs > 0;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [timeMs, setTimeMs] = useState(0);
   const [playing, setPlaying] = useState(hasShow);
   const [finished, setFinished] = useState(false);
   const elapsedRef = useRef(0);
   const rafRef = useRef(0);
   const lastTsRef = useRef(0);
   const scrubRef = useRef(null);
+  const videoRef = useRef(null);
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (!playing || !hasShow) return undefined;
@@ -32,13 +35,11 @@ export function StagePlayer({ result, carPhoto, profile }) {
     const tick = (ts) => {
       if (!alive) return;
       if (!lastTsRef.current) lastTsRef.current = ts;
-      const dt = ts - lastTsRef.current;
+      elapsedRef.current = Math.min(totalMs, elapsedRef.current + (ts - lastTsRef.current));
       lastTsRef.current = ts;
-      elapsedRef.current = Math.min(totalMs, elapsedRef.current + dt);
       const e = elapsedRef.current;
       if (scrubRef.current) scrubRef.current.style.width = `${(e / totalMs) * 100}%`;
-      const idx = activeIndexAt(segments, e);
-      setActiveIndex((prev) => (prev === idx ? prev : idx));
+      setTimeMs(e);
       if (e >= totalMs) {
         setPlaying(false);
         setFinished(true);
@@ -53,51 +54,62 @@ export function StagePlayer({ result, carPhoto, profile }) {
     };
   }, [playing, hasShow, segments, totalMs]);
 
+  // Keep the live gameplay loop roughly in step with the scrubber. Only act on a
+  // real divergence so a failed play() (autoplay policy) doesn't desync silently.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (playing && v.paused) v.play().catch(() => {});
+    else if (!playing && !v.paused) v.pause();
+  }, [playing]);
+
   const replay = () => {
     if (!hasShow) return;
     elapsedRef.current = 0;
     lastTsRef.current = 0;
     if (scrubRef.current) scrubRef.current.style.width = "0%";
-    setActiveIndex(0);
+    if (videoRef.current) videoRef.current.currentTime = 0;
+    setTimeMs(0);
     setFinished(false);
     setPlaying(true);
   };
   const toggle = () => {
     if (finished) return replay();
-    lastTsRef.current = 0; // resume cleanly
+    lastTsRef.current = 0;
     setPlaying((p) => !p);
   };
 
   return (
     <div style={{ width: "100%", maxWidth: 340, margin: "0 auto" }}>
-      <StageScene
-        comedianId={standup.comedianId}
-        performerName={result.roasterName || "Tonight's comic"}
-        bit={standup.bit}
-        carLabel={carLabelOf(result)}
-        carPhoto={carPhoto || null}
-        profile={profile || null}
-        segments={segments}
-        activeIndex={activeIndex}
-        reaction={result.reaction || "savage"}
-        engineLabel={result.engine === "offline" ? "offline" : undefined}
-      />
+      {/* the 9:16 reel box: optional gameplay video behind the transparent scene */}
+      <div style={{ position: "relative", width: "100%", aspectRatio: "9 / 16", borderRadius: "var(--radius-xl)", overflow: "hidden", boxShadow: "var(--elev-4)", background: "#06101f" }}>
+        {backgroundUrl && (
+          <video ref={videoRef} src={backgroundUrl} muted loop playsInline autoPlay aria-hidden="true" data-testid="stage-background-video" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        )}
+        <StageScene
+          comedianId={standup.comedianId}
+          performerName={result.roasterName || "the comic"}
+          carLabel={carLabelOf(result)}
+          carPhoto={carPhoto || null}
+          profile={profile || null}
+          segments={segments}
+          timeMs={timeMs}
+          reaction={result.reaction || "savage"}
+          backgroundUrl={backgroundUrl}
+          reduceMotion={reduceMotion}
+        />
+      </div>
 
       {/* player chrome */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
         <button
           onClick={toggle}
           aria-label={finished ? "Replay" : playing ? "Pause" : "Play"}
-          style={{
-            flexShrink: 0, width: 40, height: 40, borderRadius: "50%", border: "none", cursor: "pointer",
-            background: "var(--ember-600)", color: "#fff", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
-          }}
+          style={{ flexShrink: 0, width: 40, height: 40, borderRadius: "50%", border: "none", cursor: "pointer", background: "var(--ember-600)", color: "#fff", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           {finished ? "↻" : playing ? "❚❚" : "▶"}
         </button>
         <div style={{ flex: 1, height: 6, borderRadius: 999, background: "var(--surface)", boxShadow: "var(--elev-1)", overflow: "hidden" }}>
-          {/* width is owned by the rAF loop via scrubRef — NOT set in JSX, or each
-              beat-change re-render would reset it to 0% and flicker (see review). */}
           <div ref={scrubRef} className="rmr-scrub-fill" style={{ height: "100%", background: "linear-gradient(90deg,var(--flame-500),var(--ember-600))" }} />
         </div>
         <span style={{ flexShrink: 0, font: "var(--type-cap)", color: "var(--text-hint)", minWidth: 34, textAlign: "right" }}>{mmss(totalMs)}</span>
@@ -109,4 +121,20 @@ export function StagePlayer({ result, carPhoto, profile }) {
 function carLabelOf(result) {
   const c = (result.research && result.research.car) || {};
   return c.label || [c.year, c.make, c.model].filter(Boolean).join(" ") || "your ride";
+}
+
+// Live playback honors the OS "reduce motion" setting (the exported video always
+// animates — it's deterministic and not tied to any viewer's preference).
+function usePrefersReducedMotion() {
+  const mqOf = () => (typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null);
+  const [reduce, setReduce] = useState(() => !!mqOf()?.matches);
+  useEffect(() => {
+    const mq = mqOf();
+    if (!mq) return undefined;
+    const on = () => setReduce(mq.matches);
+    on();
+    mq.addEventListener?.("change", on);
+    return () => mq.removeEventListener?.("change", on);
+  }, []);
+  return reduce;
 }

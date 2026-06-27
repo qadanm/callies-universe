@@ -33,6 +33,11 @@ const frameRange = framesArg ? framesArg.split("-").map((n) => Number(n)) : unde
 const inputProps = propsPath ? JSON.parse(readFileSync(fromBase(propsPath), "utf8")) : {};
 const withVoice = process.argv.includes("--voice");
 
+// Optional gameplay background (a licensed loop). Pass an http(s) URL or a
+// staticFile name; with none, the scene uses its faux-gameplay fallback.
+const bg = arg("bg");
+if (bg) inputProps.backgroundUrl = bg;
+
 // Voice: synthesize per-beat audio (the comedian performing the set) and inject
 // it into the spec so the composition plays it, synced to the beats. Uses
 // ELEVENLABS_API_KEY when present; otherwise deterministic silent clips.

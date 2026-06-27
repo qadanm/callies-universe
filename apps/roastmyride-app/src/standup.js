@@ -158,7 +158,7 @@ export function buildRenderSpec(result, input) {
   const profile = p && p.present && p.dataUrl ? { dataUrl: p.dataUrl, blur: !!p.blur, kind: p.kind || null } : null;
   return {
     comedianId: result.roasterId,
-    performerName: result.roasterName,
+    performerName: result.roasterName || "the comic",
     bit: su.bit,
     reaction: result.reaction,
     carLabel,

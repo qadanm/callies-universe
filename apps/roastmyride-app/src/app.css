@@ -125,24 +125,8 @@ body {
 .tabbar button.on { color: var(--ember-600); }
 .tabbar .ico { font-size: 20px; }
 
-/* ── Stage Scene (the comedy-special render — single source of truth) ───────── */
-@keyframes rmr-spot-sway   { 0%,100% { transform: translateX(-50%) rotate(-3deg); } 50% { transform: translateX(-50%) rotate(3deg); } }
-@keyframes rmr-spot-pulse  { 0%,100% { opacity: 0.55; } 50% { opacity: 0.78; } }
-@keyframes rmr-comic-bob   { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-6px) rotate(1deg); } }
-@keyframes rmr-deliver     { 0% { transform: scale(1); } 30% { transform: scale(1.08) translateY(-4px); } 100% { transform: scale(1); } }
-@keyframes rmr-caption-in  { 0% { opacity: 0; transform: translateY(14px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes rmr-screen-glow { 0%,100% { box-shadow: 0 0 0 2px rgba(255,201,138,0.35), 0 8px 28px rgba(0,0,0,0.45); } 50% { box-shadow: 0 0 0 2px rgba(255,201,138,0.7), 0 8px 32px rgba(0,0,0,0.5); } }
-@keyframes rmr-crowd-pop   { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-7px) scale(1.12); } 100% { transform: translateY(0) scale(1); } }
-@keyframes rmr-marquee-bulb{ 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
-
-.rmr-stage          { position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: var(--radius-xl); overflow: hidden; background: radial-gradient(85% 60% at 50% 6%, #2a1a0e 0%, #1a1009 55%, #0d0805 100%); color: #fff; }
-.rmr-stage__spot    { position: absolute; top: -14%; left: 50%; width: 78%; height: 70%; background: linear-gradient(180deg, rgba(255,221,160,0.6) 0%, rgba(255,180,90,0.12) 60%, transparent 100%); clip-path: polygon(40% 0, 60% 0, 100% 100%, 0% 100%); transform-origin: top center; animation: rmr-spot-sway 7s var(--ease-in-out, ease-in-out) infinite, rmr-spot-pulse 4.5s ease-in-out infinite; pointer-events: none; }
-.rmr-comic          { animation: rmr-comic-bob 3.2s ease-in-out infinite; transform-origin: bottom center; }
-.rmr-comic--deliver { animation: rmr-deliver 600ms var(--ease-spring, cubic-bezier(.34,1.56,.64,1)) both; }
-.rmr-caption        { animation: rmr-caption-in 420ms var(--ease-spring, cubic-bezier(.34,1.56,.64,1)) both; }
-.rmr-screen         { animation: rmr-screen-glow 5s ease-in-out infinite; }
-.rmr-crowd-callie--pop { animation: rmr-crowd-pop 700ms var(--ease-spring, cubic-bezier(.34,1.56,.64,1)); }
-@media (prefers-reduced-motion: reduce) {
-  .rmr-stage__spot, .rmr-comic, .rmr-comic--deliver, .rmr-caption, .rmr-screen, .rmr-crowd-callie--pop { animation: none !important; }
-}
+/* ── Roast reel ───────────────────────────────────────────────────────────── */
+/* The scene (StageScene) is fully timeMs-driven inline (deterministic for the
+   video export), so it needs no keyframes. Just the scrubber-fill base width
+   (owned by the rAF loop via a ref — never set in JSX, or a re-render resets it). */
 .rmr-scrub-fill { width: 0; }

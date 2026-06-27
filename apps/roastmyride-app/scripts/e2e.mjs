@@ -95,13 +95,14 @@ try {
   check(true, "Warming-up screen runs the brain pipeline (offline fallback with no key)");
 
   // Reveal arrives automatically when the brain resolves.
-  await seeText("Now performing", 12000);
+  await seeText("The full set", 12000); // the transcript heading under the reel
   const revealText = await page.locator(".screen").innerText();
   check(/cry for help|trying|axle|unmoved|vibes|rust|never leave|It is a car|tired of trying/i.test(revealText),
     "Reveal shows the brain's set copy (punch-word present)");
   check(/mic drop/i.test(revealText),
     "Reveal reads the richer set (transcript closer / mic-drop present)");
-  check((await callieCount()) >= 1, "Callie reacts on the reveal (in the crowd / clip corner)");
+  check((await page.locator('[data-testid="stage-scene"]').count()) >= 1, "Roast reel (stage scene) renders");
+  check((await callieCount()) >= 1, "Callie reacts in the reel (sticker)");
 
   // --- Share success ---
   await clickName(/Share the clip/);
