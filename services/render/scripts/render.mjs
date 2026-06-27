@@ -16,14 +16,21 @@ function arg(name, def) {
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : def;
 }
 
-const entry = resolve(arg("entry", "apps/roastmyride-app/remotion/index.jsx"));
-const out = resolve(arg("out", "roast.mp4"));
+// Resolve relative paths against the dir the user RAN the command from, not the
+// script's cwd. `pnpm --filter` runs with cwd = the package dir (services/render),
+// so INIT_CWD (the original invocation dir, usually the repo root) is what the
+// `--entry apps/...` path is relative to.
+const BASE = process.env.INIT_CWD || process.cwd();
+const fromBase = (p) => (p ? resolve(BASE, p) : p);
+
+const entry = fromBase(arg("entry", "apps/roastmyride-app/remotion/index.jsx"));
+const out = fromBase(arg("out", "roast.mp4"));
 const propsPath = arg("props");
 const browserExecutable = arg("browser", process.env.CHROMIUM_BIN || process.env.CHROME || undefined);
 const scale = Number(arg("scale", "1")) || 1;
 const framesArg = arg("frames");
 const frameRange = framesArg ? framesArg.split("-").map((n) => Number(n)) : undefined;
-const inputProps = propsPath ? JSON.parse(readFileSync(resolve(propsPath), "utf8")) : {};
+const inputProps = propsPath ? JSON.parse(readFileSync(fromBase(propsPath), "utf8")) : {};
 const withVoice = process.argv.includes("--voice");
 
 // Voice: synthesize per-beat audio (the comedian performing the set) and inject
