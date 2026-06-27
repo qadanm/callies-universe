@@ -1,0 +1,35 @@
+{
+  "name": "callies-universe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Callie's Universe monorepo — one shared core powering many apps. This milestone: the core package + a render preview.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "pnpm --filter @callies-universe/core build",
+    "dev": "pnpm run build && pnpm --filter @callies-universe/preview dev",
+    "preview": "pnpm run build && pnpm --filter @callies-universe/preview dev",
+    "preview:build": "pnpm run build && pnpm --filter @callies-universe/preview build",
+    "app": "pnpm run build && pnpm --filter @callies-universe/roastmyride-app dev",
+    "app:build": "pnpm run build && pnpm --filter @callies-universe/roastmyride-app build",
+    "smoke": "pnpm run build && node scripts/smoke.mjs",
+    "lint": "eslint .",
+    "verify": "pnpm run lint && pnpm run smoke && pnpm run preview:build && pnpm run app:build"
+  },
+  "devDependencies": {
+    "eslint": "^9.17.0",
+    "playwright-core": "^1.61.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

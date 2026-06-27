@@ -1,0 +1,63 @@
+/* ============================================================
+   CALLIE'S UNIVERSE — COLOR (core)
+   Calico-derived neutrals (see palette.css) + the brand ramp aliased to
+   the per-app ACCENT. Components reference the ember / flame / heat ramp as
+   before, but those now resolve to the app's accent — so an app reskins by
+   overriding the accent alone. RoastMyRide's accent = ember/flame.
+   All functional text/UI pairings pass WCAG AA.
+   ============================================================ */
+
+:root {
+  /* ---- Brand ramp = ACCENT (theme-swappable; default calico ginger) ---- */
+  --ember-700: var(--accent-700);   /* @kind color */
+  --ember-600: var(--accent-600);   /* @kind color */
+  --ember-500: var(--accent-500);   /* @kind color */
+  --flame-500: var(--accent-bright);     /* @kind color */
+  --flame-400: var(--accent-bright-2);   /* @kind color */
+  --heat-400:  var(--accent-warm);       /* @kind color */
+  --heat-300:  var(--accent-warm-2);     /* @kind color */
+
+  /* ---- Clash accent (use TINY — sticker energy only) ---- */
+  --pop-cyan:  #07B6CE;  /* @kind color */
+  --pop-pink:  #FF2E9A;  /* @kind color */
+
+  /* ---- Foundation (calico) ---- */
+  --canvas:      var(--cream);
+  --canvas-sink: var(--cream-200);
+  --surface:     #FFFFFF;
+  --ink:         var(--charcoal-900);  /* 15:1+ on canvas ✓ */
+  --ink-soft:    #5C4631;  /* @kind color */
+  --ink-faint:   #8A7256;  /* @kind color */
+  --on-ember:    #FFFFFF;
+  --hairline:    #EAD9C9;  /* @kind color */
+  --focus-ring:  #07B6CE;  /* @kind color */
+
+  /* ---- Sticker-set: DECORATION LAYER ONLY ---- */
+  --sticker-yellow: #FFCB2B;  /* @kind color */
+  --sticker-lime:   #8BE04E;  /* @kind color */
+  --sticker-cyan:   #2BD4E8;  /* @kind color */
+  --sticker-pink:   #FF4FA3;  /* @kind color */
+  --sticker-purple: #8B5CF6;  /* @kind color */
+  --sticker-sky:    #3B9DFF;  /* @kind color */
+
+  /* ---- Semantic (functional, fixed regardless of app accent) ---- */
+  --success: #1E8E4E;  /* @kind color */
+  --warning: #B8730A;  /* @kind color */
+  --danger:  #C7340F;  /* @kind color */
+  --info:    #0A6E9E;  /* @kind color */
+
+  /* ---- Semantic ALIASES ---- */
+  --bg-page:        var(--canvas);
+  --bg-sunken:      var(--canvas-sink);
+  --surface-card:   var(--surface);
+  --text-strong:    var(--ink);
+  --text-body:      var(--ink);
+  --text-muted:     var(--ink-soft);
+  --text-hint:      var(--ink-faint);
+  --action-primary: var(--accent-600);
+  --action-primary-hover:   var(--accent-500);
+  --action-primary-pressed: var(--accent-700);
+  --action-accent:  var(--accent-bright);
+  --border-subtle:  var(--hairline);
+  --on-accent:      var(--on-ember);
+}

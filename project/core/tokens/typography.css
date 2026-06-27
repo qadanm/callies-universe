@@ -1,0 +1,58 @@
+/* ============================================================
+   RoastMyRide — TYPOGRAPHY TOKENS
+   Type IS the identity. Dramatic contrast: oversized display up top,
+   a clear step down to the quiet companion for small functional text.
+   DISCIPLINE: the chunky display font is NEVER used below ~18px.
+   Small text (captions, legal, settings rows) uses the companion sans.
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;  /* headlines, buttons, speech bubbles, reveal */
+  --font-body:    "Hanken Grotesque", system-ui, -apple-system, sans-serif; /* small functional text */
+
+  /* ---- Weights ---- */
+  --fw-body:      400; /* @kind font */
+  --fw-medium:    500; /* @kind font */
+  --fw-semibold:  600; /* @kind font */
+  --fw-bold:      700; /* @kind font */
+  --fw-display:   700; /* @kind font */
+  --fw-heavy:     800; /* @kind font */
+
+  /* ---- Type scale (dramatic) ---- */
+  --fs-reveal:  72px;  /* the cinematic roast reveal */
+  --fs-d1:      52px;  /* hero / screen hero */
+  --fs-d2:      40px;  /* big section heads */
+  --fs-d3:      30px;  /* card titles, sheet headers */
+  --fs-d4:      22px;  /* small display / chip group heads */
+  --fs-lead:    18px;  /* lead body / large body */
+  --fs-body:    16px;  /* default body (companion) */
+  --fs-sm:      14px;  /* secondary text */
+  --fs-cap:     13px;  /* captions */
+  --fs-legal:   12px;  /* legal / minimum legible */
+
+  /* ---- Line height ---- */
+  --lh-tight:   0.98; /* @kind font */
+  --lh-snug:    1.08; /* @kind font */
+  --lh-head:    1.15; /* @kind font */
+  --lh-body:    1.5; /* @kind font */
+  --lh-relaxed: 1.6; /* @kind font */
+
+  /* ---- Tracking ---- */
+  --ls-tight:  -0.02em; /* @kind font */
+  --ls-normal: 0; /* @kind font */
+  --ls-wide:   0.04em; /* @kind font */
+
+  /* ---- Semantic roles ---- */
+  --type-reveal:  var(--fw-heavy) var(--fs-reveal)/var(--lh-tight) var(--font-display);
+  --type-d1:      var(--fw-heavy) var(--fs-d1)/var(--lh-tight) var(--font-display);
+  --type-d2:      var(--fw-heavy) var(--fs-d2)/var(--lh-snug) var(--font-display);
+  --type-d3:      var(--fw-display) var(--fs-d3)/var(--lh-head) var(--font-display);
+  --type-d4:      var(--fw-display) var(--fs-d4)/var(--lh-head) var(--font-display);
+  --type-button:  var(--fw-display) var(--fs-lead)/1 var(--font-display);
+  --type-lead:    var(--fw-medium) var(--fs-lead)/var(--lh-body) var(--font-body);
+  --type-body:    var(--fw-body) var(--fs-body)/var(--lh-body) var(--font-body);
+  --type-sm:      var(--fw-medium) var(--fs-sm)/var(--lh-body) var(--font-body);
+  --type-cap:     var(--fw-semibold) var(--fs-cap)/var(--lh-snug) var(--font-body);
+  --type-legal:   var(--fw-body) var(--fs-legal)/var(--lh-body) var(--font-body);
+}

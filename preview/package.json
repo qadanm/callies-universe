@@ -1,0 +1,21 @@
+{
+  "name": "@callies-universe/preview",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Render sandbox for @callies-universe/core — the milestone acceptance test. Renders every token, component, Callie's 9 states, and the cast picker.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@callies-universe/core": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

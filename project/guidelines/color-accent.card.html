@@ -1,0 +1,19 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Accent ramp (per-app)" subtitle="Each app layers ONE accent on the calico base. Core default = ginger; RoastMyRide = ember." -->
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../styles.css"/>
+<style>
+  body{margin:0;background:var(--canvas);font-family:var(--font-body)}
+  .row{display:flex;gap:0;padding:20px;height:110px}
+  .sw{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;color:#fff;font:var(--type-cap);font-weight:700}
+  .sw small{font-weight:500;opacity:.85;font-size:11px}
+  .dark{color:var(--ink)}
+</style></head><body>
+<div class="row">
+  <div class="sw" style="background:var(--accent-700)">accent-700<small>pressed</small></div>
+  <div class="sw" style="background:var(--accent-600)">accent-600 ●<small>primary · white AA ✓</small></div>
+  <div class="sw" style="background:var(--accent-500)">accent-500<small>hover</small></div>
+  <div class="sw dark" style="background:var(--accent-bright)">accent-bright<small>highlight</small></div>
+  <div class="sw dark" style="background:var(--accent-warm)">accent-warm<small>wash</small></div>
+  <div class="sw dark" style="background:var(--accent-soft)">accent-soft<small>card tint</small></div>
+</div>
+</body></html>

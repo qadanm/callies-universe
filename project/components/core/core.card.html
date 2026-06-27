@@ -1,0 +1,73 @@
+<!-- @dsCard group="Components" viewport="700x460" name="Core — Buttons, Chips, Inputs, Badges" subtitle="Glossy inflatable primitives with squish press" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--canvas); font-family: var(--font-body); color: var(--ink); }
+  .wrap { padding: 26px; display: flex; flex-direction: column; gap: 22px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .lab { font: var(--type-cap); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .col { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Button, Chip, Input, Badge } = window.RoastMyRideDesignSystem_896616;
+  function Demo() {
+    const [picked, setPicked] = React.useState({a:true, b:false, c:true});
+    return (
+      <>
+        <div className="col">
+          <div className="lab">Buttons</div>
+          <div className="row">
+            <Button variant="primary" size="lg">Roast my car</Button>
+            <Button variant="accent">Share it</Button>
+            <Button variant="secondary">Maybe later</Button>
+            <Button variant="ghost">Skip</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
+        </div>
+        <div className="col">
+          <div className="lab">Tap-chips (multi-select)</div>
+          <div className="row">
+            <Chip selected={picked.a} onToggle={v=>setPicked(p=>({...p,a:v}))}>Weekend warrior</Chip>
+            <Chip selected={picked.b} onToggle={v=>setPicked(p=>({...p,b:v}))}>First car</Chip>
+            <Chip selected={picked.c} onToggle={v=>setPicked(p=>({...p,c:v}))}>Track days</Chip>
+            <Chip selected={false}>Daily driver</Chip>
+          </div>
+        </div>
+        <div className="row" style={{alignItems:"flex-start"}}>
+          <div className="col" style={{flex:1, minWidth:240}}>
+            <div className="lab">Inputs</div>
+            <Input label="Your handle" placeholder="@yourname" hint="Friends only — opt-in" />
+          </div>
+          <div className="col" style={{flex:1, minWidth:240}}>
+            <div className="lab">Error state</div>
+            <Input label="Email" defaultValue="not-an-email" error="That doesn't look right" />
+          </div>
+        </div>
+        <div className="col">
+          <div className="lab">Badges</div>
+          <div className="row">
+            <Badge tone="ember">3 credits</Badge>
+            <Badge tone="flame">NEW</Badge>
+            <Badge tone="success">Shared</Badge>
+            <Badge tone="cool">Mild</Badge>
+            <Badge tone="pink">Savage</Badge>
+          </div>
+        </div>
+      </>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

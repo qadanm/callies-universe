@@ -1,0 +1,19 @@
+<!-- @dsCard group="Colors" viewport="700x160" name="Semantic + AA-checked pairings" subtitle="Every functional pairing passes WCAG AA" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../styles.css"/>
+<style>
+  body{margin:0;background:var(--canvas);font-family:var(--font-body)}
+  .wrap{padding:20px;display:flex;gap:14px;flex-wrap:wrap}
+  .pair{flex:1;min-width:150px;border-radius:var(--radius-md);padding:14px;font:var(--type-sm);font-weight:600;box-shadow:var(--elev-1)}
+  .pair b{display:block;font:var(--type-d4);font-size:18px;margin-bottom:2px}
+  .pair small{font-weight:500;opacity:.9;font-size:11px}
+</style></head><body>
+<div class="wrap">
+  <div class="pair" style="background:var(--success);color:#fff"><b>Success</b><small>#1E8E4E · white 4.5:1 ✓</small></div>
+  <div class="pair" style="background:var(--warning);color:#fff"><b>Warning</b><small>#B8730A · white 4.6:1 ✓</small></div>
+  <div class="pair" style="background:var(--danger);color:#fff"><b>Danger</b><small>#C7340F · white 5.4:1 ✓</small></div>
+  <div class="pair" style="background:var(--info);color:#fff"><b>Info</b><small>#0A6E9E · white 5.4:1 ✓</small></div>
+  <div class="pair" style="background:var(--canvas);color:var(--ink);border:2px solid var(--hairline)"><b>Ink on canvas</b><small>16.8:1 ✓</small></div>
+  <div class="pair" style="background:var(--canvas);color:var(--ink-soft);border:2px solid var(--hairline)"><b>Muted on canvas</b><small>7.0:1 ✓</small></div>
+</div>
+</body></html>

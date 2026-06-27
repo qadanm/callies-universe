@@ -1,0 +1,97 @@
+<!-- @dsCard group="App" viewport="430x880" name="RoastMyRide iOS app" subtitle="Interactive 9-screen flow: onboarding → upload → reveal → share" -->
+<!-- @startingPoint section="App" subtitle="Full iOS app flow (9 screens)" viewport="430x880" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RoastMyRide — App</title>
+<link rel="stylesheet" href="../../styles.css" />
+<link rel="stylesheet" href="theme.css" />
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: #2A1607 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="6" cy="6" r="2" fill="%23ffffff" opacity="0.05"/></svg>') ; font-family: var(--font-body); display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 22px 12px; box-sizing: border-box; min-height: 100%; }
+  .picker { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 430px; }
+  .picker button { font: var(--type-cap); font-weight: 700; padding: 6px 12px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); color: #FFE9C2; cursor: pointer; }
+  .picker button.on { background: var(--flame-500); color: var(--ink); border-color: var(--flame-500); }
+  /* iPhone frame */
+  .phone { width: 390px; height: 844px; border-radius: 54px; background: #1a0e04; padding: 12px; box-shadow: 0 30px 70px rgba(0,0,0,0.5); flex-shrink: 0; }
+  .screen { position: relative; width: 100%; height: 100%; border-radius: 44px; overflow: hidden; background: var(--canvas); display: flex; flex-direction: column; }
+  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 26px 4px; font: var(--type-cap); font-weight: 700; color: var(--ink); flex-shrink: 0; }
+  .notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 30px; background: #1a0e04; border-radius: 0 0 18px 18px; z-index: 80; }
+  .stage { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .tabbar { display: flex; justify-content: space-around; align-items: center; padding: 8px 0 18px; border-top: 1px solid var(--hairline); background: var(--canvas); flex-shrink: 0; }
+  .tabbar button { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font: var(--type-legal); font-weight: 700; color: var(--text-hint); cursor: pointer; }
+  .tabbar button.on { color: var(--ember-600); }
+  .tabbar .ico { font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="picker" id="picker"></div>
+<div class="phone">
+  <div class="screen">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span>🔥 RoastMyRide</span><span>100%</span></div>
+    <div class="stage" id="stage"></div>
+    <div class="tabbar" id="tabbar"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel" src="screensA.jsx"></script>
+<script type="text/babel" src="screensB.jsx"></script>
+<script type="text/babel">
+const SCREENS = [
+  ["onboarding", "Onboard", "👋", window.OnboardingScreen],
+  ["home", "Home", "🏠", window.HomeScreen],
+  ["seasoning", "Photo 2", "🤳", window.ProfileScreen],
+  ["cast", "Cast", "🎭", window.CastScreen],
+  ["cooking", "Cooking", "🍳", window.CookingScreen],
+  ["reveal", "Reveal", "🔥", window.RevealScreen],
+  ["celebrate", "Share", "🎉", window.CelebrateScreen],
+  ["paywall", "Credits", "🎟️", window.PaywallScreen],
+  ["settings", "Settings", "⚙️", window.SettingsScreen],
+];
+const TABS = [["home","Home","🏠"],["paywall","Credits","🎟️"],["settings","Settings","⚙️"]];
+
+function App() {
+  const [cur, setCur] = React.useState("onboarding");
+  const go = (id) => setCur(id);
+  const entry = SCREENS.find((s) => s[0] === cur) || SCREENS[0];
+  const ScreenComp = entry[3];
+
+  // render picker (outside React tree, simple)
+  React.useEffect(() => {
+    const p = document.getElementById("picker");
+    p.innerHTML = "";
+    SCREENS.forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.textContent = label; b.className = id === cur ? "on" : "";
+      b.onclick = () => setCur(id); p.appendChild(b);
+    });
+  }, [cur]);
+
+  const showTabs = ["home", "paywall", "settings"].includes(cur);
+  React.useEffect(() => {
+    const tb = document.getElementById("tabbar");
+    tb.style.display = showTabs ? "flex" : "none";
+    tb.innerHTML = "";
+    if (showTabs) TABS.forEach(([id, label, ico]) => {
+      const b = document.createElement("button");
+      b.className = id === cur ? "on" : "";
+      b.innerHTML = `<span class="ico">${ico}</span>${label}`;
+      b.onclick = () => setCur(id); tb.appendChild(b);
+    });
+  }, [cur]);
+
+  return <div key={cur} style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+    {ScreenComp ? <ScreenComp go={go} /> : <div style={{ padding: 24 }}>Loading…</div>}
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById("stage")).render(<App />);
+</script>
+</body>
+</html>

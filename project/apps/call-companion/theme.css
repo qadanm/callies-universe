@@ -1,0 +1,12 @@
+/* Call Companion — second app in Callie's Universe. Inherits the full core;
+   overrides ONLY the accent (a calm periwinkle/indigo — friendly, not loud). */
+:root {
+  --accent-700:    #2E3FA8;
+  --accent-600:    #3B5BD0;  /* white text 5.3:1 AA ✓ */
+  --accent-500:    #5570E6;
+  --accent-bright: #7C8CFF;
+  --accent-bright-2: #9AA6FF;
+  --accent-warm:   #9AA6FF;
+  --accent-warm-2: #C3CBFF;
+  --accent-soft:   #EEF1FF;
+}

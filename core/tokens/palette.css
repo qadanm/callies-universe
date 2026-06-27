@@ -1,0 +1,38 @@
+/* ============================================================
+   CALLIE'S UNIVERSE — CORE PALETTE
+   Derived from Callie the calico cat's coat: CREAM + GINGER + CHARCOAL.
+   These are the SHARED brand neutrals — constant across every app.
+   Each app then layers ONE bright ACCENT on top (see app theme.css);
+   the core's default accent is calico ginger so the core stands alone.
+   ============================================================ */
+
+:root {
+  /* ---- Calico coat → brand neutrals (FIXED across all apps) ---- */
+  --cream:      #FFF6EC;  /* the white/cream patch — page canvas */
+  --cream-50:   #FFFDF9;
+  --cream-200:  #FBEEDF;  /* recessed surface wash */
+
+  --ginger-700: #8F4214;  /* @kind color */
+  --ginger-600: #B4561C;  /* @kind color */
+  --ginger-500: #D9772E;  /* @kind color */
+  --ginger-400: #E88B3D;  /* @kind color */
+  --ginger-300: #F2A864;  /* @kind color */
+  --ginger-200: #F8C794;  /* @kind color */
+
+  --charcoal-900: #2A2420;  /* @kind color */
+  --charcoal-700: #4A413A;  /* @kind color */
+  --charcoal-600: #5C5149;  /* @kind color */
+  --charcoal-500: #6E635A;  /* @kind color */
+
+  /* ---- ACCENT system (per-app override; default = calico ginger) ----
+     Apps set ONLY these to reskin. Components reference the brand ramp
+     (--ember-* etc. in colors.css) which is aliased to these. ---- */
+  --accent-700:    var(--ginger-700);
+  --accent-600:    var(--ginger-600);  /* primary action bg — must pass white-text AA */
+  --accent-500:    var(--ginger-500);
+  --accent-bright: var(--ginger-400);  /* highlight / punch fills (ink label) */
+  --accent-bright-2: var(--ginger-300);
+  --accent-warm:   var(--ginger-300);
+  --accent-warm-2: var(--ginger-200);
+  --accent-soft:   #FFF1DE;            /* tinted card wash */
+}

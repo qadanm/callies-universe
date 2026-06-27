@@ -1,0 +1,21 @@
+<!-- @dsCard group="Brand" viewport="700x220" name="Motion note — squish, bounce, confetti + reduce-motion" subtitle="Press squishes 0.94; entrances spring; confetti is decoration-only" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../styles.css"/>
+<style>
+  body{margin:0;background:var(--canvas);font-family:var(--font-body);color:var(--ink)}
+  .wrap{padding:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .demo{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .lab{font:var(--type-cap);color:var(--text-muted)}
+  .pill{height:52px;padding:0 22px;border-radius:var(--radius-pill);background:linear-gradient(180deg,var(--ember-500),var(--ember-600));color:#fff;font:var(--type-button);font-size:16px;display:flex;align-items:center;box-shadow:var(--gloss-primary);animation:rmr-squish 1.8s var(--ease-out) infinite}
+  .blob{width:60px;height:60px;background:var(--heat-400);border-radius:var(--radius-blob);animation:rmr-bob 2.6s var(--ease-out) infinite;box-shadow:var(--gloss-card)}
+  .pop{width:56px;height:56px;border-radius:var(--radius-md);background:var(--flame-500);animation:rmr-pop-in 1.6s var(--ease-spring) infinite}
+  .note{flex:1;min-width:200px;background:var(--canvas-sink);border-radius:var(--radius-md);padding:16px;font:var(--type-sm);color:var(--text-muted)}
+  .note b{color:var(--ink)}
+</style></head><body>
+<div class="wrap">
+  <div class="demo"><div class="pill">Squish</div><span class="lab">press · scale 0.94</span></div>
+  <div class="demo"><div class="blob"></div><span class="lab">idle bob</span></div>
+  <div class="demo"><div class="pop"></div><span class="lab">spring pop-in</span></div>
+  <div class="note"><b>Reduce-motion fallback:</b> looping bob/squish/confetti stop, entrances become a calm cross-fade, and the confetti layer renders nothing. The reveal still lands — just without the bounce.</div>
+</div>
+</body></html>

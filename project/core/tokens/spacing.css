@@ -1,0 +1,37 @@
+/* ============================================================
+   RoastMyRide — SPACING TOKENS
+   Generous, chunky rhythm. Touch targets stay comfortable (>=48px).
+   Base unit = 4px.
+   ============================================================ */
+
+:root {
+  --space-0:   0;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   32px;
+  --space-8:   40px;
+  --space-9:   48px;
+  --space-10:  64px;
+  --space-11:  80px;
+  --space-12:  104px;
+
+  /* ---- Semantic ---- */
+  --gutter:        var(--space-5);   /* screen side padding */
+  --stack-tight:   var(--space-2);
+  --stack:         var(--space-4);
+  --stack-loose:   var(--space-7);
+  --section-gap:   var(--space-10);
+
+  /* ---- Touch targets (accessibility floor) ---- */
+  --tap-min:    48px;   /* minimum comfortable hit target */
+  --tap-cozy:   56px;   /* default control height */
+  --tap-hero:   64px;   /* big primary CTA height */
+
+  /* ---- Container ---- */
+  --app-max:    430px;  /* iOS-first canvas width */
+  --content-max: 1120px; /* marketing content max */
+}

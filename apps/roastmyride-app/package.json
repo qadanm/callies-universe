@@ -1,0 +1,22 @@
+{
+  "name": "@callies-universe/roastmyride-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RoastMyRide — the first app in Callie's Universe. A thin layer on @callies-universe/core: ember accent + hero screens + app-specific Callie reactions. Roast generation is mocked behind a service-shaped seam.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview --port 5180"
+  },
+  "dependencies": {
+    "@callies-universe/core": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

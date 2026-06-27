@@ -1,0 +1,22 @@
+/* ============================================================
+   RoastMyRide — RADIUS TOKENS
+   Chunky rounded corners = the inflatable / squishy language.
+   ============================================================ */
+
+:root {
+  --radius-xs:   8px;
+  --radius-sm:   12px;
+  --radius-md:   18px;   /* inputs, small cards */
+  --radius-lg:   26px;   /* cards, tiles */
+  --radius-xl:   34px;   /* sheets, big cards */
+  --radius-2xl:  44px;   /* hero panels */
+  --radius-pill: 999px;  /* chips, pill buttons */
+  --radius-blob: 48% 52% 56% 44% / 52% 46% 54% 48%; /* squishy mascot bubble */
+
+  /* ---- Semantic ---- */
+  --radius-button: var(--radius-pill);
+  --radius-chip:   var(--radius-pill);
+  --radius-card:   var(--radius-lg);
+  --radius-input:  var(--radius-md);
+  --radius-sheet:  var(--radius-xl);
+}

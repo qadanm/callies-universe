@@ -1,0 +1,44 @@
+/* ============================================================
+   RoastMyRide — ELEVATION TOKENS
+   Soft, glossy, inflatable — NOT flat. Warm-tinted shadows.
+   Primary elements get an inner top-highlight (the "gloss") plus
+   a chunky drop shadow so they read as pressable / squishy.
+   ============================================================ */
+
+:root {
+  /* ---- Drop shadows (warm-tinted) ---- */
+  --elev-1: 0 2px 6px rgba(120, 52, 12, 0.10);
+  --elev-2: 0 6px 16px rgba(120, 52, 12, 0.14);
+  --elev-3: 0 12px 28px rgba(120, 52, 12, 0.18);
+  --elev-4: 0 22px 48px rgba(120, 52, 12, 0.22);
+
+  /* ---- Gloss: inner highlight + drop, for inflatable buttons/cards ---- */
+  --gloss-card:
+    inset 0 2px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -6px 14px rgba(120, 52, 12, 0.06),
+    0 10px 24px rgba(120, 52, 12, 0.16); /* @kind shadow */
+
+  --gloss-primary:
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -8px 16px rgba(120, 30, 0, 0.30),
+    0 10px 22px rgba(199, 52, 15, 0.40); /* @kind shadow */
+
+  --gloss-primary-pressed:
+    inset 0 3px 10px rgba(120, 30, 0, 0.45),
+    0 3px 8px rgba(199, 52, 15, 0.30); /* @kind shadow */
+
+  --gloss-chip:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 3px 8px rgba(120, 52, 12, 0.14); /* @kind shadow */
+
+  /* ---- Sticker shadow (crisp, slightly offset, like a peel-off) ---- */
+  --shadow-sticker: 0 2px 0 rgba(34, 20, 3, 0.18), 0 6px 12px rgba(34, 20, 3, 0.12);
+
+  /* ---- Focus ring ---- */
+  --ring: 0 0 0 3px var(--canvas), 0 0 0 6px var(--focus-ring);
+
+  /* ---- Semantic ---- */
+  --elevation-card:  var(--gloss-card);
+  --elevation-cta:   var(--gloss-primary);
+  --elevation-sheet: var(--elev-4);
+}

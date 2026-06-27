@@ -1,0 +1,51 @@
+<!-- @dsCard group="RoastMyRide (app-layer)" viewport="700x520" name="Share — ShareCard & Credit tiles" subtitle="App-specific (NOT core): the roast share frame + credit bundles" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--canvas); font-family: var(--font-body); color: var(--ink); }
+  .wrap { padding: 22px; display: flex; gap: 24px; align-items: flex-start; }
+  .lab { font: var(--type-cap); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .tiles { display: flex; gap: 14px; flex-wrap: wrap; max-width: 320px; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { ShareCard, CreditTile, Mascot } = window.RoastMyRideDesignSystem_896616;
+  function Demo() {
+    const [sel, setSel] = React.useState(1);
+    return (
+      <>
+        <div>
+          <div className="lab">Share card (signature output)</div>
+          <ShareCard width={250} roasterName="Ms. Burnt" spice="savage"
+            mascot={<Mascot state="savage" size={84} />}
+            roast={[
+              {text:"This Civic has "},
+              {text:"more body kit", punch:true},
+              {text:" than horsepower."},
+            ]} />
+        </div>
+        <div>
+          <div className="lab">Credit bundles</div>
+          <div className="tiles">
+            <CreditTile credits={1} price="$0.99" perRoast="$0.99" selected={sel===0} onSelect={()=>setSel(0)} />
+            <CreditTile credits={5} price="$3.99" perRoast="$0.80" best selected={sel===1} onSelect={()=>setSel(1)} />
+            <CreditTile credits={15} price="$8.99" perRoast="$0.60" selected={sel===2} onSelect={()=>setSel(2)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

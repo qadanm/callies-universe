@@ -1,0 +1,14 @@
+/* ============================================================
+   Callie's Universe — Design System entry point.
+   Consumers link THIS file. It only @imports; no rules here.
+   palette.css (calico base + accent) MUST load before colors.css.
+   ============================================================ */
+
+@import url("./core/tokens/fonts.css");
+@import url("./core/tokens/palette.css");
+@import url("./core/tokens/colors.css");
+@import url("./core/tokens/typography.css");
+@import url("./core/tokens/spacing.css");
+@import url("./core/tokens/radius.css");
+@import url("./core/tokens/elevation.css");
+@import url("./core/tokens/motion.css");

@@ -1,0 +1,7 @@
+/* RoastMyRide webfonts.
+   Display: "Baloo 2" — chunky, rounded, inflatable. Owns headlines, buttons, speech bubbles, the reveal.
+   Companion: "Hanken Grotesque" — clean, highly-legible sans for small functional text only.
+   NOTE: loaded from Google Fonts. If self-hosting is required, drop the .woff2 files in assets/fonts/
+   and replace the @import below with local @font-face rules. (Flagged to the user.) */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Hanken+Grotesque:wght@400;500;600;700&display=swap');
