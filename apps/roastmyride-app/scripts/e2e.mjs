@@ -60,6 +60,19 @@ try {
   await seeText("Drop a pic of your ride");
   check(true, "Home / upload reachable");
 
+  // Real car-photo capture: set a file on the hidden input → confirm a preview renders.
+  const onePxPng = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+    "base64"
+  );
+  await page.setInputFiles('[data-testid="car-file"]', { name: "car.png", mimeType: "image/png", buffer: onePxPng });
+  try {
+    await page.getByAltText("Your car").first().waitFor({ state: "visible", timeout: 6000 });
+    check(true, "Car photo upload renders a real preview (compressed in-browser)");
+  } catch {
+    check(false, "Car photo upload renders a real preview (compressed in-browser)");
+  }
+
   // --- Profile-roast (consent) ---
   await clickName(/Roast my car/); // the Card CTA advances to /profile
   await seeText("Make it personal");

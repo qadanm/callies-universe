@@ -1,11 +1,12 @@
-// Screen 2 — Home / upload (the single "roast my car" CTA; photo picker stubbed).
+// Screen 2 — Home / upload (the single "roast my car" CTA; real car photo pick).
 // CORE-REUSED: CallieHost (context "home", with tip), Card, Badge, Button, Callie.
-// ROASTMYRIDE-NEW: upload target, "roast my car" CTA.
-import React from "react";
+// ROASTMYRIDE-NEW: real photo capture (compressed in-browser) + "roast my car" CTA.
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, Badge, Callie, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Wordmark } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { loadCompressedImage } from "../photo.js";
 
 const uploadTarget = {
   width: "100%",
@@ -18,16 +19,27 @@ const uploadTarget = {
   alignItems: "center",
   gap: 6,
   cursor: "pointer",
+  overflow: "hidden",
 };
 
 export function Home() {
   const go = useNavigate();
-  const { update, credits } = useFlow();
+  const { input, update, credits } = useFlow();
+  const fileRef = useRef(null);
+  const [err, setErr] = useState(null);
+  const car = input.carPhoto || {};
 
-  // Stubbed photo pick — we only record that a car photo is "present".
-  const addCar = () => {
-    update({ carPhoto: { present: true } });
-    go("/profile");
+  const onPick = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    try {
+      const img = await loadCompressedImage(file);
+      update({ carPhoto: { present: true, ...img } });
+      setErr(null);
+    } catch (ex) {
+      setErr(ex.message || "Couldn't read that photo.");
+    }
   };
 
   return (
@@ -45,12 +57,36 @@ export function Home() {
         <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-4)" }}>
           Photo 1 of 2 — the more I can see, the harder I cook.
         </p>
-        <button onClick={addCar} style={uploadTarget}>
-          <span style={{ fontSize: 40, lineHeight: 1 }}>📸</span>
-          <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>Tap to add photo</span>
-          <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>Camera or library</span>
+        <input
+          ref={fileRef}
+          data-testid="car-file"
+          type="file"
+          accept="image/*"
+          onChange={onPick}
+          style={{ display: "none" }}
+        />
+        <button onClick={() => fileRef.current && fileRef.current.click()} style={uploadTarget} aria-label="Add a car photo">
+          {car.dataUrl ? (
+            <>
+              <img
+                src={car.dataUrl}
+                alt="Your car"
+                style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: "var(--radius-md)" }}
+              />
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)", marginTop: 6 }}>Tap to replace</span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 40, lineHeight: 1 }}>📸</span>
+              <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>Tap to add photo</span>
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>Camera or library</span>
+            </>
+          )}
         </button>
-        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={addCar}>
+        {err && (
+          <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
+        )}
+        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => go("/profile")}>
           Roast my car
         </Button>
       </Card>

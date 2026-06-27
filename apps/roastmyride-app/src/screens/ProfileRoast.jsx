@@ -3,26 +3,45 @@
 // add a selfie OR a screenshot of your own profile, with a clear privacy line.
 // CORE-REUSED: CallieHost (context "seasoning", reacts to "added"), Button.
 // ROASTMYRIDE-NEW: selfie/profile segmented upload, consent copy.
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Eyebrow, H, stickyBar } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { loadCompressedImage } from "../photo.js";
 
 export function ProfileRoast() {
   const go = useNavigate();
-  const { update } = useFlow();
+  const { input, update } = useFlow();
   const [mode, setMode] = useState("selfie"); // "selfie" | "profile"
-  const [added, setAdded] = useState(false);
+  const [blur, setBlur] = useState(true); // privacy-first: blur by default on the stage
+  const [err, setErr] = useState(null);
+  const fileRef = useRef(null);
+  const personal = input.personal || {};
+  const added = !!personal.present && !!personal.dataUrl;
 
   const copy =
     mode === "selfie"
       ? { ico: "🤳", title: "Add a selfie", sub: "Snap or pick a photo of you" }
       : { ico: "📱", title: "Add a profile screenshot", sub: "A screenshot of your social profile" };
 
-  const attach = () => {
-    setAdded(true);
-    update({ personal: { present: true, kind: mode } });
+  const onPick = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const img = await loadCompressedImage(file);
+      update({ personal: { present: true, kind: mode, blur, ...img } });
+      setErr(null);
+    } catch (ex) {
+      setErr(ex.message || "Couldn't read that photo.");
+    }
+  };
+
+  const toggleBlur = () => {
+    const next = !blur;
+    setBlur(next);
+    if (added) update({ personal: { ...personal, blur: next } });
   };
 
   const next = () => {
@@ -53,7 +72,7 @@ export function ProfileRoast() {
               key={k}
               onClick={() => {
                 setMode(k);
-                setAdded(false);
+                if (added) update({ personal: { present: false, kind: null } }); // switching kind drops the old photo
               }}
               style={{
                 flex: 1,
@@ -73,34 +92,72 @@ export function ProfileRoast() {
           ))}
         </div>
 
+        <input
+          ref={fileRef}
+          data-testid="profile-file"
+          type="file"
+          accept="image/*"
+          onChange={onPick}
+          style={{ display: "none" }}
+        />
         <button
-          onClick={attach}
+          onClick={() => fileRef.current && fileRef.current.click()}
+          aria-label={copy.title}
           style={{
             width: "100%",
             border: `3px dashed ${added ? "var(--ember-600)" : "var(--heat-400)"}`,
             background: added ? "#FFF3E2" : "var(--canvas-sink)",
             borderRadius: "var(--radius-lg)",
-            padding: "var(--space-7) var(--space-4)",
+            padding: added ? "var(--space-4)" : "var(--space-7) var(--space-4)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 6,
             cursor: "pointer",
+            overflow: "hidden",
           }}
         >
-          <span style={{ fontSize: 40 }}>{added ? "✅" : copy.ico}</span>
-          <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>
-            {added ? "Added — looking good" : copy.title}
-          </span>
-          <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>
-            {added ? "Tap to replace" : copy.sub}
-          </span>
+          {added ? (
+            <>
+              <img
+                src={personal.dataUrl}
+                alt="You"
+                style={{
+                  width: 120,
+                  height: 120,
+                  objectFit: "cover",
+                  borderRadius: "var(--radius-md)",
+                  filter: blur ? "blur(7px)" : "none",
+                }}
+              />
+              <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>Added — looking good</span>
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>Tap to replace</span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 40 }}>{copy.ico}</span>
+              <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>{copy.title}</span>
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>{copy.sub}</span>
+            </>
+          )}
         </button>
+        {err && (
+          <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: 0 }}>{err}</p>
+        )}
+
+        {added && (
+          <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer", padding: "0 var(--space-1)" }}>
+            <input type="checkbox" checked={blur} onChange={toggleBlur} style={{ width: 18, height: 18 }} />
+            <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
+              Blur me on the stage / in the video (recommended)
+            </span>
+          </label>
+        )}
 
         <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "var(--space-3)", background: "var(--canvas-sink)", borderRadius: "var(--radius-md)" }}>
           <span style={{ fontSize: 18 }}>🔒</span>
           <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
-            Private — we only ever roast you. Never your friends, never strangers.
+            Private — your photo stays on your device for now. We only ever roast you.
           </span>
         </div>
       </ScreenScroll>

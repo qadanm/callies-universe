@@ -1,9 +1,13 @@
 // RoastMyRide — flow state [ROASTMYRIDE-NEW].
 //
-// Holds what the user assembles across the screens (car photo, optional
-// selfie/profile, chosen roaster, context chips) and exposes generate(), which
-// calls the roast SEAM (services/roast.js). The roast result is stored here and
-// read by the Reveal screen. Mocked photos: we only track presence this pass.
+// Holds what the user assembles across the screens (the real car photo, an
+// optional selfie/profile, chosen roaster, context chips) and exposes
+// generate(), which calls the roast SEAM (services/roast.js). The roast result
+// is stored here and read by the Reveal screen.
+//
+// Photos: the compressed image blobs (dataUrl) live HERE for the stage + video
+// to render, but are STRIPPED before the brain call (sanitizeForBrain) — the
+// model only needs presence + identity, never megabytes of base64.
 
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { generateRoast } from "../services/roast.js";
@@ -42,10 +46,11 @@ export function FlowProvider({ children }) {
 
   const update = useCallback((patch) => setInput((prev) => ({ ...prev, ...patch })), []);
 
-  // The one call into the roast pipeline. Swapping the mock for the real
-  // service (in services/roast.js) requires no change here.
+  // The one call into the roast pipeline. The brain gets a sanitized input
+  // (presence + identity only — no image blobs); the full input (with photos)
+  // stays in context for the stage + video to render.
   const generate = useCallback(async () => {
-    const r = await generateRoast(input);
+    const r = await generateRoast(sanitizeForBrain(input));
     setResult(r);
     return r;
   }, [input]);
@@ -70,4 +75,16 @@ export function useFlow() {
   const ctx = useContext(FlowCtx);
   if (!ctx) throw new Error("useFlow must be used inside <FlowProvider>");
   return ctx;
+}
+
+/** Strip image blobs before handing the input to the brain — it only needs
+ *  presence + car identity, not the base64 photos. */
+function sanitizeForBrain(input) {
+  const carPhoto = input.carPhoto || {};
+  const personal = input.personal || {};
+  return {
+    ...input,
+    carPhoto: { present: !!carPhoto.present, identified: carPhoto.identified ?? null },
+    personal: { present: !!personal.present, kind: personal.kind ?? null },
+  };
 }
