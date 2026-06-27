@@ -19,8 +19,11 @@ const GRADE_SCHEMA = {
       type: "object",
       additionalProperties: false,
       required: AXES,
+      // NOTE: Anthropic structured outputs don't support numeric constraints
+      // (minimum/maximum/multipleOf) — they 400. The 0–10 range is stated in the
+      // grader prompt and clamped in code (clampScore) instead.
       properties: Object.fromEntries(
-        AXES.map((a) => [a, { type: "integer", minimum: 0, maximum: 10 }])
+        AXES.map((a) => [a, { type: "integer", description: "0–10" }])
       ),
     },
     aiTells: {
@@ -34,6 +37,13 @@ const GRADE_SCHEMA = {
 
 function setToText(set) {
   return set.beats.map((b) => `[${b.type}] ${b.text}`).join("\n");
+}
+
+/** Coerce a model-returned score to an integer in [0, 10]. */
+function clampScore(n) {
+  const v = Math.round(Number(n));
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(10, v));
 }
 
 /**
@@ -81,7 +91,9 @@ export async function gradeSet(set, performer, research, model) {
     maxTokens: 2048,
   });
 
-  const scores = judged.scores;
+  // Clamp to a 0–10 integer per axis (the range is no longer schema-enforced).
+  const scores = {};
+  for (const a of AXES) scores[a] = clampScore(judged.scores ? judged.scores[a] : 0);
   const aiTells = judged.aiTells || [];
   return {
     scores,
