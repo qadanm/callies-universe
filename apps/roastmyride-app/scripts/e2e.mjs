@@ -73,24 +73,26 @@ try {
 
   // --- The Cast (core CastPicker) ---
   await clickName(/Continue|Skip seasoning/);
-  await seeText("Who's roasting you");
+  await seeText(/taking the stage|Tonight's lineup/);
   check((await page.getByText("Meet the cast").count()) >= 1, "CastPicker (core) rendered");
 
-  // --- Cooking → (mock generates) → Reveal ---
-  await clickName(/Cook it with/);
-  await seeText("Cooking your roast");
-  check(true, "Cooking screen runs the mock pipeline");
+  // --- Warming up → (brain generates the set) → Reveal ---
+  await clickName(/on stage/);
+  await seeText("Warming up");
+  check(true, "Warming-up screen runs the brain pipeline (offline fallback with no key)");
 
-  // Reveal arrives automatically when the mock resolves (~3.8s).
-  await seeText("Voiced by", 12000);
+  // Reveal arrives automatically when the brain resolves.
+  await seeText("Now performing", 12000);
   const revealText = await page.locator(".screen").innerText();
-  check(/cry for help|trying|axle|unmoved|vibes|rust|never leave|It is a car/i.test(revealText),
-    "Reveal shows the mock roast copy (punch-word present)");
-  check((await callieCount()) >= 1, "Callie reacts on the reveal (ShareCard corner)");
+  check(/cry for help|trying|axle|unmoved|vibes|rust|never leave|It is a car|tired of trying/i.test(revealText),
+    "Reveal shows the brain's set copy (punch-word present)");
+  check(/mic drop/i.test(revealText),
+    "Reveal reads the richer set (transcript closer / mic-drop present)");
+  check((await callieCount()) >= 1, "Callie reacts on the reveal (in the crowd / clip corner)");
 
   // --- Share success ---
-  await clickName(/Share video/);
-  await seeText("Posted");
+  await clickName(/Share the clip/);
+  await seeText(/Set's live|live/);
   check(true, "Share-success (Sheet) reachable");
 
   // --- Credits (core-driven CreditTile) via dev picker ---

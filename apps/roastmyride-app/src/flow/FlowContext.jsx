@@ -7,30 +7,31 @@
 
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { generateRoast } from "../services/roast.js";
+import { offlineBrain } from "@callies-universe/brain";
 
 const DEFAULT_INPUT = {
   carPhoto: { present: false },
+  // The car the brain researches. Until photo-ID lands, the brain defaults to a
+  // representative car for the live path; set this to a real {year,make,model}
+  // (or carPhoto.identified) once identification ships. null → brain default.
+  car: null,
   personal: { present: false, kind: null },
   roasterId: "mama",
   context: [],
 };
 
-/** A canned result so a directly-opened /reveal still renders for click-through. */
-const PREVIEW_RESULT = {
-  id: "roast_preview",
+/**
+ * A canned result so a directly-opened /reveal still renders for click-through.
+ * Built from the brain's offline path so it matches the EVOLVED result shape
+ * (structured set + research + grade), not a hand-maintained flat stub.
+ */
+const PREVIEW_RESULT = offlineBrain({
+  carPhoto: { present: true },
+  car: { label: "your ride" },
   roasterId: "mama",
-  roasterName: "Mama Denièce",
-  register: "Church-fan snap",
-  spice: "savage",
-  segments: [
-    { text: "Mm-mm-MM. Baby, this paint job is " },
-    { text: "a cry for help", punch: true },
-    { text: ", and I'm answering." },
-  ],
-  plainText: "Mm-mm-MM. Baby, this paint job is a cry for help, and I'm answering.",
-  reaction: "savage",
-  durationMs: 3800,
-};
+  context: [],
+  config: { offline: true },
+});
 
 const FlowCtx = createContext(null);
 

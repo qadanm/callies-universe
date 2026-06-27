@@ -1,0 +1,24 @@
+{
+  "name": "@callies-universe/brain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The comedy engine. Researches the specific car (live), writes a character-shaped stand-up set, and grades it against the anti-cringe rubric so nothing corny ships. Fulfils the generateRoast contract; falls back to a deterministic offline brain when no API key is present.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./contract": "./contract.d.ts"
+  },
+  "types": "./contract.d.ts",
+  "scripts": {
+    "smoke": "node scripts/offline-check.mjs && node scripts/pipeline-check.mjs",
+    "demo": "node scripts/demo.mjs"
+  },
+  "dependencies": {
+    "@callies-universe/core": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.106.0"
+  }
+}

@@ -4,12 +4,20 @@ import React from "react";
  * ShareCard — the signature output frame: the still/video card that IS the
  * social content. Brand caption style, mascot tag, watermark, punch-word
  * highlight. Built 9:16-friendly; clean legible roast over an authored frame.
+ *
+ * `format` (additive, backward-compatible — defaults to "video"):
+ *   "video"   — the original roast-clip frame.
+ *   "standup" — the live-set clip: a "🎤 Live set" mic badge, the comedian +
+ *               their `act` style line, a stage-spotlight wash, "stand-up clip"
+ *               footer. The marketing landing + any existing caller are unchanged.
  */
 export function ShareCard({
   roast,              // string OR array of {text, punch?:true} segments
   mascot = null,      // a <Mascot/> node — Callie REACTING in the corner (never the author)
   roasterName = "Ms. Burnt", // the VOICE persona that delivered the roast (not the cat)
   spice = "savage",   // "mild" | "savage"
+  format = "video",   // "video" (default, unchanged) | "standup"
+  act = null,         // standup only: the comedian's one-line comedic identity
   width = 300,
   watermark = "RoastMyRide",
   style,
@@ -18,12 +26,15 @@ export function ShareCard({
   const segments = Array.isArray(roast)
     ? roast
     : [{ text: roast }];
+  const standup = format === "standup";
 
   return (
     <div style={{
       position: "relative", width, aspectRatio: "9 / 16",
       borderRadius: "var(--radius-xl)", overflow: "hidden",
-      background: "radial-gradient(120% 90% at 30% 0%, #FFB877 0%, #FF6A1A 45%, #C7340F 100%)",
+      background: standup
+        ? "radial-gradient(90% 55% at 50% 8%, #FFC98A 0%, #E5481B 40%, #2A1408 100%)"
+        : "radial-gradient(120% 90% at 30% 0%, #FFB877 0%, #FF6A1A 45%, #C7340F 100%)",
       boxShadow: "var(--elev-4)", color: "var(--on-ember)",
       display: "flex", flexDirection: "column",
       ...style,
@@ -35,13 +46,17 @@ export function ShareCard({
         backgroundSize: "26px 26px",
       }} />
 
-      {/* top: voice/roaster tag (the persona who delivered the roast) */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "16px 18px 0" }}>
+      {/* top: the billing — a roast clip vs. a live-set clip */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "6px", padding: "16px 18px 0" }}>
         <span style={{
+          alignSelf: "flex-start",
           font: "var(--type-cap)", fontWeight: 700, textTransform: "uppercase",
           letterSpacing: "0.06em", background: "rgba(34,20,3,0.35)",
           padding: "5px 12px", borderRadius: "var(--radius-pill)",
-        }}>🔥 {roasterName} · {spice}</span>
+        }}>{standup ? `🎤 Live set · ${roasterName}` : `🔥 ${roasterName} · ${spice}`}</span>
+        {standup && act && (
+          <span style={{ font: "var(--type-cap)", opacity: 0.92, fontStyle: "italic" }}>{act}</span>
+        )}
       </div>
 
       {/* the roast — clean legible bones over the loud frame */}
@@ -75,7 +90,7 @@ export function ShareCard({
         font: "var(--type-cap)", fontWeight: 700, opacity: 0.95,
       }}>
         <span style={{ display: "inline-flex", width: 18, height: 18, borderRadius: 6, background: "var(--ink)", color: "var(--flame-500)", alignItems: "center", justifyContent: "center", fontSize: 12 }}>R</span>
-        {watermark}
+        {standup ? `stand-up clip · ${watermark}` : watermark}
       </div>
     </div>
   );

@@ -1,10 +1,13 @@
-// Screen 4 — Roaster picker ("who's roasting you?").
+// Screen 4 — Tonight's lineup (was "The Cast"). Pick which comedian performs.
 // CORE-REUSED: CastPicker (+ Roaster avatars inside it), CallieHost, Button.
-// ROASTMYRIDE-NEW: screen frame + sticky CTA only.
+// ROASTMYRIDE-NEW: playbill Marquee reframe + per-comedian comedic-style line +
+// "put {name} on stage" CTA. No new picker component — CastPicker is unchanged.
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, CastPicker, CallieHost } from "@callies-universe/core";
-import { ScreenScroll, Eyebrow, H, stickyBar } from "../components/ui.jsx";
+import { ScreenScroll, stickyBar } from "../components/ui.jsx";
+import { Marquee } from "../components/Marquee.jsx";
+import { comicStyle } from "../standup.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 export function Cast() {
@@ -18,6 +21,7 @@ export function Cast() {
   };
 
   const firstName = sel ? sel.name.replace(/[“"].*$/, "").split(" ")[0] : "them";
+  const style = sel ? comicStyle(sel.id) : "Eight comics. Same car. Eight completely different shows.";
 
   return (
     <div
@@ -29,18 +33,20 @@ export function Cast() {
       }}
     >
       <ScreenScroll style={{ paddingBottom: 0 }}>
+        <Marquee kicker="Tonight's lineup" title="Who's taking the stage?">
+          {sel ? `${sel.name} — ${style}` : style}
+        </Marquee>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-          <CallieHost context="cast" size={60} />
-          <div>
-            <Eyebrow>The cast · Callie hosts the show</Eyebrow>
-            <H style={{ fontSize: 30 }}>Who's roasting you?</H>
-          </div>
+          <CallieHost context="cast" size={48} />
+          <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
+            Callie hosts the show — the comic does the roasting.
+          </span>
         </div>
         <CastPicker initialId={input.roasterId} onChange={onChange} />
       </ScreenScroll>
       <div style={stickyBar}>
         <Button variant="primary" size="lg" block onClick={() => go("/cooking")}>
-          Cook it with {firstName}
+          Put {firstName} on stage
         </Button>
       </div>
     </div>

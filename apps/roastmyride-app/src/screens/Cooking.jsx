@@ -1,27 +1,30 @@
-// Screen 5 — Cooking / loading (where the MOCK "generates" the roast).
-// CORE-REUSED: CallieHost (context "cooking").
-// ROASTMYRIDE-NEW: progress bar + "cooking your roast" copy.
+// Screen 5 — Warming up (was "Cooking"). Backstage while the comic writes tonight's set.
+// CORE-REUSED: CallieHost (context "cooking" — now reads as Callie hosting backstage).
+// ROASTMYRIDE-NEW: progress bar + "warming up" copy reframed around the performance.
 //
-// This screen calls the roast SEAM via flow.generate() → services/roast.js.
-// When the (mocked) result resolves, it advances to the reveal. Swapping the
-// mock for the real service changes nothing here.
+// This screen calls the roast SEAM via flow.generate() → services/roast.js (the
+// real brain: research → write → grade). When the set resolves, it advances to
+// the reveal. Swapping behind the seam changed nothing here.
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CallieHost } from "@callies-universe/core";
+import { resolvePerformer } from "@callies-universe/brain";
 import { H } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 
-const STEPS = [
-  "Sizing up your ride…",
-  "Checking the body kit…",
-  "Loading the disrespect…",
-  "Plating the roast…",
+const STEPS = (name) => [
+  `${name} is researching your ride…`,
+  "Writing tonight's set…",
+  "Working out the punchlines…",
+  "Warming up the crowd…",
 ];
 
 export function Cooking() {
   const go = useNavigate();
-  const { generate } = useFlow();
+  const { generate, input } = useFlow();
   const [step, setStep] = useState(0);
+  const firstName = resolvePerformer(input.roasterId).name.replace(/[“"].*$/, "").split(" ")[0];
+  const steps = STEPS(firstName);
 
   useEffect(() => {
     let alive = true;
@@ -56,9 +59,9 @@ export function Cooking() {
     >
       <CallieHost context="cooking" size={200} />
       <div style={{ textAlign: "center" }}>
-        <H style={{ fontSize: 34 }}>Cooking your roast…</H>
+        <H style={{ fontSize: 34 }}>Warming up…</H>
         <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: "8px 0 0", minHeight: 26 }}>
-          {STEPS[Math.min(step, STEPS.length - 1)]}
+          {steps[Math.min(step, steps.length - 1)]}
         </p>
       </div>
       <div style={{ width: "100%", maxWidth: 280 }}>
