@@ -11,11 +11,21 @@
 // StrictMode-safe: each effect owns its rAF; elapsed lives in a ref.
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
-import { toStandupSet, buildTimeline, mmss } from "../standup.js";
+import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
+import { useRoastVoice } from "./useRoastVoice.js";
 
 export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
-  const { segments, totalMs } = useMemo(() => buildTimeline(standup.beats), [standup]);
+
+  // When a backend is configured, fetch the comedian's per-beat audio (cached) so
+  // the live reel is voiced — and pace the timeline to the REAL spoken durations,
+  // the same durations the exported MP4 uses, keeping live and export in lockstep.
+  // No backend / any failure → null → silent + word-count estimate, exactly as before.
+  const voice = useRoastVoice(standup.comedianId, result.roasterName, standup.beats);
+  const { segments, totalMs } = useMemo(
+    () => buildTimeline(standup.beats, voice ? { durationsMs: voice.durationsMs } : {}),
+    [standup, voice]
+  );
 
   const hasShow = segments.length > 0 && totalMs > 0;
   const [timeMs, setTimeMs] = useState(0);
@@ -26,7 +36,11 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
   const lastTsRef = useRef(0);
   const scrubRef = useRef(null);
   const videoRef = useRef(null);
+  const audioRefs = useRef([]);
+  const activeAudioRef = useRef(-1);
   const reduceMotion = usePrefersReducedMotion();
+
+  const pauseAllAudio = () => audioRefs.current.forEach((a) => a && a.pause());
 
   useEffect(() => {
     if (!playing || !hasShow) return undefined;
@@ -40,9 +54,23 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
       const e = elapsedRef.current;
       if (scrubRef.current) scrubRef.current.style.width = `${(e / totalMs) * 100}%`;
       setTimeMs(e);
+      // Voice: when the active beat changes, start its clip (the visual scene is
+      // unaffected — audio is a live nicety; the export muxes audio itself).
+      const idx = activeIndexAt(segments, e);
+      if (idx !== activeAudioRef.current) {
+        const prev = audioRefs.current[activeAudioRef.current];
+        if (prev) prev.pause();
+        activeAudioRef.current = idx;
+        const cur = audioRefs.current[idx];
+        if (cur) {
+          try { cur.currentTime = 0; } catch { /* not yet seekable */ }
+          cur.play().catch(() => {}); // autoplay policy / not loaded — stay silent
+        }
+      }
       if (e >= totalMs) {
         setPlaying(false);
         setFinished(true);
+        pauseAllAudio();
         return;
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -53,6 +81,14 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
       cancelAnimationFrame(rafRef.current);
     };
   }, [playing, hasShow, segments, totalMs]);
+
+  // Pause/resume the active clip with the timeline.
+  useEffect(() => {
+    const cur = audioRefs.current[activeAudioRef.current];
+    if (!cur) return;
+    if (playing) cur.play().catch(() => {});
+    else cur.pause();
+  }, [playing]);
 
   // Keep the live gameplay loop roughly in step with the scrubber. Only act on a
   // real divergence so a failed play() (autoplay policy) doesn't desync silently.
@@ -69,6 +105,8 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
     lastTsRef.current = 0;
     if (scrubRef.current) scrubRef.current.style.width = "0%";
     if (videoRef.current) videoRef.current.currentTime = 0;
+    pauseAllAudio();
+    activeAudioRef.current = -1;
     setTimeMs(0);
     setFinished(false);
     setPlaying(true);
@@ -99,6 +137,15 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
           reduceMotion={reduceMotion}
         />
       </div>
+
+      {/* the comedian's voice — one hidden clip per beat, driven by the rAF tick */}
+      {voice && voice.clips.length > 0 && (
+        <div aria-hidden="true" style={{ display: "none" }}>
+          {voice.clips.map((c, i) => (
+            <audio key={i} ref={(el) => { audioRefs.current[i] = el; }} src={c.dataUrl} preload="auto" />
+          ))}
+        </div>
+      )}
 
       {/* player chrome */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
