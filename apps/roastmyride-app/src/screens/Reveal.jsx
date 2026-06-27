@@ -15,13 +15,30 @@ import { ShareCard } from "../components/ShareCard.jsx";
 import { StagePlayer } from "../components/StagePlayer.jsx";
 import { SetBeat } from "../components/SetBeat.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
-import { toStandupSet, comicStyle } from "../standup.js";
+import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 export function Reveal() {
   const go = useNavigate();
   const { result, previewResult, input } = useFlow();
   const roast = result || previewResult; // fallback so a direct /reveal still renders
+
+  // Save-as-video: build the exact render spec (the Remotion composition's
+  // inputProps) and download it. The render service turns this into a frame-
+  // identical MP4 (locally: `pnpm --filter @callies-universe/render render`;
+  // one tap once the render endpoint is hosted).
+  const saveVideo = () => {
+    const spec = buildRenderSpec(roast, input);
+    const blob = new Blob([JSON.stringify(spec, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `roastmyride-${String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
 
   const set = toStandupSet(roast);
   const act = roast.performer?.comedicIdentity || comicStyle(roast.roasterId);
@@ -83,8 +100,8 @@ export function Reveal() {
             Share the clip
           </Button>
           <div style={{ display: "flex", gap: "var(--space-3)" }}>
-            <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/reveal")}>
-              Save
+            <Button variant="secondary" style={{ flex: 1 }} onClick={saveVideo}>
+              ⤓ Save video
             </Button>
             <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/cooking")}>
               New set

@@ -136,3 +136,28 @@ export function mmss(totalMs) {
   const secs = Math.max(0, Math.round(totalMs / 1000));
   return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
 }
+
+/**
+ * Build the render spec = the EXACT inputProps the Remotion "stage" composition
+ * consumes (services/render). Carries the real photos as dataUrls so the video
+ * shows the actual car + profile. This is the one shape the app hands to the
+ * render service (locally via the CLI now; via an endpoint once hosted).
+ */
+export function buildRenderSpec(result, input) {
+  const su = toStandupSet(result);
+  const car = (result.research && result.research.car) || {};
+  const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || "your ride";
+  const p = input && input.personal;
+  const profile = p && p.present && p.dataUrl ? { dataUrl: p.dataUrl, blur: !!p.blur, kind: p.kind || null } : null;
+  return {
+    comedianId: result.roasterId,
+    performerName: result.roasterName,
+    bit: su.bit,
+    reaction: result.reaction,
+    carLabel,
+    engineLabel: result.engine === "offline" ? "offline" : undefined,
+    beats: su.beats,
+    carPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
+    profile,
+  };
+}

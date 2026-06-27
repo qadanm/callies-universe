@@ -1,0 +1,18 @@
+{
+  "name": "@callies-universe/render",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Generic video-render capability: executes a Remotion composition to an MP4 (the SAME scene the app plays, so the video is exactly what's rendered). Host-agnostic — runs locally/CI now; drops into a server or Lambda later.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./index.js",
+  "exports": { ".": "./index.js" },
+  "scripts": {
+    "render": "node scripts/render.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.484",
+    "@remotion/renderer": "^4.0.484",
+    "remotion": "^4.0.484"
+  }
+}
