@@ -40,7 +40,38 @@ export function carLabel(car) {
  */
 export async function researchCar(car, model) {
   const label = carLabel(car);
+  const noSearch =
+    typeof process !== "undefined" && process.env && process.env.BRAIN_NO_SEARCH;
   return memo(cacheKey(car), async () => {
+    // Escape hatch (BRAIN_NO_SEARCH=1): skip the web entirely and ground from
+    // the model's own knowledge. Guaranteed memory-bounded — one small json call,
+    // no server tools, no page content. Less current than live search, but safe.
+    if (noSearch) {
+      const known = await model.json({
+        system:
+          "You are a comedy writer's researcher with deep car knowledge. From what " +
+          "you already know (no web), give the REAL, SPECIFIC reputation of this car: " +
+          "its running jokes, genuine known problems/quirks, and what people say about " +
+          "owning one. Specific and true — never generic 'it's old' filler. Aim at the " +
+          "car, never a group of people.",
+        user: `Car: ${label}. Summarize its real reputation, running jokes, known problems, and what people say.`,
+        schema: RESEARCH_SCHEMA,
+        effort: "low",
+        thinking: false,
+        maxTokens: 2048,
+      });
+      return {
+        car,
+        summary: known.summary,
+        runningJokes: known.runningJokes || [],
+        knownProblems: known.knownProblems || [],
+        whatPeopleSay: known.whatPeopleSay || [],
+        sources: [],
+        defaulted: !!car?._defaulted,
+        offline: false,
+      };
+    }
+
     // --- Pass 1: live search for real, current material ---
     const { text, sources } = await model.search({
       system:

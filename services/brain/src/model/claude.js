@@ -81,15 +81,16 @@ export async function createClaudeModel(config = {}) {
      * pause_turn continuation loop, and returns the synthesized text plus the
      * sources the model actually pulled from.
      *
-     * `maxUses` is kept low and the resume loop short on purpose: web_search
-     * results carry the fetched page content, and resuming a pause_turn re-sends
-     * the whole growing assistant turn back to the API. Letting that compound
-     * over many rounds is what blew the heap on search-heavy cars — so we cap
-     * searches and rounds, accumulate only the small text + source list we need,
-     * and never retain the large content blocks beyond the resume that needs them.
+     * We use the BASIC web_search_20250305 tool, NOT the _20260209 dynamic-
+     * filtering variant. The newer variant runs server-side code execution that
+     * fetches and buffers full page BODIES — hundreds of MB on a search-heavy
+     * car — which (re-sent on every pause_turn resume) blew the heap. The basic
+     * tool returns small result snippets + URLs, which is all the comedy writer
+     * needs. We also keep max_uses low, the resume loop short, and retain only
+     * the synthesized text + source list — never the large content blocks.
      */
-    async search({ system, user, maxTokens = 3000, maxUses = 4, maxRounds = 3 }) {
-      const tools = [{ type: "web_search_20260209", name: "web_search", max_uses: maxUses }];
+    async search({ system, user, maxTokens = 3000, maxUses = 5, maxRounds = 2 }) {
+      const tools = [{ type: "web_search_20250305", name: "web_search", max_uses: maxUses }];
       let messages = [{ role: "user", content: user }];
       const sources = [];
       let text = "";
