@@ -103,8 +103,11 @@ export async function writeSet(performer, research, context, model, opts = {}) {
     system,
     user,
     schema: SET_SCHEMA,
-    effort: "high",
-    maxTokens: 3500,
+    // Low effort + a little thinking keeps the voice sharp without the token cost
+    // of high effort. (effort/thinking apply only on models that support them.)
+    effort: "low",
+    thinking: true,
+    maxTokens: 3000,
   });
   return {
     title: set.title || "Tonight's Set",

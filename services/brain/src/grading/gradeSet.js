@@ -105,8 +105,8 @@ export async function gradeSet(set, performer, research, model) {
     system,
     user,
     schema: GRADE_SCHEMA,
-    effort: "high",
-    maxTokens: 2048,
+    effort: "low",
+    maxTokens: 1536,
   });
 
   // Clamp to a 0–10 integer per axis (the range is no longer schema-enforced).

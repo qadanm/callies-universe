@@ -57,9 +57,8 @@ for (const id of requested) {
     car,
     roasterId: id,
     context: ["brutal"],
-    // Snappy proof defaults: best-of-3, one round. The brain's own defaults
-    // (3 × 2 rounds) still apply in the app/server; this just keeps the demo light.
-    config: live ? { candidates: 3, maxRounds: 1 } : { offline: true },
+    // Snappy, cheap proof defaults: best-of-2, one round.
+    config: live ? { candidates: 2, maxRounds: 1 } : { offline: true },
   });
   results.push(res);
 }

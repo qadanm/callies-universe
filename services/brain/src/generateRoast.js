@@ -35,10 +35,13 @@ export async function generateRoast(input) {
   // Explicit offline (tests, preview, CI) resolves instantly.
   if (config.offline) return offlineBrain(input);
 
-  // `config._model` is a test seam: inject a model implementing the same thin
-  // interface to exercise the full live orchestration without a network call.
-  const model = config._model || (await createClaudeModel(config));
-  if (!model) {
+  // `config._model` is a test seam: inject one model (used for every stage) to
+  // exercise the full live orchestration without a network call. Otherwise we
+  // get the cost-tiered pair { write, utility }.
+  const models = config._model
+    ? { write: config._model, utility: config._model }
+    : await createClaudeModel(config);
+  if (!models) {
     // No key / SDK at app runtime → offline path, but hold a brief "cooking"
     // beat so the loading screen reads as a real generation (the live path
     // takes real seconds; this keeps the UX coherent).
@@ -50,9 +53,10 @@ export async function generateRoast(input) {
   try {
     const performer = resolvePerformer(input.roasterId);
     const car = normalizeCar(input);
-    const research = await researchCar(car, model);
+    // Research + grading run on the cheap utility model; writing on the writer.
+    const research = await researchCar(car, models.utility);
 
-    const N = clamp(config.candidates ?? 3, 1, 6);
+    const N = clamp(config.candidates ?? 2, 1, 6);
     const maxRounds = clamp(config.maxRounds ?? 2, 1, 4);
 
     let allCandidates = [];
@@ -64,11 +68,11 @@ export async function generateRoast(input) {
       // Generate N candidates in parallel, then grade them in parallel.
       const sets = await Promise.all(
         Array.from({ length: N }, (_, i) =>
-          writeSet(performer, research, input.context, model, { variant: round * N + i })
+          writeSet(performer, research, input.context, models.write, { variant: round * N + i })
         )
       );
       const graded = await Promise.all(
-        sets.map(async (set) => ({ set, grade: await gradeSet(set, performer, research, model) }))
+        sets.map(async (set) => ({ set, grade: await gradeSet(set, performer, research, models.utility) }))
       );
       allCandidates = allCandidates.concat(graded);
 

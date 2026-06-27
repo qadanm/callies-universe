@@ -74,14 +74,36 @@ A set passes only if it clears **every** score gate **and** the grader caught no
 AI) — a single major tell, or two+ minor ones, sinks the set. Composite weights
 `human` and `funny` highest.
 
-## Model & efficiency
+## Model & cost
 
-- **Claude drives writing and grading** (`claude-opus-4-8`, adaptive thinking)
-  behind a thin, swappable model interface ([src/model/claude.js](src/model/claude.js)).
+Tiered to **spend on the funny, economize on everything else** — behind a thin,
+swappable model interface ([src/model/claude.js](src/model/claude.js)):
+
+| Stage | Default model | Why |
+| --- | --- | --- |
+| **Writing** (the funny) | `claude-sonnet-4-6` | voice/comedic nuance matters here |
+| **Research + grading** | `claude-haiku-4-5` | extraction + judgment; cheap |
+
+Requests are **capability-aware** — `effort` and adaptive thinking are sent only
+to models that support them (Haiku rejects both), and effort is kept **low** with
+thinking only on the writer. Combined with **best-of-2** (down from 3) and
+per-car research caching, this is **~10–40× cheaper** than the all-Opus / high-
+effort configuration.
+
+**Dial it yourself** (env or `config`):
+
+```bash
+BRAIN_WRITE_MODEL=claude-opus-4-8   # premium voice
+BRAIN_MODEL=claude-haiku-4-5        # cheapest research+grading
+# rock-bottom: set BOTH to claude-haiku-4-5
+# premium:     set BOTH to claude-opus-4-8
+```
+
 - **Research is cached per car** ([src/cache.js](src/cache.js)) so the whole cast
-  roasts one car off a single research pass. Writing and grading are never cached
-  — the funny is generated fresh. Candidate counts are modest (default 3, up to 2
-  rounds); the grader always runs.
+  roasts one car off a single research pass. For production, back this with a
+  shared/persistent cache so the same car is never re-researched across users.
+  Writing and grading are never cached — the funny is generated fresh; the grader
+  always runs.
 
 ## Fallback (offline / no key)
 

@@ -1,54 +1,66 @@
-// services/brain — the MODEL interface (thin + swappable).
+// services/brain — the MODEL interface (thin, swappable, cost-tiered).
 //
-// Claude drives the writing and the grading — it's strongest at voice and
-// comedic nuance — but the brain talks to it through this narrow interface so
-// the model is swappable later. Everything the brain needs is three methods:
+// Claude drives the writing and the grading, but the brain talks to it through
+// this narrow interface — three methods: json(), search(), id.
 //
-//   model.json({ system, user, schema, effort })  → validated object
-//   model.search({ system, user })                → { text, sources }
-//   model.id                                       → model identifier string
+// COST TIERING (spend on the funny, economize on everything else):
+//   • write   → Sonnet 4.6 by default — the comedy, where voice matters.
+//   • utility → Haiku 4.5 by default — research + grading (judgment/extraction).
+// Both are far cheaper than Opus. Override per stage:
+//   BRAIN_WRITE_MODEL / config.writeModel   (the writer)
+//   BRAIN_MODEL       / config.model        (research + grading)
+// Set both to claude-opus-4-8 for premium, or claude-haiku-4-5 for rock-bottom.
 //
-// The Anthropic SDK is imported DYNAMICALLY so the offline path never requires
-// the dependency to be installed or a key to be present.
+// The SDK is imported DYNAMICALLY so the offline path never needs the dependency
+// or a key, and the variable specifier + @vite-ignore keeps it out of the
+// browser bundle.
 
-const DEFAULT_MODEL = "claude-opus-4-8";
+const DEFAULT_WRITE_MODEL = "claude-sonnet-4-6"; // the funny
+const DEFAULT_UTILITY_MODEL = "claude-haiku-4-5"; // research + grading
+
+/** Which request features a model accepts (older/cheaper models reject some). */
+function capabilities(modelId) {
+  const effort = /(opus-4-[5-9]|sonnet-4-6|fable-5|mythos-5)/.test(modelId);
+  const adaptive = /(opus-4-[6-9]|sonnet-4-6|fable-5|mythos-5)/.test(modelId);
+  return { effort, adaptive };
+}
 
 /**
- * Build the Claude-backed model, or return null if no key / SDK is available
- * (the orchestrator then takes the offline path).
+ * Build the Claude-backed models, or return null if no key / SDK is available
+ * (the orchestrator then takes the offline path). Returns { write, utility }.
  *
- * @param {{ apiKey?: string, model?: string }} [config]
- * @returns {Promise<null | object>}
+ * @param {{ apiKey?: string, model?: string, writeModel?: string }} [config]
+ * @returns {Promise<null | { write: object, utility: object }>}
  */
 export async function createClaudeModel(config = {}) {
-  // Resolve the key from config or the Node environment. In a browser (Vite
-  // build) there is no `process` and no key — and we'd never want to ship a key
-  // to the client anyway — so we bail to the offline path before touching the SDK.
-  const envKey =
-    typeof process !== "undefined" && process.env ? process.env.ANTHROPIC_API_KEY : undefined;
-  const apiKey = config.apiKey || envKey;
-  if (!apiKey) return null;
+  const env = typeof process !== "undefined" && process.env ? process.env : {};
+  const apiKey = config.apiKey || env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null; // browser / no key → offline path
 
   let Anthropic;
   try {
-    // Variable specifier + @vite-ignore so the browser bundler never tries to
-    // pull the Node SDK into the app bundle. Only reached server-side / in Node,
-    // where a key actually exists.
     const sdk = "@anthropic-ai/sdk";
     ({ default: Anthropic } = await import(/* @vite-ignore */ sdk));
   } catch {
-    // SDK not installed — fall back to offline.
-    return null;
+    return null; // SDK not installed → offline
   }
 
   const client = new Anthropic({ apiKey });
-  const modelId = config.model || DEFAULT_MODEL;
+  const writeModel = config.writeModel || env.BRAIN_WRITE_MODEL || DEFAULT_WRITE_MODEL;
+  const utilityModel = config.model || env.BRAIN_MODEL || DEFAULT_UTILITY_MODEL;
 
-  /** Pull the first JSON text block out of a response and parse it. */
+  return {
+    write: makeModel(client, writeModel),
+    utility: makeModel(client, utilityModel),
+  };
+}
+
+/** One model object bound to a model id (sharing the client). */
+function makeModel(client, modelId) {
+  const caps = capabilities(modelId);
+
   function parseJSON(message) {
-    const block = message.content.find(
-      (b) => b.type === "text" && b.text && b.text.trim()
-    );
+    const block = message.content.find((b) => b.type === "text" && b.text && b.text.trim());
     if (!block) throw new Error("model returned no text block");
     return JSON.parse(block.text);
   }
@@ -57,37 +69,30 @@ export async function createClaudeModel(config = {}) {
     id: modelId,
 
     /**
-     * Structured generation. Returns an object validated against `schema`
-     * (a JSON Schema). Uses adaptive thinking for comedic/judgement nuance.
+     * Structured generation → object validated against `schema`. `effort` and
+     * `thinking` are applied only on models that support them (Haiku ignores
+     * both — passing them would 400 / waste tokens).
      */
-    async json({ system, user, schema, effort = "high", maxTokens = 4096, thinking = true }) {
+    async json({ system, user, schema, effort = "low", maxTokens = 4096, thinking = false }) {
+      const output_config = { format: { type: "json_schema", schema } };
+      if (caps.effort) output_config.effort = effort;
       const req = {
         model: modelId,
         max_tokens: maxTokens,
         system,
         messages: [{ role: "user", content: user }],
-        output_config: {
-          effort,
-          format: { type: "json_schema", schema },
-        },
+        output_config,
       };
-      if (thinking) req.thinking = { type: "adaptive" };
+      if (thinking && caps.adaptive) req.thinking = { type: "adaptive" };
       const message = await client.messages.create(req);
       return parseJSON(message);
     },
 
     /**
-     * Live web research. Runs the server-side web_search tool, handling the
-     * pause_turn continuation loop, and returns the synthesized text plus the
-     * sources the model actually pulled from.
-     *
-     * We use the BASIC web_search_20250305 tool, NOT the _20260209 dynamic-
-     * filtering variant. The newer variant runs server-side code execution that
-     * fetches and buffers full page BODIES — hundreds of MB on a search-heavy
-     * car — which (re-sent on every pause_turn resume) blew the heap. The basic
-     * tool returns small result snippets + URLs, which is all the comedy writer
-     * needs. We also keep max_uses low, the resume loop short, and retain only
-     * the synthesized text + source list — never the large content blocks.
+     * Live web research via the BASIC web_search_20250305 tool (small result
+     * snippets + URLs — not the _20260209 dynamic-filtering variant, which buffers
+     * full page bodies and blew the heap). max_uses + resume loop kept short; we
+     * retain only the synthesized prose + sources, never the large content blocks.
      */
     async search({ system, user, maxTokens = 3000, maxUses = 5, maxRounds = 2 }) {
       const tools = [{ type: "web_search_20250305", name: "web_search", max_uses: maxUses }];
@@ -96,16 +101,10 @@ export async function createClaudeModel(config = {}) {
       let text = "";
 
       for (let i = 0; i < maxRounds; i++) {
-        const message = await client.messages.create({
-          model: modelId,
-          max_tokens: maxTokens,
-          system,
-          messages,
-          thinking: { type: "adaptive" },
-          tools,
-        });
+        const req = { model: modelId, max_tokens: maxTokens, system, messages, tools };
+        if (caps.adaptive) req.thinking = { type: "adaptive" };
+        const message = await client.messages.create(req);
         collectSources(message, sources);
-        // Keep the synthesized prose; drop everything else from our retained state.
         const prose = message.content
           .filter((b) => b.type === "text" && b.text)
           .map((b) => b.text)
@@ -114,7 +113,6 @@ export async function createClaudeModel(config = {}) {
         if (prose) text = prose;
 
         if (message.stop_reason !== "pause_turn") break;
-        // Resume the server-tool turn (the API requires the assistant content back).
         messages = [...messages, { role: "assistant", content: message.content }];
       }
 

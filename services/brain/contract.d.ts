@@ -69,8 +69,13 @@ export interface RoastInput {
 
 export interface BrainConfig {
   apiKey?: string;
+  /** Model for research + grading (the cheap "utility" stage). Default Haiku 4.5.
+   *  Env: BRAIN_MODEL. */
   model?: string;
-  /** Candidates generated per round before grading (best-of-N). Default 3. */
+  /** Model for writing the set (the "funny" stage). Default Sonnet 4.6.
+   *  Env: BRAIN_WRITE_MODEL. Set to claude-opus-4-8 for premium voice. */
+  writeModel?: string;
+  /** Candidates generated per round before grading (best-of-N). Default 2. */
   candidates?: number;
   /** Max regeneration rounds if nothing passes the rubric. Default 2. */
   maxRounds?: number;
