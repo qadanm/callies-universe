@@ -53,6 +53,9 @@ export const StageScene = React.memo(function StageScene({
   // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
   const inLead = leadMs > 0 && timeMs < leadMs;
   const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
+  // The car (and owner) are showcased BIG during the hook, then crossfade to their
+  // corner stickers as the set starts. cornerReveal: 0 during the showcase → 1 after.
+  const cornerReveal = leadMs > 0 && !reduceMotion ? clamp01((timeMs - (leadMs - 220)) / 300) : 1;
 
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden", color: "#fff", fontFamily: "var(--font-display, inherit)" }} data-testid="stage-scene">
@@ -67,21 +70,22 @@ export const StageScene = React.memo(function StageScene({
         </span>
       </div>
 
-      {/* the car — ALWAYS on screen, as a tilted polaroid sticker */}
-      <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)" }} tag="🚗 the ride" tone="var(--sticker-yellow)">
+      {/* the car — ALWAYS on screen, as a tilted polaroid sticker (crossfades in
+          after the big showcase during the hook) */}
+      <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)", opacity: cornerReveal }} tag="🚗 the ride" tone="var(--sticker-yellow)">
         {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
       </Sticker>
 
       {/* the owner — only if a profile was submitted */}
       {hasProfile && (
-        <Sticker style={{ top: "8%", right: "4%", transform: "rotate(5deg)" }} tag="the owner" tone="#8FC2FF">
+        <Sticker style={{ top: "8%", right: "4%", transform: "rotate(5deg)", opacity: cornerReveal }} tag="the owner" tone="#8FC2FF">
           <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
         </Sticker>
       )}
 
       {/* center stage: opening hook → captions → closing CTA */}
       {inLead ? (
-        <Hook carLabel={carLabel} timeMs={timeMs} leadMs={leadMs} reduceMotion={reduceMotion} />
+        <Hook carPhoto={carPhoto} carLabel={carLabel} profile={profile} timeMs={timeMs} leadMs={leadMs} reduceMotion={reduceMotion} />
       ) : inTail ? (
         <Outro performerName={performerName} timeMs={timeMs} startMs={totalMs - tailMs} reduceMotion={reduceMotion} />
       ) : (
@@ -187,14 +191,39 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
 const centerStage = { position: "absolute", left: "8%", right: "8%", top: "50%", transform: "translateY(-50%)", zIndex: 6, textAlign: "center" };
 const bigText = { fontFamily: "var(--font-display, inherit)", fontWeight: 900, textTransform: "uppercase", lineHeight: 1.02, WebkitTextStroke: "2px #1a1008", textShadow: "0 4px 0 rgba(0,0,0,0.5)" };
 
-// Opening hook — presents the car by name + a "this is gonna be good" beat.
-function Hook({ carLabel, timeMs, leadMs, reduceMotion }) {
-  const p = reduceMotion ? 1 : clamp01(timeMs / Math.max(1, leadMs * 0.5));
+// Opening hook = the SHOWCASE: the car (always) presented BIG, the owner too if
+// submitted, then it crossfades to the corner stickers as the set starts.
+function Hook({ carPhoto, carLabel, profile, timeMs, leadMs, reduceMotion }) {
+  const inP = reduceMotion ? 1 : clamp01(timeMs / Math.max(1, leadMs * 0.4)); // entrance over first 40%
+  const op = reduceMotion ? 1 : Math.min(inP, clamp01((leadMs - timeMs) / 250)); // fade out last 250ms
+  const hasProfile = !!(profile && profile.dataUrl);
   return (
-    <div style={centerStage}>
-      <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)", opacity: p }}>tonight's victim</div>
-      <div style={{ ...bigText, color: "#fff", fontSize: "clamp(30px, 11vw, 64px)", marginTop: 6, transform: `scale(${0.9 + 0.1 * p})` }}>{carLabel || "your ride"}</div>
-      <div style={{ fontSize: "clamp(30px, 12vw, 68px)", marginTop: 4, opacity: p }} aria-hidden="true">💀</div>
+    <div style={{ position: "absolute", inset: 0, zIndex: 6, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
+      <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's victim</div>
+      <div style={{ display: "flex", gap: "4%", alignItems: "center", justifyContent: "center", width: "100%", transform: `scale(${0.82 + 0.18 * inP})` }}>
+        <ShowcaseFrame w={hasProfile ? "46%" : "64%"} rotate={-3}>
+          {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
+        </ShowcaseFrame>
+        {hasProfile && (
+          <ShowcaseFrame w="30%" rotate={4} tag="the owner">
+            <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
+          </ShowcaseFrame>
+        )}
+      </div>
+      <div style={{ ...bigText, color: "#fff", fontSize: "clamp(26px, 9vw, 52px)", padding: "0 6%" }}>
+        {carLabel || "your ride"} <span aria-hidden="true">💀</span>
+      </div>
+    </div>
+  );
+}
+
+function ShowcaseFrame({ w, rotate = 0, tag, children }) {
+  return (
+    <div style={{ width: w, transform: `rotate(${rotate}deg)` }}>
+      <div style={{ background: "#fff", padding: "3%", paddingBottom: tag ? "10%" : "3%", borderRadius: 12, boxShadow: "0 14px 34px rgba(0,0,0,0.55)" }}>
+        <div style={{ aspectRatio: "1 / 1", borderRadius: 6, overflow: "hidden", background: "#0c0805" }}>{children}</div>
+        {tag && <div style={{ marginTop: 4, font: "var(--type-legal)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink)", textAlign: "center" }}>{tag}</div>}
+      </div>
     </div>
   );
 }
