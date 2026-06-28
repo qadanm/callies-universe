@@ -11,6 +11,7 @@
 
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { generateRoast } from "../services/roast.js";
+import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
 import { offlineBrain } from "@callies-universe/brain";
 
 const DEFAULT_INPUT = {
@@ -78,7 +79,19 @@ export function FlowProvider({ children }) {
   // stays in context for the stage + video to render. A successful roast costs a
   // credit (the funnel is gated to >=1 credit before we get here).
   const generate = useCallback(async () => {
-    const r = await generateRoast(sanitizeForBrain(input));
+    // Photo car-ID (server vision) when a backend is present and we have a photo
+    // but no explicit car — so the brain researches the user's ACTUAL ride. The
+    // photo goes ONLY to /identify, never to the text brain (sanitizeForBrain).
+    let active = input;
+    if (hasRoastApi() && input.carPhoto?.dataUrl && !input.car) {
+      try {
+        const car = await identifyCarViaApi(input.carPhoto.dataUrl);
+        if (car) active = { ...input, car };
+      } catch (e) {
+        console.warn(`[flow] car identification failed (${(e && e.message) || e}); using default`);
+      }
+    }
+    const r = await generateRoast(sanitizeForBrain(active));
     setResult(r);
     // Charge for a delivered roast — but NOT when a live attempt degraded to the
     // offline fallback (our failure shouldn't cost the user).

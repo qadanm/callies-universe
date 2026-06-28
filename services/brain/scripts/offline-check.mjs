@@ -7,7 +7,7 @@
 //
 // This keeps `pnpm verify` green with no key. Run: node scripts/offline-check.mjs
 
-import { generateRoast } from "../index.js";
+import { generateRoast, identifyCar } from "../index.js";
 import { usageCost } from "../src/model/claude.js";
 import { Roaster } from "@callies-universe/core";
 
@@ -64,6 +64,10 @@ assert(usageCost([]) === 0, "usageCost([]) === 0");
 assert(usageCost([{ model: "claude-sonnet-4-6", inputTokens: 1e6, outputTokens: 1e6 }]) === 18, "usageCost: sonnet 1M+1M = $18");
 assert(usageCost([{ model: "claude-haiku-4-5", inputTokens: 2e6, outputTokens: 0 }]) === 2, "usageCost: haiku 2M in = $2");
 assert(usageCost([{ model: "unknown-model", inputTokens: 9e9, outputTokens: 9e9 }]) === 0, "usageCost: unknown model = $0");
+
+// --- photo car-ID: no key → null; no image → null (never breaks the flow) ---
+assert((await identifyCar({})) === null, "identifyCar: no image → null");
+assert((await identifyCar({ imageDataUrl: "data:image/png;base64,iVBORw0KGgo=" })) === null, "identifyCar: no key → null");
 
 // --- cross-character difference: every set's plainText must be distinct ---
 const texts = results.map((r) => r.plainText);

@@ -22,7 +22,7 @@ import { readFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateRoast as defaultGenerateRoast } from "@callies-universe/brain";
+import { generateRoast as defaultGenerateRoast, identifyCar as defaultIdentify } from "@callies-universe/brain";
 import { synthesizeSet as defaultSynthesize } from "@callies-universe/voice";
 import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster } from "@callies-universe/render";
 
@@ -47,6 +47,7 @@ let tmpCounter = 0;
  */
 export function createApiServer(opts = {}) {
   const generateRoast = opts.generateRoast || defaultGenerateRoast;
+  const identify = opts.identify || defaultIdentify;
   const synthesize = opts.synthesize || defaultSynthesize;
   const render = opts.render || defaultRender;
   const poster = opts.poster || defaultPoster;
@@ -94,6 +95,17 @@ export function createApiServer(opts = {}) {
         }
         const result = await generateRoast(input); // LIVE with ANTHROPIC_API_KEY, else offline
         return json(res, 200, result);
+      }
+
+      if (req.method === "POST" && path === "/identify") {
+        const body = await readJson(req);
+        // dryRun is a render/Chrome concern; identify is a model call (offline → null),
+        // so only honor the explicit query flag here, not the server default.
+        if (url.searchParams.get("dryRun") === "1") {
+          return json(res, 200, { dryRun: true, hasImage: !!body.imageDataUrl });
+        }
+        const car = await identify({ imageDataUrl: body.imageDataUrl }); // null without a key
+        return json(res, 200, { car });
       }
 
       if (req.method === "POST" && path === "/voice") {

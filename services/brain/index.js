@@ -11,6 +11,9 @@
 
 export { generateRoast } from "./src/generateRoast.js";
 
+// Photo car identification (vision) — names the user's actual car for the research.
+export { identifyCar } from "./src/identify.js";
+
 // Offline path (used by the app's fallback story, the CI smoke, and demos).
 export { offlineBrain } from "./src/fallback/offlineBrain.js";
 

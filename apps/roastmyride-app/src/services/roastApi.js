@@ -10,6 +10,18 @@ const BASE = import.meta.env.VITE_ROAST_API;
 
 export const hasRoastApi = () => !!BASE;
 
+/** POST the car photo → an identified { year, make, model, label } or null (vision). */
+export async function identifyCarViaApi(imageDataUrl) {
+  const res = await fetch(`${BASE}/identify`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
+  });
+  if (!res.ok) throw new Error(`identify ${res.status}`);
+  const j = await res.json();
+  return j.car || null;
+}
+
 /** POST the sanitized RoastInput → the RoastResult (live brain runs server-side). */
 export async function roastViaApi(input) {
   const res = await fetch(`${BASE}/roast`, {

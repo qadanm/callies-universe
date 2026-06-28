@@ -99,6 +99,29 @@ function makeModel(client, modelId) {
     usage,
 
     /**
+     * Structured generation from an IMAGE + prompt (vision) → object validated
+     * against `schema`. Used for photo car-ID. No effort/thinking (kept on the
+     * cheap utility model, e.g. Haiku, which ignores them).
+     */
+    async visionJson({ system, imageDataUrl, prompt, schema, maxTokens = 1024 }) {
+      const m = /^data:(.+?);base64,(.*)$/s.exec(imageDataUrl || "");
+      if (!m) throw new Error("visionJson: expected a base64 data URL");
+      const content = [
+        { type: "image", source: { type: "base64", media_type: m[1], data: m[2] } },
+        { type: "text", text: prompt },
+      ];
+      const message = await client.messages.create({
+        model: modelId,
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: "user", content }],
+        output_config: { format: { type: "json_schema", schema } },
+      });
+      meter(message);
+      return parseJSON(message);
+    },
+
+    /**
      * Structured generation → object validated against `schema`. `effort` and
      * `thinking` are applied only on models that support them (Haiku ignores
      * both — passing them would 400 / waste tokens).

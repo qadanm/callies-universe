@@ -53,6 +53,12 @@ try {
   const badRoast = await post(base, "/roast", { context: [] });
   check(badRoast.status === 400, "POST /roast without roasterId → 400");
 
+  // POST /identify — dryRun wiring + offline (no key → car null)
+  const idDry = await post(base, "/identify?dryRun=1", { imageDataUrl: "data:image/png;base64,iVBORw0KGgo=" });
+  check(idDry.status === 200 && idDry.json.dryRun === true && idDry.json.hasImage === true, "POST /identify?dryRun → 200 (hasImage)");
+  const id = await post(base, "/identify", { imageDataUrl: "data:image/png;base64,iVBORw0KGgo=" });
+  check(id.status === 200 && id.json.car === null, "POST /identify offline → car null (no key)");
+
   // POST /voice
   const voice = await post(base, "/voice", { comedianId: "mama", performerName: "Mama Denièce", beats: BEATS });
   check(voice.status === 200, "POST /voice → 200");

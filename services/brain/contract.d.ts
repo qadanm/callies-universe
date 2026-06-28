@@ -257,3 +257,12 @@ export interface RoastResult {
  * deterministic offline brain instead.
  */
 export function generateRoast(input: RoastInput): Promise<RoastResult>;
+
+/**
+ * Identify the car in a photo (vision) so the brain researches the user's actual
+ * ride. Returns null with no key / no image / low confidence / any error.
+ */
+export function identifyCar(
+  input: { imageDataUrl?: string },
+  config?: BrainConfig
+): Promise<CarIdentity | null>;
