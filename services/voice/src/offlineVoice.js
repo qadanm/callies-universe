@@ -39,5 +39,11 @@ export function offlineVoiceSet(beats, performer, config = {}) {
     const durationMs = estimateDurationMs(text, profile.pace);
     return { index, dataUrl: silentWavDataUrl(durationMs), mime: "audio/wav", durationMs, text };
   });
-  return { clips, voiced: false, engine: "offline", durationsMs: clips.map((c) => c.durationMs) };
+  return {
+    clips,
+    voiced: false,
+    engine: "offline",
+    durationsMs: clips.map((c) => c.durationMs),
+    charCount: clips.reduce((n, c) => n + ((c.text || "").length), 0),
+  };
 }

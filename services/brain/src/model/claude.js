@@ -18,6 +18,26 @@
 const DEFAULT_WRITE_MODEL = "claude-sonnet-4-6"; // the funny
 const DEFAULT_UTILITY_MODEL = "claude-haiku-4-5"; // research + grading
 
+// Published $/1M tokens (input/output) for the cost estimate. Unknown model → 0.
+export const COST_USD_PER_MTOK = {
+  "claude-opus-4-8": { in: 5, out: 25 },
+  "claude-opus-4-7": { in: 5, out: 25 },
+  "claude-opus-4-6": { in: 5, out: 25 },
+  "claude-sonnet-4-6": { in: 3, out: 15 },
+  "claude-haiku-4-5": { in: 1, out: 5 },
+  "claude-fable-5": { in: 10, out: 50 },
+};
+
+/** Estimate USD for a list of per-model token usages. Excludes web-search fees. */
+export function usageCost(usages) {
+  let usd = 0;
+  for (const u of usages || []) {
+    const rate = COST_USD_PER_MTOK[u.model] || { in: 0, out: 0 };
+    usd += ((u.inputTokens || 0) / 1e6) * rate.in + ((u.outputTokens || 0) / 1e6) * rate.out;
+  }
+  return Math.round(usd * 1e4) / 1e4;
+}
+
 /** Which request features a model accepts (older/cheaper models reject some). */
 function capabilities(modelId) {
   const effort = /(opus-4-[5-9]|sonnet-4-6|fable-5|mythos-5)/.test(modelId);
@@ -58,6 +78,15 @@ export async function createClaudeModel(config = {}) {
 /** One model object bound to a model id (sharing the client). */
 function makeModel(client, modelId) {
   const caps = capabilities(modelId);
+  // Per-model token meter — every API call adds to this so the result can report cost.
+  const usage = { model: modelId, inputTokens: 0, outputTokens: 0, calls: 0 };
+  const meter = (message) => {
+    const u = message && message.usage;
+    if (!u) return;
+    usage.inputTokens += u.input_tokens || 0;
+    usage.outputTokens += u.output_tokens || 0;
+    usage.calls += 1;
+  };
 
   function parseJSON(message) {
     const block = message.content.find((b) => b.type === "text" && b.text && b.text.trim());
@@ -67,6 +96,7 @@ function makeModel(client, modelId) {
 
   return {
     id: modelId,
+    usage,
 
     /**
      * Structured generation → object validated against `schema`. `effort` and
@@ -85,6 +115,7 @@ function makeModel(client, modelId) {
       };
       if (thinking && caps.adaptive) req.thinking = { type: "adaptive" };
       const message = await client.messages.create(req);
+      meter(message);
       return parseJSON(message);
     },
 
@@ -104,6 +135,7 @@ function makeModel(client, modelId) {
         const req = { model: modelId, max_tokens: maxTokens, system, messages, tools };
         if (caps.adaptive) req.thinking = { type: "adaptive" };
         const message = await client.messages.create(req);
+        meter(message);
         collectSources(message, sources);
         const prose = message.content
           .filter((b) => b.type === "text" && b.text)

@@ -238,6 +238,14 @@ export interface RoastResult {
   reactionSequence: CallieState[];
   /** Which path produced this set. */
   engine: "live" | "offline";
+  /** Token usage for this roast (offline → zero). */
+  usage: {
+    models: { model: string; inputTokens: number; outputTokens: number; calls: number }[];
+    tokensIn: number;
+    tokensOut: number;
+  };
+  /** Estimated model spend (USD; excludes web-search fees). Offline → 0. */
+  cost: { usd: number; currency: "usd" };
 }
 
 /**

@@ -60,6 +60,7 @@ console.log(`[render] entry=${entry}`);
 console.log(`[render] out=${out} scale=${scale}${frameRange ? ` frames=${frameRange.join("-")}` : ""}`);
 
 let lastPct = -1;
+const t0 = Date.now();
 await renderStageVideo({
   entryPoint: entry,
   inputProps,
@@ -76,4 +77,4 @@ await renderStageVideo({
   },
 });
 
-console.log(`[render] done → ${out}`);
+console.log(`[render] done → ${out} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);

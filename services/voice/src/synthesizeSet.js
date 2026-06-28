@@ -37,7 +37,13 @@ export async function synthesizeSet(beats, performer, config = {}) {
       }
       clips.push({ index, dataUrl: audio.dataUrl, mime: audio.mime, durationMs: audio.durationMs, text, words: audio.words });
     }
-    return { clips, voiced: true, engine: provider.id, durationsMs: clips.map((c) => c.durationMs) };
+    return {
+      clips,
+      voiced: true,
+      engine: provider.id,
+      durationsMs: clips.map((c) => c.durationMs),
+      charCount: clips.reduce((n, c) => n + ((c.text || "").length), 0),
+    };
   } catch (err) {
     const debug = typeof process !== "undefined" && process.env && process.env.VOICE_DEBUG;
     console.error(`[voice] synthesis failed — using silent fallback: ${(err && err.message) || err}`);

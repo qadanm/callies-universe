@@ -8,6 +8,7 @@
 // This keeps `pnpm verify` green with no key. Run: node scripts/offline-check.mjs
 
 import { generateRoast } from "../index.js";
+import { usageCost } from "../src/model/claude.js";
 import { Roaster } from "@callies-universe/core";
 
 const CALLIE_STATES = new Set([
@@ -40,6 +41,11 @@ for (const r of Roaster.roster) {
   assert(res.grade.pass === true, `${r.id}: curated offline set should pass`);
   assert(Array.isArray(res.research.sources), `${r.id}: research.sources missing`);
 
+  // --- cost & usage telemetry (offline → present + zero) ---
+  assert(res.usage && Array.isArray(res.usage.models), `${r.id}: usage.models missing`);
+  assert(res.usage.tokensIn === 0 && res.usage.tokensOut === 0, `${r.id}: offline usage should be zero`);
+  assert(res.cost && res.cost.usd === 0 && res.cost.currency === "usd", `${r.id}: offline cost should be $0`);
+
   // --- legacy render surface preserved ---
   assert(Array.isArray(res.segments) && res.segments.length >= 1, `${r.id}: segments missing`);
   assert(typeof res.plainText === "string" && res.plainText.length > 0, `${r.id}: plainText missing`);
@@ -52,6 +58,12 @@ for (const r of Roaster.roster) {
   // --- name comes from core, not duplicated ---
   assert(res.roasterName === r.name, `${r.id}: roasterName "${res.roasterName}" != core "${r.name}"`);
 }
+
+// --- cost math (the $/1M table + summation) ---
+assert(usageCost([]) === 0, "usageCost([]) === 0");
+assert(usageCost([{ model: "claude-sonnet-4-6", inputTokens: 1e6, outputTokens: 1e6 }]) === 18, "usageCost: sonnet 1M+1M = $18");
+assert(usageCost([{ model: "claude-haiku-4-5", inputTokens: 2e6, outputTokens: 0 }]) === 2, "usageCost: haiku 2M in = $2");
+assert(usageCost([{ model: "unknown-model", inputTokens: 9e9, outputTokens: 9e9 }]) === 0, "usageCost: unknown model = $0");
 
 // --- cross-character difference: every set's plainText must be distinct ---
 const texts = results.map((r) => r.plainText);

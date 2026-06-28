@@ -103,6 +103,7 @@ export async function generateRoast(input) {
       grade: chosen.grade,
       engine: "live",
       durationMs: Date.now() - started,
+      usage: collectUsage(models),
     });
   } catch (err) {
     // Network / API failure mid-flight → don't break the app; fall back offline.
@@ -114,6 +115,20 @@ export async function generateRoast(input) {
     if (debug) console.error(err);
     return offlineBrain(input, { degraded: true });
   }
+}
+
+// Gather per-model token usage from the (possibly shared) model objects, merged by
+// model id. Dedupes the same object (the _model test seam uses one for both stages).
+function collectUsage(models) {
+  const objs = [...new Set([models.write, models.utility])].filter((m) => m && m.usage);
+  const byId = new Map();
+  for (const m of objs) {
+    const u = m.usage;
+    const e = byId.get(u.model);
+    if (e) { e.inputTokens += u.inputTokens; e.outputTokens += u.outputTokens; e.calls += u.calls; }
+    else byId.set(u.model, { ...u });
+  }
+  return [...byId.values()];
 }
 
 function clamp(n, lo, hi) {

@@ -107,6 +107,7 @@ export function createApiServer(opts = {}) {
 
         const outFile = join(tmpdir(), `roast-api-${process.pid}-${Date.now()}-${tmpCounter++}.mp4`);
         let lastPct = -1;
+        const renderT0 = Date.now();
         await render({
           entryPoint,
           inputProps: spec,
@@ -123,6 +124,7 @@ export function createApiServer(opts = {}) {
           },
         });
 
+        console.log(`[api] render done in ${((Date.now() - renderT0) / 1000).toFixed(1)}s`);
         const buf = readFileSync(outFile);
         try { unlinkSync(outFile); } catch { /* best-effort cleanup */ }
         const name = `roastmyride-${String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase()}.mp4`;

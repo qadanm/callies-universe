@@ -5,6 +5,7 @@
 // new screens read the richer fields.
 
 import { reactionFor } from "./reactions.js";
+import { usageCost } from "./model/claude.js";
 
 let counter = 0;
 
@@ -44,8 +45,11 @@ export function setToPlainText(set) {
  * @param {object} args
  * @returns {import("../contract").RoastResult}
  */
-export function buildResult({ performer, research, set, grade, engine, durationMs }) {
+export function buildResult({ performer, research, set, grade, engine, durationMs, usage }) {
   const { reaction, sequence } = reactionFor(performer.displaySpice, grade);
+  const usageList = usage || []; // offline → [] (no tokens)
+  const tokensIn = usageList.reduce((n, u) => n + (u.inputTokens || 0), 0);
+  const tokensOut = usageList.reduce((n, u) => n + (u.outputTokens || 0), 0);
   return {
     id: `roast_${++counter}`,
     roasterId: performer.id,
@@ -72,5 +76,9 @@ export function buildResult({ performer, research, set, grade, engine, durationM
     grade,
     reactionSequence: sequence,
     engine,
+
+    // cost & usage telemetry (brain/model spend; offline → zero)
+    usage: { models: usageList, tokensIn, tokensOut },
+    cost: { usd: usageCost(usageList), currency: "usd" },
   };
 }

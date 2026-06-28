@@ -113,6 +113,14 @@ export function Reveal() {
           </div>
         )}
 
+        {/* dev-only cost telemetry (hidden in production builds) */}
+        {import.meta.env.DEV && roast.cost && roast.usage && (
+          <div style={{ font: "var(--type-legal)", color: "var(--text-hint)", textAlign: "center", opacity: 0.75 }}>
+            dev · {roast.engine} · ${roast.cost.usd.toFixed(4)} · {Math.round((roast.usage.tokensIn + roast.usage.tokensOut) / 1000)}k tok
+            {roast.durationMs ? ` · ${(roast.durationMs / 1000).toFixed(1)}s` : ""}
+          </div>
+        )}
+
         {/* the shareable clip (the closer) */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ShareCard

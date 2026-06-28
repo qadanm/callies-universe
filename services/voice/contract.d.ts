@@ -39,6 +39,8 @@ export interface SynthesizedSet {
   engine: string;
   /** Per-beat durations (ms), in beat order — convenience for timeline building. */
   durationsMs: number[];
+  /** Total characters synthesized (cost telemetry; provider bills by character). */
+  charCount: number;
 }
 
 export interface VoiceConfig {
