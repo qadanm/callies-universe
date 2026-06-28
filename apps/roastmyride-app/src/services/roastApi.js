@@ -10,6 +10,17 @@ const BASE = import.meta.env.VITE_ROAST_API;
 
 export const hasRoastApi = () => !!BASE;
 
+/** POST the sanitized RoastInput → the RoastResult (live brain runs server-side). */
+export async function roastViaApi(input) {
+  const res = await fetch(`${BASE}/roast`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`roast ${res.status}`);
+  return await res.json();
+}
+
 /** POST the render spec → the exact MP4 as a Blob. */
 export async function renderVideo(spec) {
   const res = await fetch(`${BASE}/render`, {

@@ -22,6 +22,7 @@ import { readFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { generateRoast as defaultGenerateRoast } from "@callies-universe/brain";
 import { synthesizeSet as defaultSynthesize } from "@callies-universe/voice";
 import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster } from "@callies-universe/render";
 
@@ -45,6 +46,7 @@ let tmpCounter = 0;
  * @returns {import("node:http").Server}
  */
 export function createApiServer(opts = {}) {
+  const generateRoast = opts.generateRoast || defaultGenerateRoast;
   const synthesize = opts.synthesize || defaultSynthesize;
   const render = opts.render || defaultRender;
   const poster = opts.poster || defaultPoster;
@@ -83,6 +85,15 @@ export function createApiServer(opts = {}) {
     try {
       if (req.method === "GET" && (path === "/" || path === "/health")) {
         return json(res, 200, { ok: true, offline, dryRun: defaultDryRun });
+      }
+
+      if (req.method === "POST" && path === "/roast") {
+        const input = await readJson(req); // sanitized RoastInput (no photo blobs)
+        if (!input || !input.roasterId) {
+          return json(res, 400, { error: "roasterId is required" });
+        }
+        const result = await generateRoast(input); // LIVE with ANTHROPIC_API_KEY, else offline
+        return json(res, 200, result);
       }
 
       if (req.method === "POST" && path === "/voice") {

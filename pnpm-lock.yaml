@@ -86,6 +86,9 @@ importers:
 
   services/api:
     dependencies:
+      '@callies-universe/brain':
+        specifier: workspace:*
+        version: link:../brain
       '@callies-universe/render':
         specifier: workspace:*
         version: link:../render

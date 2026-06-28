@@ -44,6 +44,15 @@ try {
   const health = await (await fetch(`${base}/health`)).json();
   check(health.ok === true, "GET /health → { ok: true }");
 
+  // POST /roast — the brain runs server-side (offline here with no key)
+  const roast = await post(base, "/roast", { carPhoto: { present: true }, car: { year: 2006, make: "Chrysler", model: "PT Cruiser" }, roasterId: "mama", context: ["brutal"] });
+  check(roast.status === 200, "POST /roast → 200");
+  check(roast.json && roast.json.engine === "offline", "roast is offline with no ANTHROPIC key");
+  check(roast.json.set && Array.isArray(roast.json.set.beats) && roast.json.set.beats.length >= 3, "roast returns a structured set");
+  check(roast.json.roasterId === "mama" && roast.json.grade, "roast carries roasterId + grade");
+  const badRoast = await post(base, "/roast", { context: [] });
+  check(badRoast.status === 400, "POST /roast without roasterId → 400");
+
   // POST /voice
   const voice = await post(base, "/voice", { comedianId: "mama", performerName: "Mama Denièce", beats: BEATS });
   check(voice.status === 200, "POST /voice → 200");

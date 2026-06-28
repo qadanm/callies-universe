@@ -18,4 +18,22 @@
 // reference but is no longer the wired implementation.
 //
 // SWAPPED: the real brain is now live.
-export { generateRoast } from "@callies-universe/brain";
+//
+// Server-side seam: when a backend is configured (VITE_ROAST_API), the brain runs
+// SERVER-SIDE (POST /roast) where the API key + SDK live — that's the only place
+// the LIVE, research-driven comedy actually runs. With no backend, or on any
+// failure, we run the brain IN-BROWSER, which has no key/SDK and so returns the
+// deterministic offline set (today's behavior). Either way the screens are unchanged.
+import { generateRoast as brainInBrowser } from "@callies-universe/brain";
+import { hasRoastApi, roastViaApi } from "./roastApi.js";
+
+export async function generateRoast(input) {
+  if (hasRoastApi()) {
+    try {
+      return await roastViaApi(input);
+    } catch (e) {
+      console.warn(`[roast] live brain unavailable (${(e && e.message) || e}); using offline`);
+    }
+  }
+  return brainInBrowser(input);
+}

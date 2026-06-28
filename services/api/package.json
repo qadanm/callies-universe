@@ -13,6 +13,7 @@
     "render-smoke": "node scripts/render-smoke.mjs"
   },
   "dependencies": {
+    "@callies-universe/brain": "workspace:*",
     "@callies-universe/voice": "workspace:*",
     "@callies-universe/render": "workspace:*"
   }
