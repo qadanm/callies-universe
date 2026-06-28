@@ -17,7 +17,7 @@ import { SetBeat } from "../components/SetBeat.jsx";
 import { CookingProgress } from "../components/CookingProgress.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
 import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
-import { hasRoastApi, renderVideo } from "../services/roastApi.js";
+import { hasRoastApi, renderVideo, renderPoster } from "../services/roastApi.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 const slugOf = (spec) => String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase();
@@ -29,7 +29,24 @@ export function Reveal() {
   const roast = result || previewResult; // fallback so a direct /reveal still renders
 
   const [saving, setSaving] = useState(false);
+  const [savingImage, setSavingImage] = useState(false);
   const [renderStep, setRenderStep] = useState(0);
+
+  const shareOrDownload = (blob, filename, mime) => {
+    const file = new File([blob], filename, { type: mime });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      return navigator.share({ files: [file], title: "RoastMyRide" }).catch(() => {});
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return Promise.resolve();
+  };
 
   // Save-as-video. When a render backend is configured (VITE_ROAST_API), POST the
   // exact render spec and get back the frame-identical MP4 in one tap (share on
@@ -53,24 +70,27 @@ export function Reveal() {
     setSaving(true);
     try {
       const blob = await renderVideo(spec);
-      const file = new File([blob], `roastmyride-${slugOf(spec)}.mp4`, { type: "video/mp4" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: "RoastMyRide" }).catch(() => {});
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
+      await shareOrDownload(blob, `roastmyride-${slugOf(spec)}.mp4`, "video/mp4");
     } catch (e) {
       console.warn(`[reveal] render failed (${e && e.message}); downloading spec instead`);
       downloadSpec(spec);
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Save a shareable still (poster). Backend-only (renders a real PNG frame);
+  // hidden when there's no backend.
+  const saveImage = async () => {
+    const spec = buildRenderSpec(roast, input);
+    setSavingImage(true);
+    try {
+      const blob = await renderPoster(spec);
+      await shareOrDownload(blob, `roastmyride-${slugOf(spec)}.png`, "image/png");
+    } catch (e) {
+      console.warn(`[reveal] poster failed (${e && e.message})`);
+    } finally {
+      setSavingImage(false);
     }
   };
 
@@ -152,8 +172,13 @@ export function Reveal() {
           </Button>
           <div style={{ display: "flex", gap: "var(--space-3)" }}>
             <Button variant="secondary" style={{ flex: 1 }} onClick={saveVideo} disabled={saving}>
-              {saving ? "Rendering…" : "⤓ Save video"}
+              {saving ? "Rendering…" : "⤓ Video"}
             </Button>
+            {hasRoastApi() && (
+              <Button variant="secondary" style={{ flex: 1 }} onClick={saveImage} disabled={savingImage || saving}>
+                {savingImage ? "…" : "⤓ Image"}
+              </Button>
+            )}
             <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/cooking")} disabled={saving}>
               New set
             </Button>

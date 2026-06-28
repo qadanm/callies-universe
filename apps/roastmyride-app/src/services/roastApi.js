@@ -21,6 +21,17 @@ export async function renderVideo(spec) {
   return await res.blob();
 }
 
+/** POST the render spec → a poster PNG as a Blob (a shareable still). */
+export async function renderPoster(spec) {
+  const res = await fetch(`${BASE}/poster`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(spec),
+  });
+  if (!res.ok) throw new Error(`poster ${res.status}`);
+  return await res.blob();
+}
+
 /** POST beats → SynthesizedSet ({ clips, durationsMs, voiced, engine }). */
 export async function fetchVoice({ comedianId, performerName, beats }) {
   const res = await fetch(`${BASE}/voice`, {

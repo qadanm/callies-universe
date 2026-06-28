@@ -32,8 +32,16 @@ try {
   });
   const buf = Buffer.from(await res.arrayBuffer());
   // MP4 magic: bytes 4..8 == "ftyp"
-  ok = res.status === 200 && buf.length > 1000 && buf.toString("ascii", 4, 8) === "ftyp";
-  console.log(`  ${ok ? "✓" : "✗"} POST /render → ${res.status}, ${buf.length} bytes, ftyp=${buf.toString("ascii", 4, 8)}`);
+  const vid = res.status === 200 && buf.length > 1000 && buf.toString("ascii", 4, 8) === "ftyp";
+  console.log(`  ${vid ? "✓" : "✗"} POST /render → ${res.status}, ${buf.length} bytes, ftyp=${buf.toString("ascii", 4, 8)}`);
+
+  console.log("[render-smoke] rendering a poster PNG …");
+  const pres = await fetch(`${base}/poster`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(SPEC) });
+  const pbuf = Buffer.from(await pres.arrayBuffer());
+  // PNG magic: 89 50 4E 47
+  const png = pres.status === 200 && pbuf.length > 1000 && pbuf[0] === 0x89 && pbuf.toString("ascii", 1, 4) === "PNG";
+  console.log(`  ${png ? "✓" : "✗"} POST /poster → ${pres.status}, ${pbuf.length} bytes, png=${pbuf[0] === 0x89}`);
+  ok = vid && png;
 } finally {
   srv.close();
 }

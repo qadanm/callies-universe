@@ -61,6 +61,11 @@ try {
   check(audio.every((a) => typeof a.dataUrl === "string" && a.durationMs > 0), "each audio entry has dataUrl + durationMs");
   check(dry.json.inputProps.comedianId === "mama" && Array.isArray(dry.json.inputProps.beats), "spec passed through intact");
 
+  // POST /poster?dryRun — proves the poster wiring without Remotion/Chrome
+  const poster = await post(base, "/poster?dryRun=1", SPEC);
+  check(poster.status === 200 && poster.json.dryRun === true, "POST /poster?dryRun=1 → 200 dryRun");
+  check(typeof poster.json.at === "number" && !!poster.json.inputProps, "poster dryRun returns frame fraction + inputProps");
+
   // 404
   const nf = await fetch(`${base}/nope`, { method: "POST" });
   check(nf.status === 404, "unknown route → 404");

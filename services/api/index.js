@@ -23,7 +23,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { synthesizeSet as defaultSynthesize } from "@callies-universe/voice";
-import { renderStageVideo as defaultRender } from "@callies-universe/render";
+import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster } from "@callies-universe/render";
 
 // The app's Remotion entry, resolved relative to this file so the server works
 // from any cwd. Override with ROAST_REMOTION_ENTRY (a path string).
@@ -47,6 +47,7 @@ let tmpCounter = 0;
 export function createApiServer(opts = {}) {
   const synthesize = opts.synthesize || defaultSynthesize;
   const render = opts.render || defaultRender;
+  const poster = opts.poster || defaultPoster;
   const entryPoint = opts.entryPoint || process.env.ROAST_REMOTION_ENTRY || DEFAULT_ENTRY;
   const offline = opts.offline ?? !process.env.ELEVENLABS_API_KEY;
   const defaultDryRun = opts.dryRun ?? !!process.env.ROAST_RENDER_DRYRUN;
@@ -130,6 +131,26 @@ export function createApiServer(opts = {}) {
         const name = `roastmyride-${String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase()}.mp4`;
         res.writeHead(200, {
           "Content-Type": "video/mp4",
+          "Content-Length": buf.length,
+          "Content-Disposition": `attachment; filename="${name}"`,
+          "Access-Control-Allow-Origin": "*",
+        });
+        return res.end(buf);
+      }
+
+      if (req.method === "POST" && path === "/poster") {
+        const spec = await readJson(req); // no audio needed for a still
+        const dryRun = defaultDryRun || url.searchParams.get("dryRun") === "1";
+        const at = Number(url.searchParams.get("at")) || 0.5;
+        if (dryRun) return json(res, 200, { dryRun: true, at, inputProps: spec });
+
+        const outFile = join(tmpdir(), `roast-poster-${process.pid}-${Date.now()}-${tmpCounter++}.png`);
+        await poster({ entryPoint, inputProps: spec, outFile, browserExecutable, at });
+        const buf = readFileSync(outFile);
+        try { unlinkSync(outFile); } catch { /* best-effort */ }
+        const name = `roastmyride-${String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase()}.png`;
+        res.writeHead(200, {
+          "Content-Type": "image/png",
           "Content-Length": buf.length,
           "Content-Disposition": `attachment; filename="${name}"`,
           "Access-Control-Allow-Origin": "*",

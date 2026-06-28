@@ -10,7 +10,7 @@
 // to reuse an installed Chrome instead of downloading one.
 
 import { bundle } from "@remotion/bundler";
-import { selectComposition, renderMedia } from "@remotion/renderer";
+import { selectComposition, renderMedia, renderStill } from "@remotion/renderer";
 
 /**
  * @param {object} opts
@@ -52,5 +52,32 @@ export async function renderStageVideo({
     onProgress: onProgress ? ({ progress }) => onProgress(progress) : undefined,
   });
 
+  return outFile;
+}
+
+/**
+ * Render a single PNG poster frame from the same composition — a shareable still
+ * (feeds, thumbnails). Defaults to a strong mid-set frame; override with `frame`
+ * (absolute) or `at` (0..1 fraction of the duration).
+ * @returns {Promise<string>} the outFile path
+ */
+export async function renderStagePoster({
+  entryPoint,
+  compositionId = "stage",
+  inputProps = {},
+  outFile,
+  browserExecutable,
+  scale = 1,
+  frame,
+  at = 0.5,
+}) {
+  if (!entryPoint) throw new Error("renderStagePoster: entryPoint is required");
+  if (!outFile) throw new Error("renderStagePoster: outFile is required");
+
+  const serveUrl = await bundle({ entryPoint });
+  const composition = await selectComposition({ serveUrl, id: compositionId, inputProps, browserExecutable });
+  const f = Number.isFinite(frame) ? frame : Math.max(0, Math.round((composition.durationInFrames - 1) * at));
+
+  await renderStill({ serveUrl, composition, output: outFile, inputProps, browserExecutable, scale, frame: f, imageFormat: "png" });
   return outFile;
 }
