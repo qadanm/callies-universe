@@ -142,6 +142,13 @@ export function Reveal() {
           </div>
         )}
 
+        {/* degraded fallback — be transparent + reassure (we didn't bill it) */}
+        {roast.degraded && (
+          <div style={{ font: "var(--type-cap)", color: "var(--warning, #B8730A)", textAlign: "center" }}>
+            ⚡ Offline mode — couldn't reach the live writer, so here's the house set. This one's on us.
+          </div>
+        )}
+
         {/* dev-only cost telemetry (hidden in production builds) */}
         {import.meta.env.DEV && roast.cost && roast.usage && (
           <div style={{ font: "var(--type-legal)", color: "var(--text-hint)", textAlign: "center", opacity: 0.75 }}>

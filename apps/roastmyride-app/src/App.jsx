@@ -14,6 +14,8 @@ import {
 } from "react-router-dom";
 
 import { FlowProvider } from "./flow/FlowContext.jsx";
+import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
+import { OfflineBanner } from "./components/OfflineBanner.jsx";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
 import { ProfileRoast } from "./screens/ProfileRoast.jsx";
@@ -88,8 +90,11 @@ function Layout() {
             <span>🔥 RoastMyRide</span>
             <span>100%</span>
           </div>
+          <OfflineBanner />
           <div className="stage">
-            <Outlet />
+            <ErrorBoundary>
+              <Outlet />
+            </ErrorBoundary>
           </div>
           <TabBar />
         </div>

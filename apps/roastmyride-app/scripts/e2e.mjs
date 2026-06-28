@@ -148,6 +148,12 @@ try {
   await seeText("out of roasts");
   check(true, "0 credits gates 'Roast my car' to the paywall");
 
+  // --- resilience: offline banner ---
+  await page.context().setOffline(true);
+  await page.waitForTimeout(300);
+  check((await page.getByText("You're offline", { exact: false }).count()) >= 1, "offline banner shows when offline");
+  await page.context().setOffline(false);
+
   check(jsErrors.length === 0, `no uncaught JS errors (${jsErrors.length})`);
   if (jsErrors.length) jsErrors.slice(0, 5).forEach((e) => console.log("     ! " + e));
   if (resourceWarnings.length)

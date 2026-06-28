@@ -10,13 +10,21 @@ const BASE = import.meta.env.VITE_ROAST_API;
 
 export const hasRoastApi = () => !!BASE;
 
+// fetch with an abort timeout, so a hung/slow backend rejects (callers then fall
+// back) instead of stranding a screen forever.
+function fetchT(url, opts = {}, ms = 30000) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctl.signal }).finally(() => clearTimeout(t));
+}
+
 /** POST the car photo → an identified { year, make, model, label } or null (vision). */
 export async function identifyCarViaApi(imageDataUrl) {
-  const res = await fetch(`${BASE}/identify`, {
+  const res = await fetchT(`${BASE}/identify`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ imageDataUrl }),
-  });
+  }, 25000);
   if (!res.ok) throw new Error(`identify ${res.status}`);
   const j = await res.json();
   return j.car || null;
@@ -24,22 +32,22 @@ export async function identifyCarViaApi(imageDataUrl) {
 
 /** POST the sanitized RoastInput → the RoastResult (live brain runs server-side). */
 export async function roastViaApi(input) {
-  const res = await fetch(`${BASE}/roast`, {
+  const res = await fetchT(`${BASE}/roast`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(input),
-  });
+  }, 45000);
   if (!res.ok) throw new Error(`roast ${res.status}`);
   return await res.json();
 }
 
 /** POST the render spec → the exact MP4 as a Blob (synchronous; holds the connection). */
 export async function renderVideo(spec) {
-  const res = await fetch(`${BASE}/render`, {
+  const res = await fetchT(`${BASE}/render`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(spec),
-  });
+  }, 240000);
   if (!res.ok) throw new Error(`render ${res.status}`);
   return await res.blob();
 }
@@ -51,11 +59,11 @@ export async function renderVideo(spec) {
  * @returns {Promise<Blob>}
  */
 export async function renderVideoAsync(spec, onProgress) {
-  const res = await fetch(`${BASE}/render?async=1`, {
+  const res = await fetchT(`${BASE}/render?async=1`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(spec),
-  });
+  }, 30000);
   if (!res.ok) throw new Error(`render ${res.status}`);
   const { jobId } = await res.json();
 
@@ -71,29 +79,29 @@ export async function renderVideoAsync(spec, onProgress) {
     es.onerror = () => { es.close(); reject(new Error("render stream lost")); };
   });
 
-  const fileRes = await fetch(`${BASE}/render/${jobId}/file`);
+  const fileRes = await fetchT(`${BASE}/render/${jobId}/file`, {}, 60000);
   if (!fileRes.ok) throw new Error(`render file ${fileRes.status}`);
   return await fileRes.blob();
 }
 
 /** POST the render spec → a poster PNG as a Blob (a shareable still). */
 export async function renderPoster(spec) {
-  const res = await fetch(`${BASE}/poster`, {
+  const res = await fetchT(`${BASE}/poster`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(spec),
-  });
+  }, 120000);
   if (!res.ok) throw new Error(`poster ${res.status}`);
   return await res.blob();
 }
 
 /** POST beats → SynthesizedSet ({ clips, durationsMs, voiced, engine }). */
 export async function fetchVoice({ comedianId, performerName, beats }) {
-  const res = await fetch(`${BASE}/voice`, {
+  const res = await fetchT(`${BASE}/voice`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ comedianId, performerName, beats }),
-  });
+  }, 45000);
   if (!res.ok) throw new Error(`voice ${res.status}`);
   return await res.json();
 }
