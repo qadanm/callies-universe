@@ -33,7 +33,7 @@ export async function roastViaApi(input) {
   return await res.json();
 }
 
-/** POST the render spec → the exact MP4 as a Blob. */
+/** POST the render spec → the exact MP4 as a Blob (synchronous; holds the connection). */
 export async function renderVideo(spec) {
   const res = await fetch(`${BASE}/render`, {
     method: "POST",
@@ -42,6 +42,38 @@ export async function renderVideo(spec) {
   });
   if (!res.ok) throw new Error(`render ${res.status}`);
   return await res.blob();
+}
+
+/**
+ * Async render: enqueue a job, stream REAL progress over SSE, then fetch the MP4.
+ * @param {object} spec
+ * @param {(p:number)=>void} [onProgress] 0..1
+ * @returns {Promise<Blob>}
+ */
+export async function renderVideoAsync(spec, onProgress) {
+  const res = await fetch(`${BASE}/render?async=1`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(spec),
+  });
+  if (!res.ok) throw new Error(`render ${res.status}`);
+  const { jobId } = await res.json();
+
+  await new Promise((resolve, reject) => {
+    const es = new EventSource(`${BASE}/render/${jobId}/events`);
+    es.onmessage = (e) => {
+      let d;
+      try { d = JSON.parse(e.data); } catch { return; }
+      if (typeof d.progress === "number" && onProgress) onProgress(d.progress);
+      if (d.status === "done") { es.close(); resolve(); }
+      else if (d.status === "error") { es.close(); reject(new Error(d.error || "render failed")); }
+    };
+    es.onerror = () => { es.close(); reject(new Error("render stream lost")); };
+  });
+
+  const fileRes = await fetch(`${BASE}/render/${jobId}/file`);
+  if (!fileRes.ok) throw new Error(`render file ${fileRes.status}`);
+  return await fileRes.blob();
 }
 
 /** POST the render spec → a poster PNG as a Blob (a shareable still). */

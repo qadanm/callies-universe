@@ -57,6 +57,32 @@ export function createApiServer(opts = {}) {
   const defaultScale = opts.scale ?? (Number(process.env.ROAST_RENDER_SCALE) || 1);
   const browserExecutable = opts.browserExecutable || process.env.CHROMIUM_BIN || process.env.CHROME || undefined;
 
+  // Async render jobs: POST /render?async=1 → { jobId }; progress streams over
+  // GET /render/:id/events (SSE); the MP4 is fetched from GET /render/:id/file.
+  // Storage is local-disk here (the tmp file); ROAST_STORAGE=s3 is the documented
+  // seam to upload + serve from object storage instead.
+  const jobs = new Map();
+  const startRenderJob = (spec, { scale, frameRange }) => {
+    const id = `job_${process.pid}_${Date.now()}_${tmpCounter++}`;
+    const job = { id, status: "running", progress: 0, outFile: null, error: null };
+    jobs.set(id, job);
+    (async () => {
+      try {
+        spec.audio = await synthForSpec(spec);
+        const outFile = join(tmpdir(), `roast-${id}.mp4`);
+        await render({ entryPoint, inputProps: spec, outFile, browserExecutable, scale, frameRange, onProgress: (p) => { job.progress = p; } });
+        job.outFile = outFile;
+        job.progress = 1;
+        job.status = "done";
+      } catch (e) {
+        job.status = "error";
+        job.error = (e && e.message) || "render failed";
+        console.error(`[api] render job ${id} failed:`, job.error);
+      }
+    })();
+    return id;
+  };
+
   const voiceConfig = () => ({ offline });
   const synthForSpec = async (spec) => {
     const v = await synthesize(
@@ -119,6 +145,49 @@ export function createApiServer(opts = {}) {
           voiceConfig()
         );
         return json(res, 200, v);
+      }
+
+      // Async render job: returns { jobId } immediately; progress via SSE, file via /file.
+      if (req.method === "POST" && path === "/render" && url.searchParams.get("async") === "1") {
+        const spec = await readJson(req);
+        if (!Array.isArray(spec.beats) || spec.beats.length === 0) {
+          return json(res, 400, { error: "spec.beats must be a non-empty array" });
+        }
+        const scale = Number(url.searchParams.get("scale")) || defaultScale;
+        const framesParam = url.searchParams.get("frames");
+        const frameRange = framesParam ? framesParam.split("-").map((n) => Number(n)) : undefined;
+        const jobId = startRenderJob(spec, { scale, frameRange });
+        return json(res, 202, { jobId });
+      }
+
+      // Job status / progress (SSE) / file
+      const jobMatch = req.method === "GET" && path.match(/^\/render\/([^/]+)(\/events|\/file)?$/);
+      if (jobMatch) {
+        const job = jobs.get(jobMatch[1]);
+        const sub = jobMatch[2];
+        if (!job) return json(res, 404, { error: "no such job" });
+
+        if (sub === "/file") {
+          if (job.status !== "done" || !job.outFile) return json(res, 409, { error: `job ${job.status}` });
+          const buf = readFileSync(job.outFile);
+          res.writeHead(200, { "Content-Type": "video/mp4", "Content-Length": buf.length, "Content-Disposition": "attachment; filename=\"roast.mp4\"", "Access-Control-Allow-Origin": "*" });
+          return res.end(buf);
+        }
+
+        if (sub === "/events") {
+          res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive", "Access-Control-Allow-Origin": "*" });
+          const send = (o) => res.write(`data: ${JSON.stringify(o)}\n\n`);
+          send({ status: job.status, progress: job.progress });
+          const iv = setInterval(() => {
+            if (job.status === "done") { send({ status: "done", progress: 1, fileUrl: `/render/${job.id}/file` }); clearInterval(iv); res.end(); }
+            else if (job.status === "error") { send({ status: "error", error: job.error }); clearInterval(iv); res.end(); }
+            else send({ status: "running", progress: job.progress });
+          }, 250);
+          req.on("close", () => clearInterval(iv));
+          return undefined;
+        }
+
+        return json(res, 200, { id: job.id, status: job.status, progress: job.progress, error: job.error, ready: job.status === "done" });
       }
 
       if (req.method === "POST" && path === "/render") {

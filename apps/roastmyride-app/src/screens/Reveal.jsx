@@ -17,7 +17,7 @@ import { SetBeat } from "../components/SetBeat.jsx";
 import { CookingProgress } from "../components/CookingProgress.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
 import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
-import { hasRoastApi, renderVideo, renderPoster } from "../services/roastApi.js";
+import { hasRoastApi, renderVideo, renderVideoAsync, renderPoster } from "../services/roastApi.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 const slugOf = (spec) => String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase();
@@ -31,6 +31,7 @@ export function Reveal() {
   const [saving, setSaving] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
   const [renderStep, setRenderStep] = useState(0);
+  const [renderPct, setRenderPct] = useState(null); // real % from the async job
 
   const shareOrDownload = (blob, filename, mime) => {
     const file = new File([blob], filename, { type: mime });
@@ -68,14 +69,22 @@ export function Reveal() {
     const spec = buildRenderSpec(roast, input);
     if (!hasRoastApi()) return downloadSpec(spec);
     setSaving(true);
+    setRenderPct(0);
     try {
-      const blob = await renderVideo(spec);
+      // Prefer the async job (real progress over SSE); fall back to the sync render.
+      let blob;
+      try {
+        blob = await renderVideoAsync(spec, (p) => setRenderPct(Math.round(p * 100)));
+      } catch {
+        blob = await renderVideo(spec);
+      }
       await shareOrDownload(blob, `roastmyride-${slugOf(spec)}.mp4`, "video/mp4");
     } catch (e) {
       console.warn(`[reveal] render failed (${e && e.message}); downloading spec instead`);
       downloadSpec(spec);
     } finally {
       setSaving(false);
+      setRenderPct(null);
     }
   };
 
@@ -189,7 +198,7 @@ export function Reveal() {
       {/* render overlay — shown while the backend produces the exact MP4 */}
       {saving && (
         <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(120% 70% at 50% 30%, var(--heat-300) 0%, var(--canvas) 60%)" }}>
-          <CookingProgress title="Rendering your reel…" steps={renderSteps} step={renderStep} hint="Saving the exact video you see" size={180} />
+          <CookingProgress title="Rendering your reel…" steps={renderSteps} step={renderStep} pct={renderPct ?? undefined} hint="Saving the exact video you see" size={180} />
         </div>
       )}
     </div>
