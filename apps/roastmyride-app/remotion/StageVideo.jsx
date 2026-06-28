@@ -12,6 +12,11 @@ import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
 import { buildTimeline } from "../src/standup.js";
+import { sfxFor } from "../src/sfx.js";
+
+const GAMEPLAY_VOL = 0.18; // gameplay loop audio, ducked under the VO
+const MUSIC_VOL = 0.12; // music bed, ducked under the VO
+const SFX_VOL = 0.45; // punch/closer stingers
 
 export function StageVideo(props) {
   const frame = useCurrentFrame();
@@ -26,12 +31,15 @@ export function StageVideo(props) {
 
   return (
     <AbsoluteFill style={{ background: "#06101f" }}>
-      {/* gameplay background — the user's licensed loop (else the scene's faux bg) */}
+      {/* gameplay background — the user's licensed loop (audio ducked under the VO) */}
       {props.backgroundUrl && (
-        <OffthreadVideo src={props.backgroundUrl} muted loop style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        <OffthreadVideo src={props.backgroundUrl} loop volume={GAMEPLAY_VOL} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       )}
 
-      {/* the comedian's voice — one clip per beat, started at the beat's time */}
+      {/* optional music bed (none committed) — ducked under the VO */}
+      {props.musicUrl && <Audio src={props.musicUrl} loop volume={MUSIC_VOL} />}
+
+      {/* the comedian's voice — one clip per beat, started at the beat's time (full volume) */}
       {audio &&
         audio.map((clip, i) => {
           const seg = segments[i];
@@ -42,6 +50,17 @@ export function StageVideo(props) {
             </Sequence>
           );
         })}
+
+      {/* synthesized stingers on the punch + closer beats */}
+      {segments.map((seg, i) => {
+        const src = sfxFor(seg.beat && seg.beat.type);
+        if (!src) return null;
+        return (
+          <Sequence key={`sfx-${i}`} from={msToFrames(seg.startMs)} durationInFrames={msToFrames(500)}>
+            <Audio src={src} volume={SFX_VOL} />
+          </Sequence>
+        );
+      })}
 
       <StageScene
         comedianId={props.comedianId}

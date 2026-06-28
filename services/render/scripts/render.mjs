@@ -38,6 +38,10 @@ const withVoice = process.argv.includes("--voice");
 const bg = arg("bg");
 if (bg) inputProps.backgroundUrl = bg;
 
+// Optional music bed (a CC0/licensed loop URL); ducked under the VO in the mix.
+const music = arg("music");
+if (music) inputProps.musicUrl = music;
+
 // Voice: synthesize per-beat audio (the comedian performing the set) and inject
 // it into the spec so the composition plays it, synced to the beats. Uses
 // ELEVENLABS_API_KEY when present; otherwise deterministic silent clips.

@@ -11,6 +11,7 @@
 
 import { resolvePerformer } from "@callies-universe/brain";
 import { pickBackground } from "./gameplayBackgrounds.js";
+import { pickMusic } from "./musicBeds.js";
 
 // Brain beat type → HANDOFF display type.
 const BEAT_TYPE = {
@@ -180,5 +181,6 @@ export function buildRenderSpec(result, input) {
     profile,
     backgroundUrl: bg.backgroundUrl,
     fauxStyle: bg.fauxStyle,
+    musicUrl: pickMusic(result),
   };
 }
