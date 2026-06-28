@@ -18,6 +18,7 @@
 // it must NOT import apps/** — the Remotion entry is passed as a PATH STRING.
 
 import http from "node:http";
+import crypto from "node:crypto";
 import { readFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -63,6 +64,15 @@ export function createApiServer(opts = {}) {
   // VERIFY a token → subject (documented). Exposed on the server for the webhook (grant).
   const ledger = opts.ledger || createLedger({ file: process.env.ROAST_LEDGER_FILE, free: Number(process.env.ROAST_FREE_CREDITS) || 3 });
   const identityOf = (req) => (req.headers["x-roast-identity"] || "").toString().slice(0, 128) || null;
+
+  // Payments: Stripe Checkout (real) behind STRIPE_SECRET_KEY, else a verifiable
+  // TEST mode (no key) — a simulated session a fake webhook can complete. Either
+  // way, a completed payment grants credits to the ledger.
+  const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
+  const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+  const PUBLIC_URL = process.env.ROAST_PUBLIC_URL || "http://localhost:5180";
+  const pendingSessions = new Map(); // sessionId → { identity, credits }
+  const centsOf = (price) => Math.round((parseFloat(String(price).replace(/[^0-9.]/g, "")) || 0) * 100);
 
   // Async render jobs: POST /render?async=1 → { jobId }; progress streams over
   // GET /render/:id/events (SSE); the MP4 is fetched from GET /render/:id/file.
@@ -133,6 +143,66 @@ export function createApiServer(opts = {}) {
         const r = ledger.consume(id, 1);
         if (!r.ok) return json(res, 402, { error: "no credits", credits: r.credits });
         return json(res, 200, { credits: r.credits });
+      }
+
+      // Payments
+      if (req.method === "GET" && path === "/entitlement") {
+        const id = identityOf(req);
+        if (!id) return json(res, 400, { error: "missing x-roast-identity" });
+        return json(res, 200, { ok: true, credits: ledger.balance(id) });
+      }
+      if (req.method === "POST" && path === "/checkout") {
+        const id = identityOf(req);
+        const body = await readJson(req);
+        const credits = Math.max(1, body.credits | 0);
+        const sessionId = `cs_${Date.now()}_${tmpCounter++}`;
+        pendingSessions.set(sessionId, { identity: id, credits });
+        if (STRIPE_KEY) {
+          // Real Stripe Checkout session via the REST API (no SDK needed).
+          const form = new URLSearchParams({
+            mode: "payment",
+            "line_items[0][quantity]": "1",
+            "line_items[0][price_data][currency]": "usd",
+            "line_items[0][price_data][unit_amount]": String(centsOf(body.price)),
+            "line_items[0][price_data][product_data][name]": `${credits} RoastMyRide credits`,
+            success_url: `${PUBLIC_URL}/#/home`,
+            cancel_url: `${PUBLIC_URL}/#/credits`,
+            "metadata[identity]": id || "",
+            "metadata[credits]": String(credits),
+          });
+          const sres = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+            method: "POST",
+            headers: { authorization: `Bearer ${STRIPE_KEY}`, "content-type": "application/x-www-form-urlencoded" },
+            body: form,
+          });
+          if (!sres.ok) return json(res, 502, { error: `stripe ${sres.status}` });
+          const session = await sres.json();
+          return json(res, 200, { sessionId: session.id, url: session.url });
+        }
+        return json(res, 200, { sessionId, url: null, testMode: true }); // verifiable offline
+      }
+      if (req.method === "POST" && path === "/webhook") {
+        const raw = await readRaw(req);
+        let event;
+        if (STRIPE_WEBHOOK_SECRET) {
+          if (!verifyStripeSig(raw, req.headers["stripe-signature"], STRIPE_WEBHOOK_SECRET)) {
+            return json(res, 400, { error: "bad signature" });
+          }
+          event = JSON.parse(raw);
+        } else {
+          event = JSON.parse(raw || "{}"); // TEST mode: accept { sessionId } (or a stripe-shaped event)
+        }
+        const sessionId = event?.data?.object?.id || event.sessionId;
+        const meta = event?.data?.object?.metadata;
+        const pending = pendingSessions.get(sessionId);
+        const identity = (meta && meta.identity) || (pending && pending.identity);
+        const credits = (meta && Number(meta.credits)) || (pending && pending.credits);
+        if (identity && credits) {
+          const bal = ledger.grant(identity, credits);
+          pendingSessions.delete(sessionId);
+          return json(res, 200, { ok: true, credits: bal });
+        }
+        return json(res, 200, { ok: true, ignored: true });
       }
 
       if (req.method === "POST" && path === "/roast") {
@@ -311,6 +381,34 @@ function readJson(req) {
     });
     req.on("error", reject);
   });
+}
+
+function readRaw(req) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > MAX_BODY) { reject(new Error("payload too large")); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    req.on("error", reject);
+  });
+}
+
+// Verify a Stripe webhook signature ("t=...,v1=...") via HMAC-SHA256 of `t.payload`.
+function verifyStripeSig(rawBody, sigHeader, secret) {
+  try {
+    const parts = Object.fromEntries(String(sigHeader || "").split(",").map((kv) => kv.split("=")));
+    if (!parts.t || !parts.v1) return false;
+    const expected = crypto.createHmac("sha256", secret).update(`${parts.t}.${rawBody}`).digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(parts.v1);
+    return a.length === b.length && crypto.timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }
 
 function json(res, status, obj) {
