@@ -31,15 +31,20 @@ export function useRoastVoice(comedianId, performerName, beats) {
       return undefined;
     }
     let alive = true;
-    fetchVoice({ comedianId, performerName, beats })
-      .then((v) => {
-        const val = { clips: v.clips || [], durationsMs: v.durationsMs || [] };
-        voiceCache.set(key, val);
-        if (alive) setVoice(val);
-      })
-      .catch((e) => {
-        console.warn(`[reel] voice fetch failed (${(e && e.message) || e}); playing silent`);
-      });
+    // One retry on a transient failure before falling back to silent — keeps the
+    // live preview in step with the export (which always synthesizes server-side).
+    const attempt = (tries) =>
+      fetchVoice({ comedianId, performerName, beats })
+        .then((v) => {
+          const val = { clips: v.clips || [], durationsMs: v.durationsMs || [] };
+          voiceCache.set(key, val);
+          if (alive) setVoice(val);
+        })
+        .catch((e) => {
+          if (tries > 0) return attempt(tries - 1);
+          console.warn(`[reel] voice fetch failed (${(e && e.message) || e}); playing silent`);
+        });
+    attempt(1);
     return () => {
       alive = false;
     };

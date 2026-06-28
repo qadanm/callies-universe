@@ -66,6 +66,12 @@ try {
   check(poster.status === 200 && poster.json.dryRun === true, "POST /poster?dryRun=1 → 200 dryRun");
   check(typeof poster.json.at === "number" && !!poster.json.inputProps, "poster dryRun returns frame fraction + inputProps");
 
+  // input validation — empty beats → 400 (not a blank reel)
+  const bad = await post(base, "/render", { comedianId: "mama", beats: [] });
+  check(bad.status === 400, "POST /render with empty beats → 400");
+  const badV = await post(base, "/voice", { comedianId: "mama", beats: [] });
+  check(badV.status === 400, "POST /voice with empty beats → 400");
+
   // 404
   const nf = await fetch(`${base}/nope`, { method: "POST" });
   check(nf.status === 404, "unknown route → 404");

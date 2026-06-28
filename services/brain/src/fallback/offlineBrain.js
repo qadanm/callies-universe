@@ -143,5 +143,6 @@ export function offlineBrain(input, meta = {}) {
     grade: curatedGrade(),
     engine: "offline",
     durationMs: 600,
+    degraded: !!meta.degraded,
   });
 }

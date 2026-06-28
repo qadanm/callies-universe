@@ -45,7 +45,7 @@ export function setToPlainText(set) {
  * @param {object} args
  * @returns {import("../contract").RoastResult}
  */
-export function buildResult({ performer, research, set, grade, engine, durationMs, usage }) {
+export function buildResult({ performer, research, set, grade, engine, durationMs, usage, degraded }) {
   const { reaction, sequence } = reactionFor(performer.displaySpice, grade);
   const usageList = usage || []; // offline → [] (no tokens)
   const tokensIn = usageList.reduce((n, u) => n + (u.inputTokens || 0), 0);
@@ -76,6 +76,8 @@ export function buildResult({ performer, research, set, grade, engine, durationM
     grade,
     reactionSequence: sequence,
     engine,
+    // true only when a LIVE attempt failed and we fell back (don't bill the user).
+    degraded: !!degraded,
 
     // cost & usage telemetry (brain/model spend; offline → zero)
     usage: { models: usageList, tokensIn, tokensOut },

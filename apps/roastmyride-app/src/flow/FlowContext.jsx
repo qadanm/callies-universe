@@ -80,7 +80,9 @@ export function FlowProvider({ children }) {
   const generate = useCallback(async () => {
     const r = await generateRoast(sanitizeForBrain(input));
     setResult(r);
-    setCredits((c) => c - 1);
+    // Charge for a delivered roast — but NOT when a live attempt degraded to the
+    // offline fallback (our failure shouldn't cost the user).
+    if (!r.degraded) setCredits((c) => c - 1);
     return r;
   }, [input, setCredits]);
 

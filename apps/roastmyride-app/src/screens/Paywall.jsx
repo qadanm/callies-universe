@@ -21,6 +21,7 @@ export function Paywall() {
   const { setCredits } = useFlow();
   const [sel, setSel] = useState(1);
   const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
 
   const buy = async () => {
     setBusy(true);
@@ -38,9 +39,15 @@ export function Paywall() {
   const restorePurchases = async () => {
     try {
       const r = await restore();
-      if (r && typeof r.credits === "number") setCredits(r.credits);
+      if (r && typeof r.credits === "number") {
+        setCredits(r.credits);
+        setMsg(`Restored — ${r.credits} roasts`);
+      } else {
+        setMsg("Nothing to restore");
+      }
     } catch (e) {
       console.warn(`[paywall] restore failed (${e && e.message})`);
+      setMsg("Restore failed — try again");
     }
   };
 
@@ -86,6 +93,9 @@ export function Paywall() {
         >
           One-time purchase · no subscription · <u>restore</u>
         </button>
+        {msg && (
+          <span style={{ font: "var(--type-legal)", color: "var(--text-muted)", textAlign: "center" }}>{msg}</span>
+        )}
       </div>
     </div>
   );

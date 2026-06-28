@@ -21,7 +21,7 @@
 import React, { useMemo } from "react";
 import { Roaster, Callie } from "@callies-universe/core";
 import { activeIndexAt, callieStateForBeat } from "../standup.js";
-import { popPulse } from "../sceneMotion.js";
+import { popPulse, confettiParticles, confettiAt } from "../sceneMotion.js";
 
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
@@ -57,6 +57,10 @@ export const StageScene = React.memo(function StageScene({
   // Punch-in: emphasis pulse on the punch/closer beats (the caption + the comic hit).
   const emphasize = (type === "punch" || type === "closer") && !reduceMotion;
   const beatPop = emphasize ? popPulse(timeMs, seg ? seg.startMs : 0, 600) : 0;
+  // Celebrate: a deterministic confetti burst from the closer through the CTA.
+  const closerSeg = segments.find((s) => s.beat && s.beat.type === "closer");
+  const celebrateStart = closerSeg ? closerSeg.startMs : totalMs > 0 ? Math.max(0, totalMs - tailMs - 600) : Infinity;
+  const celebrating = !reduceMotion && timeMs >= celebrateStart;
   // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
   const inLead = leadMs > 0 && timeMs < leadMs;
   const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
@@ -116,6 +120,9 @@ export const StageScene = React.memo(function StageScene({
       <div style={{ position: "absolute", bottom: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5, font: "var(--type-cap)", fontWeight: 800, color: "rgba(255,255,255,0.92)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
         @roastmyride
       </div>
+
+      {/* celebration confetti — deterministic, from the closer through the CTA */}
+      {celebrating && <DrivenConfetti since={timeMs - celebrateStart} seed={comedianId} />}
     </div>
   );
 });
@@ -155,9 +162,11 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, hi = "var(-
   }
   // Long beats wrap to more lines → shrink so they stay in the safe center.
   const fs = tokens.length > 12 ? "clamp(20px, 6vw, 36px)" : tokens.length > 8 ? "clamp(23px, 7.5vw, 44px)" : "clamp(26px, 9vw, 52px)";
+  // Gentle entrance on each beat change (the block rises into place over ~200ms).
+  const enter = reduceMotion ? 1 : clamp01(rel / 200);
 
   return (
-    <div style={{ position: "absolute", left: "8%", right: "8%", top: "50%", transform: `translateY(-50%) scale(${1 + 0.06 * emphasis})`, zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
+    <div style={{ position: "absolute", left: "8%", right: "8%", top: "50%", transform: `translateY(calc(-50% + ${(1 - enter) * 14}px)) scale(${1 + 0.06 * emphasis})`, zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
       {tokens.map((tok, i) => {
         const revealed = i <= active;
         const isActive = i === active;
@@ -318,6 +327,22 @@ function PlaceholderCar({ label }) {
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, color: "rgba(255,255,255,0.7)" }}>
       <span style={{ fontSize: 30 }}>🚗</span>
       <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || "your ride"}</span>
+    </div>
+  );
+}
+
+// Deterministic confetti (seeded particles, timeMs-driven) — same burst live + export.
+function DrivenConfetti({ since, seed }) {
+  const parts = useMemo(() => confettiParticles(seed), [seed]);
+  return (
+    <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none", overflow: "hidden" }}>
+      {parts.map((p, i) => {
+        const s = confettiAt(p, since);
+        if (!s) return null;
+        return (
+          <div key={i} style={{ position: "absolute", left: `${s.leftPct}%`, top: `${s.topPct}%`, width: s.size, height: s.size, background: s.color, opacity: s.opacity, transform: `rotate(${s.rotateDeg}deg)`, borderRadius: 2 }} />
+        );
+      })}
     </div>
   );
 }

@@ -87,6 +87,9 @@ export function createApiServer(opts = {}) {
 
       if (req.method === "POST" && path === "/voice") {
         const body = await readJson(req);
+        if (!Array.isArray(body.beats) || body.beats.length === 0) {
+          return json(res, 400, { error: "beats must be a non-empty array" });
+        }
         const v = await synthesize(
           body.beats || [],
           { id: body.comedianId, name: body.performerName },
@@ -97,6 +100,9 @@ export function createApiServer(opts = {}) {
 
       if (req.method === "POST" && path === "/render") {
         const spec = await readJson(req);
+        if (!Array.isArray(spec.beats) || spec.beats.length === 0) {
+          return json(res, 400, { error: "spec.beats must be a non-empty array" });
+        }
         spec.audio = await synthForSpec(spec);
 
         const dryRun = defaultDryRun || url.searchParams.get("dryRun") === "1";
@@ -140,6 +146,9 @@ export function createApiServer(opts = {}) {
 
       if (req.method === "POST" && path === "/poster") {
         const spec = await readJson(req); // no audio needed for a still
+        if (!Array.isArray(spec.beats) || spec.beats.length === 0) {
+          return json(res, 400, { error: "spec.beats must be a non-empty array" });
+        }
         const dryRun = defaultDryRun || url.searchParams.get("dryRun") === "1";
         const at = Number(url.searchParams.get("at")) || 0.5;
         if (dryRun) return json(res, 200, { dryRun: true, at, inputProps: spec });

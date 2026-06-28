@@ -86,6 +86,7 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
     return () => {
       alive = false;
       cancelAnimationFrame(rafRef.current);
+      pauseAllAudio(); // don't leave a clip playing on pause/unmount
     };
   }, [playing, hasShow, segments, totalMs]);
 

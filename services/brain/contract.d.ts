@@ -238,6 +238,8 @@ export interface RoastResult {
   reactionSequence: CallieState[];
   /** Which path produced this set. */
   engine: "live" | "offline";
+  /** true only when a LIVE attempt failed and we fell back to offline (don't bill it). */
+  degraded: boolean;
   /** Token usage for this roast (offline → zero). */
   usage: {
     models: { model: string; inputTokens: number; outputTokens: number; calls: number }[];
