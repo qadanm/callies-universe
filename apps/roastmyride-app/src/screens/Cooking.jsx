@@ -20,12 +20,17 @@ const STEPS = (name) => [
 
 export function Cooking() {
   const go = useNavigate();
-  const { generate, input } = useFlow();
+  const { generate, input, credits } = useFlow();
   const [step, setStep] = useState(0);
   const firstName = resolvePerformer(input.roasterId).name.replace(/[“"].*$/, "").split(" ")[0];
   const steps = STEPS(firstName);
 
   useEffect(() => {
+    // Defensive credit gate — a roast costs a credit (generate() deducts on success).
+    if (credits < 1) {
+      go("/credits");
+      return undefined;
+    }
     let alive = true;
     const ticker = setInterval(() => setStep((s) => s + 1), 900);
 

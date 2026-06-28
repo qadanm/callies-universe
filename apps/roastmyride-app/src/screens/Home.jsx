@@ -86,7 +86,7 @@ export function Home() {
         {err && (
           <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
         )}
-        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => go("/profile")}>
+        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => go(credits < 1 ? "/credits" : "/profile")}>
           Roast my car
         </Button>
       </Card>

@@ -7,6 +7,7 @@ import { Button, CallieHost } from "@callies-universe/core";
 import { CreditTile } from "../components/CreditTile.jsx";
 import { ScreenScroll, Eyebrow, H } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { buyBundle, restore } from "../services/purchases.js";
 
 const BUNDLES = [
   { credits: 1, price: "$0.99", perRoast: "$0.99" },
@@ -19,10 +20,28 @@ export function Paywall() {
   const go = useNavigate();
   const { setCredits } = useFlow();
   const [sel, setSel] = useState(1);
+  const [busy, setBusy] = useState(false);
 
-  const buy = () => {
-    setCredits((c) => c + BUNDLES[sel].credits);
-    go("/home");
+  const buy = async () => {
+    setBusy(true);
+    try {
+      const r = await buyBundle(BUNDLES[sel]);
+      if (r.granted) setCredits((c) => c + r.granted);
+      if (!r.redirected) go("/home"); // real provider redirects to checkout
+    } catch (e) {
+      console.warn(`[paywall] purchase failed (${e && e.message})`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const restorePurchases = async () => {
+    try {
+      const r = await restore();
+      if (r && typeof r.credits === "number") setCredits(r.credits);
+    } catch (e) {
+      console.warn(`[paywall] restore failed (${e && e.message})`);
+    }
   };
 
   return (
@@ -58,12 +77,15 @@ export function Paywall() {
         </div>
       </ScreenScroll>
       <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: 8 }}>
-        <Button variant="primary" size="lg" block onClick={buy}>
-          Get {BUNDLES[sel].credits} roasts
+        <Button variant="primary" size="lg" block onClick={buy} disabled={busy}>
+          {busy ? "Processing…" : `Get ${BUNDLES[sel].credits} roasts`}
         </Button>
-        <span style={{ font: "var(--type-legal)", color: "var(--text-hint)", textAlign: "center" }}>
-          One-time purchase · no subscription · restore anytime
-        </span>
+        <button
+          onClick={restorePurchases}
+          style={{ background: "none", border: "none", cursor: "pointer", font: "var(--type-legal)", color: "var(--text-hint)", textAlign: "center", padding: 4 }}
+        >
+          One-time purchase · no subscription · <u>restore</u>
+        </button>
       </div>
     </div>
   );

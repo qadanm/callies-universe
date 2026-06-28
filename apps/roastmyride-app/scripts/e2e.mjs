@@ -119,6 +119,35 @@ try {
   await seeText("Accessibility");
   check(true, "Settings reachable");
 
+  // --- monetization: deduct · persist · buy · gate ---
+  const creditsNow = async () => {
+    const m = (await page.locator("body").innerText()).match(/(\d+)\s+roasts left/);
+    return m ? Number(m[1]) : null;
+  };
+  await page.goto(`${BASE}/#/home`, { waitUntil: "networkidle" });
+  await seeText("roasts left");
+  check((await creditsNow()) === 2, "a credit was deducted by the roast (3 → 2)");
+
+  await page.reload({ waitUntil: "networkidle" });
+  await seeText("roasts left");
+  check((await creditsNow()) === 2, "credits persist across reload");
+
+  await page.goto(`${BASE}/#/credits`, { waitUntil: "networkidle" });
+  await seeText("keep cooking");
+  await clickName(/Get \d+ roasts/); // mock-buys the default bundle (5)
+  await seeText("roasts left");
+  check((await creditsNow()) === 7, "mock purchase grants credits (2 → 7)");
+
+  // set 0 in storage + reload so the app re-reads persisted credits
+  await page.evaluate(() => localStorage.setItem("rmr.credits", "0"));
+  await page.reload({ waitUntil: "networkidle" });
+  await page.goto(`${BASE}/#/home`, { waitUntil: "networkidle" });
+  await seeText("roasts left");
+  check((await creditsNow()) === 0, "credits reset to 0 (persisted across reload)");
+  await clickName(/Roast my car/);
+  await seeText("out of roasts");
+  check(true, "0 credits gates 'Roast my car' to the paywall");
+
   check(jsErrors.length === 0, `no uncaught JS errors (${jsErrors.length})`);
   if (jsErrors.length) jsErrors.slice(0, 5).forEach((e) => console.log("     ! " + e));
   if (resourceWarnings.length)

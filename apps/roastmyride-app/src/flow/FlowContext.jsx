@@ -39,21 +39,50 @@ const PREVIEW_RESULT = offlineBrain({
 
 const FlowCtx = createContext(null);
 
+// Credits persist across reloads (the monetization unit). localStorage only —
+// no account yet. Guarded so a missing/blocked store just falls back to default.
+const CREDITS_KEY = "rmr.credits";
+const DEFAULT_CREDITS = 3;
+function readCredits() {
+  try {
+    const v = localStorage.getItem(CREDITS_KEY);
+    if (v !== null) {
+      const n = parseInt(v, 10);
+      if (Number.isFinite(n)) return Math.max(0, n);
+    }
+  } catch { /* no storage */ }
+  return DEFAULT_CREDITS;
+}
+function writeCredits(n) {
+  try { localStorage.setItem(CREDITS_KEY, String(n)); } catch { /* no storage */ }
+}
+
 export function FlowProvider({ children }) {
   const [input, setInput] = useState(DEFAULT_INPUT);
   const [result, setResult] = useState(null);
-  const [credits, setCredits] = useState(3);
+  const [credits, setCreditsState] = useState(readCredits);
+
+  // setCredits accepts a value or updater (like useState) and persists the result.
+  const setCredits = useCallback((updater) => {
+    setCreditsState((prev) => {
+      const next = Math.max(0, typeof updater === "function" ? updater(prev) : updater);
+      writeCredits(next);
+      return next;
+    });
+  }, []);
 
   const update = useCallback((patch) => setInput((prev) => ({ ...prev, ...patch })), []);
 
   // The one call into the roast pipeline. The brain gets a sanitized input
   // (presence + identity only — no image blobs); the full input (with photos)
-  // stays in context for the stage + video to render.
+  // stays in context for the stage + video to render. A successful roast costs a
+  // credit (the funnel is gated to >=1 credit before we get here).
   const generate = useCallback(async () => {
     const r = await generateRoast(sanitizeForBrain(input));
     setResult(r);
+    setCredits((c) => c - 1);
     return r;
-  }, [input]);
+  }, [input, setCredits]);
 
   const value = useMemo(
     () => ({
