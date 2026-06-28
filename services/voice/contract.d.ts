@@ -26,6 +26,9 @@ export interface VoiceClip {
   durationMs: number;
   /** The text that was spoken (beat text flattened). */
   text: string;
+  /** Per-word timings (ms, relative to the clip start) for karaoke captions.
+   *  Present when the provider returns alignment; absent offline → even-time fallback. */
+  words?: { text: string; startMs: number; endMs: number }[];
 }
 
 export interface SynthesizedSet {

@@ -141,6 +141,7 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
           reaction={result.reaction || "savage"}
           backgroundUrl={bgUrl}
           fauxStyle={pick.fauxStyle}
+          clips={voice ? voice.clips : []}
           reduceMotion={reduceMotion}
         />
       </div>

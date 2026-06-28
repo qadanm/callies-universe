@@ -48,7 +48,7 @@ if (withVoice) {
     { id: inputProps.comedianId, name: inputProps.performerName },
     { offline: !process.env.ELEVENLABS_API_KEY }
   );
-  inputProps.audio = v.clips.map((c) => ({ index: c.index, dataUrl: c.dataUrl, durationMs: c.durationMs }));
+  inputProps.audio = v.clips.map((c) => ({ index: c.index, dataUrl: c.dataUrl, durationMs: c.durationMs, words: c.words }));
   console.log(`[render] voice: ${v.engine} (${v.clips.length} clips, ${v.voiced ? "spoken" : "silent"})`);
 }
 

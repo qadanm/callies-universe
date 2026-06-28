@@ -36,6 +36,7 @@ export const StageScene = React.memo(function StageScene({
   reaction = "savage",
   backgroundUrl, // when set, the HOST layers the real gameplay video; we go transparent
   fauxStyle = "blocks", // which faux-gameplay backdrop to draw when there's no real loop
+  clips = [], // per-beat voice clips (carry word timings for karaoke captions), aligned by beat index
   reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
 }) {
   const idx = activeIndexAt(segments, timeMs);
@@ -73,7 +74,7 @@ export const StageScene = React.memo(function StageScene({
       )}
 
       {/* BIG viral word-by-word captions */}
-      <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} reduceMotion={reduceMotion} />
+      <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} reduceMotion={reduceMotion} />
 
       {/* the comic — static sticker, the performer */}
       <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center" }}>
@@ -113,24 +114,32 @@ function tokenize(beat) {
   return out;
 }
 
-function Captions({ beat, startMs, endMs, timeMs, reduceMotion = false }) {
+function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotion = false }) {
   // tokenize is keyed on the beat (stable within a segment), so we don't re-split
   // the same text every animation frame as timeMs ticks.
-  const words = useMemo(() => tokenize(beat), [beat]);
-  if (!beat || !words.length) return null;
+  const tokens = useMemo(() => tokenize(beat), [beat]);
+  if (!beat || !tokens.length) return null;
   const dur = Math.max(1, endMs - startMs);
-  const prog = clamp01((timeMs - startMs) / dur);
-  const active = Math.min(words.length - 1, Math.floor(prog * words.length));
+  const rel = timeMs - startMs; // time into this beat's clip
+  // Use REAL per-word timings when they line up 1:1 with our tokens (true karaoke);
+  // otherwise fall back to the even-time estimate (offline / no key).
+  const timed = Array.isArray(timedWords) && timedWords.length === tokens.length ? timedWords : null;
+  let active = 0;
+  if (timed) {
+    for (let i = 0; i < timed.length; i++) { if (rel >= timed[i].startMs) active = i; else break; }
+  } else {
+    active = Math.min(tokens.length - 1, Math.floor(clamp01(rel / dur) * tokens.length));
+  }
 
   return (
     <div style={{ position: "absolute", left: "6%", right: "6%", top: "52%", transform: "translateY(-50%)", zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
-      {words.map((tok, i) => {
+      {tokens.map((tok, i) => {
         const revealed = i <= active;
         const isActive = i === active;
         const hot = tok.punch || isActive;
         // Reduced motion: show the whole caption, static (no per-word pop/reveal);
         // the active word is still color-highlighted (color ≠ motion).
-        const scale = reduceMotion ? 1 : revealed ? (isActive ? 1.0 + 0.12 * (1 - Math.abs(prog * words.length - i)) : 1) : 0.7;
+        const scale = reduceMotion ? 1 : revealed ? (isActive ? 1.12 : 1) : 0.7;
         return (
           <span
             key={i}

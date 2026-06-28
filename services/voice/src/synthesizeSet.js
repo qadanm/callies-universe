@@ -35,7 +35,7 @@ export async function synthesizeSet(beats, performer, config = {}) {
         audio = await provider.synthesize({ text, profile });
         audioCache.set(key, audio);
       }
-      clips.push({ index, dataUrl: audio.dataUrl, mime: audio.mime, durationMs: audio.durationMs, text });
+      clips.push({ index, dataUrl: audio.dataUrl, mime: audio.mime, durationMs: audio.durationMs, text, words: audio.words });
     }
     return { clips, voiced: true, engine: provider.id, durationsMs: clips.map((c) => c.durationMs) };
   } catch (err) {

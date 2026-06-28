@@ -3,6 +3,7 @@
 // pipeline (and CI) always runs. Run: node scripts/offline-check.mjs
 
 import { synthesizeSet, offlineVoiceSet, voiceProfile, spokenText, estimateDurationMs } from "../index.js";
+import { wordsFromAlignment } from "../src/alignment.js";
 import { Roaster } from "@callies-universe/core";
 
 const failures = [];
@@ -43,6 +44,19 @@ assert(kenji > tony, `pace: kenji(${kenji}) should be slower than tony(${tony})`
 
 // spokenText flattens lead+punch+tail
 assert(spokenText({ text: "a ", punch: "b", tail: " c" }) === "a b c", "spokenText flattens");
+
+// word-level alignment → word timings (the karaoke path; offline clips have none → fallback)
+assert(wordsFromAlignment(null) === undefined, "alignment: null → undefined (fallback)");
+const al = {
+  characters: ["H", "i", " ", "y", "o", "u"],
+  character_start_times_seconds: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
+  character_end_times_seconds: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+};
+const w = wordsFromAlignment(al);
+assert(Array.isArray(w) && w.length === 2, "alignment: 2 words from 'Hi you'");
+assert(w[0].text === "Hi" && w[0].startMs === 0 && w[0].endMs === 200, "alignment: word 0 = Hi [0,200]");
+assert(w[1].text === "you" && w[1].startMs === 300 && w[1].endMs === 600, "alignment: word 1 = you [300,600]");
+assert(offlineVoiceSet(beats, { id: "mama", name: "Mama" }).clips.every((c) => c.words === undefined), "offline clips carry no word timings (fallback)");
 
 if (failures.length) {
   console.error("✗ voice offline smoke FAILED:");
