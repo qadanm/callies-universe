@@ -9,7 +9,8 @@
   "exports": { ".": "./index.js", "./contract": "./contract.d.ts" },
   "types": "./contract.d.ts",
   "scripts": {
-    "smoke": "node scripts/offline-check.mjs"
+    "smoke": "node scripts/offline-check.mjs",
+    "cast-check": "node scripts/cast-check.mjs"
   },
   "dependencies": {
     "@callies-universe/core": "workspace:*"
