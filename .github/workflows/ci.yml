@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # e2e.mjs resolves Chromium from here (chromium-*/chrome-linux/chrome).
+      PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Lint + every offline smoke (core/brain/voice/api) + voice cast-check + builds.
+      - name: Verify
+        run: pnpm verify
+
+      # e2e needs a real browser; verify already produced the app build (dist).
+      - name: Install Chromium
+        run: pnpm dlx playwright@1.61.1 install --with-deps chromium
+
+      - name: E2E (full flow, offline)
+        run: |
+          pnpm --filter @callies-universe/roastmyride-app serve &
+          for i in $(seq 1 30); do curl -sf http://localhost:5180 >/dev/null && break; sleep 1; done
+          node apps/roastmyride-app/scripts/e2e.mjs
