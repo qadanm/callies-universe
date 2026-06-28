@@ -1,0 +1,32 @@
+# Fly.io config for the RoastMyRide backend (services/api).
+#   fly launch --no-deploy   # once, to create the app + a /data volume
+#   fly secrets set ANTHROPIC_API_KEY=... ELEVENLABS_API_KEY=... VOICE_MAMA_ID=... STRIPE_SECRET_KEY=... ...
+#   fly deploy
+app = "roastmyride-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "services/api/Dockerfile"
+
+[env]
+  PORT = "8787"
+  ROAST_PUBLIC_URL = "https://roastmyride.example"   # your web app origin
+  ROAST_FREE_CREDITS = "3"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+# Persist the credit ledger (swap for a real DB in production).
+[mounts]
+  source = "roast_data"
+  destination = "/data"
+
+# Renders are CPU+memory heavy (Chromium). Give it room.
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 2
+  memory = "2gb"
