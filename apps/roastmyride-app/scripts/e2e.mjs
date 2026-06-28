@@ -117,7 +117,12 @@ try {
   // --- Settings via dev picker ---
   await page.getByRole("button", { name: "Settings", exact: true }).first().click();
   await seeText("Accessibility");
-  check(true, "Settings reachable");
+  check((await page.getByText("left", { exact: false }).count()) >= 1, "Settings shows live credit balance");
+
+  // --- Legal (privacy) reachable ---
+  await page.goto(`${BASE}/#/legal/privacy`, { waitUntil: "networkidle" });
+  await seeText("Privacy & data");
+  check((await page.getByText("never leaves your device", { exact: false }).count()) >= 1, "Privacy page renders");
 
   // --- monetization: deduct · persist · buy · gate ---
   const creditsNow = async () => {

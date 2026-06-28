@@ -1,115 +1,68 @@
 # Callie's Universe
 
-A character-IP company that ships **many apps from one shared system**. This
-repository is the monorepo for that system. **Milestone 1 (this pass):** scaffold
-the monorepo and stand up the shared **`core/`** as a real, installable,
-renderable package — `@callies-universe/core@0.1.0`. No app, no app logic, no
-backend yet.
+A character-IP company that ships **many apps from one shared system**. This monorepo
+holds the shared core and the first product built on it: **RoastMyRide** — drop a photo
+of your car, pick one of 8 comedians, and get a vertical, voiced, captioned **"roast reel"**
+(gameplay-background + word-synced subtitles) you can save as a video.
 
-The design is already specified; this code implements it faithfully:
-
-- **Spec / source of truth:** [`project/core/HANDOFF.md`](project/core/HANDOFF.md)
-  (the core handoff — tokens, component inventory, Callie's 9-state contract, the
-  cast/picker spec, the accent-slot convention). The full design export, including
-  every token CSS file and component, lives under [`project/`](project/).
-
-## Architecture — three layers, dependencies point inward only
+The three layers, dependencies pointing inward only (enforced by ESLint):
 
 ```
-┌─────────────────────────────────────────────┐
-│  apps/        product apps (empty this pass)  │   each app = core + one accent + hero screens
-│    │                                          │
-│    ▼                                          │
-│  services/    shared backend (stub this pass) │   render · voice · brain · moderation · payments
-│    │                                          │
-│    ▼                                          │
-│  core/        @callies-universe/core@0.1.0    │   tokens · components · Callie · the cast
-└─────────────────────────────────────────────┘
-        apps → services → core   (never the reverse)
+apps/      RoastMyRide (Vite + React SPA) + its Remotion composition
+   ▼
+services/  brain (research→write→grade comedy) · voice (TTS) · render (Remotion→MP4) · api (HTTP host)
+   ▼
+core/      @callies-universe/core — tokens · components · Callie (9-state mascot) · the 8-comedian cast
 ```
 
-- **`core/`** depends on nothing internal. The single source of truth: design
-  tokens, the component library, Callie's 9-state mascot system, and the
-  character cast. Published under the `@callies-universe/*` namespace.
-- **`services/`** — the shared backend layer. **Scaffolded empty** this pass
-  (see [`services/README.md`](services/README.md)). May consume `core`, never `apps`.
-- **`apps/`** — individual products. **Empty** this pass
-  (see [`apps/README.md`](apps/README.md)). May consume `services` + `core`.
+## What's built
 
-### The inward-only rule is enforced from day one
+- **core** — design tokens, the Callie mascot, 8 Roaster avatars, primitives. Stand-alone, tsup-built.
+- **brain** — live comedy: identifies the car (vision), researches it, writes a character-shaped
+  set, grades it against an anti-cringe rubric; deterministic offline fallback + cost telemetry.
+- **voice** — per-character ElevenLabs TTS with word-level timestamps; deterministic silent fallback.
+- **render** — Remotion composition → MP4 (and PNG poster); the *same* `timeMs`-driven scene the app
+  plays live, so the export is frame-identical.
+- **api** — a `node:http` host over brain+voice+render: `/roast`, `/identify`, `/voice`,
+  `/render` (sync + async jobs w/ SSE), `/poster`, a credit `/credits` ledger, Stripe
+  `/checkout`+`/webhook`, rate-limiting + telemetry. Keys stay server-side.
+- **app** — the full flow + the reel (hook → car/owner showcase → karaoke captions → CTA + confetti),
+  one-tap Save (MP4/PNG), live audio, monetization, settings, legal.
 
-Even though only `core/` has content, the boundary is wired up so it can never be
-crossed as the other layers fill in. [`eslint.config.js`](eslint.config.js) uses
-`no-restricted-imports` to block any outward import:
+**Everything works with zero config** (offline brain, silent voice, faux background, mock
+payments, anonymous identity). Add keys + a host to go live — see **[DEPLOY.md](DEPLOY.md)**
+and **[.env.example](.env.example)**. The seam pattern (an env var selects a real adapter,
+unset → the offline/mock path) is used throughout.
 
-- `core/**` may not import `@callies-universe/services`, `…/preview`, or reach
-  `apps/` — it imports nothing internal.
-- `services/**` may not import from `apps/`.
-- `apps/**` and `preview/**` sit outside and may consume inward freely.
-
-Run it: `pnpm lint`.
-
-## Layout
-
-```
-core/            @callies-universe/core@0.1.0  — the shared package
-  styles.css        single CSS entry point (consumers link this)
-  tokens/           calico base palette + --accent-* slot, type/space/radius/elevation/motion
-  src/components/   core/ · feedback/ · mascot/ (Callie) · cast/ (Roaster + CastPicker)
-  types/            hand-authored TypeScript contracts
-services/        backend layer — scaffolded, empty
-apps/            product layer — empty
-preview/         @callies-universe/preview — the render sandbox (dev tool, not an app)
-scripts/smoke.mjs  headless render check (no browser)
-project/         the original design export (spec + design-tool prototypes)
-```
-
-> **Why `preview/` is not under `apps/`:** the preview is a developer sandbox for
-> verifying the core renders, not a product. Keeping `apps/` genuinely empty
-> preserves the discipline that the first real app is a later milestone.
-
-## Tooling
-
-- **pnpm workspaces** — chosen for first-class monorepo support and a
-  non-flat `node_modules` that structurally prevents a package from importing
-  what it didn't declare (it reinforces the inward-only rule). Workspace
-  members are listed in [`pnpm-workspace.yaml`](pnpm-workspace.yaml).
-- **tsup** (esbuild) builds `core` to ESM + CJS.
-- **Vite** + React serves the preview.
-- **ESLint** (flat config) enforces the layer boundary.
-
-## Verify — clone → install → see Callie render
+## Run
 
 ```bash
-# 1. Install the whole workspace
 pnpm install
-
-# 2. Build the core package (→ core/dist: ESM + CJS)
-pnpm build
-
-# 3a. See it render — the visual acceptance test
-pnpm preview            # opens http://localhost:5179
-
-# 3b. …or verify headlessly (build + render-to-string assertions)
-pnpm smoke
-
-# Everything at once: lint boundary + smoke + static preview build
-pnpm verify
+pnpm verify          # lint + every offline smoke (core/brain/voice/api) + builds — the gate
+pnpm app             # the RoastMyRide app at http://localhost:5180  (offline by default)
+pnpm preview         # the core render sandbox at http://localhost:5179
 ```
 
-`pnpm preview` renders every token, every component variant/state, **Callie
-through all 9 states** (plus the imperative `setState`-by-name API and the
-behavioral host), and the **CastPicker with all 8 avatars** — the proof that the
-core installs cleanly, stands alone, and renders.
+Go live locally (real comedy + one-tap video):
 
-## Scope of this milestone
+```bash
+# backend (needs ANTHROPIC_API_KEY for live comedy; ELEVENLABS_API_KEY + VOICE_*_ID for voice; Chrome for render)
+ANTHROPIC_API_KEY=... ELEVENLABS_API_KEY=... VOICE_MAMA_ID=... \
+  CHROMIUM_BIN="/path/to/chrome" node services/api/server.mjs        # → :8787
+# app pointed at it
+VITE_ROAST_API=http://localhost:8787 pnpm app
+```
 
-**Done:** the three layers exist; the inward-dependency lint rule is wired;
-`@callies-universe/core@0.1.0` implements the tokens, components, Callie's 9
-states, and the cast/picker per the handoff; a preview renders all of it from a
-clean install.
+## The inward-only rule
 
-**Deliberately not done:** any app, any roast/app logic, any real `services/`
-implementation. The `--accent-*` slot, the versioned package boundary, the empty
-`services/` interfaces, and the empty `apps/` dir are left as clean drop-ins for
-the next milestones.
+[`eslint.config.js`](eslint.config.js) (`no-restricted-imports`) blocks any outward import:
+`core` imports nothing internal; `services` may import `core` (and other services); `apps`
+consume inward freely. `services` never import `apps/**` — the Remotion entry is passed as a
+path string. Run it: `pnpm lint`.
+
+## Docs
+
+- **[ROADMAP.md](ROADMAP.md)** — what's shipped (3 sprints) + what's next.
+- **[DEPLOY.md](DEPLOY.md)** — backend (Docker/Fly) + web (Vercel/static) + graceful-degradation table.
+- **[project/](project/)** — the original design export (spec + prototypes).
+- Per-package READMEs under `services/*` and `apps/roastmyride-app/`.

@@ -26,6 +26,7 @@ import { Reveal } from "./screens/Reveal.jsx";
 import { Celebrate } from "./screens/Celebrate.jsx";
 import { Paywall } from "./screens/Paywall.jsx";
 import { Settings } from "./screens/Settings.jsx";
+import { Legal } from "./screens/Legal.jsx";
 
 // path, picker label — order = the intended flow.
 const SCREENS = [
@@ -117,6 +118,7 @@ const router = createHashRouter([
       { path: "celebrate", element: <Celebrate /> },
       { path: "credits", element: <Paywall /> },
       { path: "settings", element: <Settings /> },
+      { path: "legal/:doc", element: <Legal /> },
     ],
   },
 ]);
