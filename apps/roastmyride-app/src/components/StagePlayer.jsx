@@ -28,7 +28,7 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
   // the same durations the exported MP4 uses, keeping live and export in lockstep.
   // No backend / any failure → null → silent + word-count estimate, exactly as before.
   const voice = useRoastVoice(standup.comedianId, result.roasterName, standup.beats);
-  const { segments, totalMs } = useMemo(
+  const { segments, totalMs, leadMs, tailMs } = useMemo(
     () => buildTimeline(standup.beats, voice ? { durationsMs: voice.durationsMs } : {}),
     [standup, voice]
   );
@@ -60,14 +60,15 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
       const e = elapsedRef.current;
       if (scrubRef.current) scrubRef.current.style.width = `${(e / totalMs) * 100}%`;
       setTimeMs(e);
-      // Voice: when the active beat changes, start its clip (the visual scene is
-      // unaffected — audio is a live nicety; the export muxes audio itself).
+      // Voice: when the active beat changes, start its clip. Gate on the beat's
+      // real start so nothing plays during the opening hook (timeMs < beat[0].start).
       const idx = activeIndexAt(segments, e);
-      if (idx !== activeAudioRef.current) {
+      const audioIdx = idx >= 0 && segments[idx] && e >= segments[idx].startMs ? idx : -1;
+      if (audioIdx !== activeAudioRef.current) {
         const prev = audioRefs.current[activeAudioRef.current];
         if (prev) prev.pause();
-        activeAudioRef.current = idx;
-        const cur = audioRefs.current[idx];
+        activeAudioRef.current = audioIdx;
+        const cur = audioRefs.current[audioIdx];
         if (cur) {
           try { cur.currentTime = 0; } catch { /* not yet seekable */ }
           cur.play().catch(() => {}); // autoplay policy / not loaded — stay silent
@@ -142,6 +143,9 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
           backgroundUrl={bgUrl}
           fauxStyle={pick.fauxStyle}
           clips={voice ? voice.clips : []}
+          leadMs={leadMs}
+          tailMs={tailMs}
+          totalMs={totalMs}
           reduceMotion={reduceMotion}
         />
       </div>

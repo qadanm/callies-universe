@@ -21,7 +21,7 @@ export function StageVideo(props) {
   // When voiced, pace the timeline to the real per-beat audio durations so the
   // captions track the spoken performance exactly.
   const durationsMs = audio ? audio.map((a) => a && a.durationMs) : undefined;
-  const { segments } = buildTimeline(props.beats || [], { durationsMs });
+  const { segments, totalMs, leadMs, tailMs } = buildTimeline(props.beats || [], { durationsMs });
   const msToFrames = (ms) => Math.max(1, Math.round((ms / 1000) * fps));
 
   return (
@@ -55,6 +55,9 @@ export function StageVideo(props) {
         backgroundUrl={props.backgroundUrl}
         fauxStyle={props.fauxStyle}
         clips={audio || []}
+        leadMs={leadMs}
+        tailMs={tailMs}
+        totalMs={totalMs}
       />
     </AbsoluteFill>
   );

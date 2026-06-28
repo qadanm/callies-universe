@@ -76,6 +76,11 @@ const MAX_BEAT_MS = 6500;
 const GAP_MS = 320; // breath between beats
 // extra "let it land / laugh" beat after the funny ones
 const LAUGH_MS = { punch: 750, closer: 900, crowd: 650, setup: 150 };
+// "Chrome" around the set: an opening hook (grab) and a closing CTA (convert).
+// These are timeMs windows the scene renders; beats keep their indices and just
+// shift by LEAD_MS, so the per-beat audio mapping is untouched.
+const LEAD_MS = 1300;
+const TAIL_MS = 1700;
 
 function beatDurationMs(beat) {
   const words = beat.text ? beat.text.trim().split(/\s+/).filter(Boolean).length : 0;
@@ -85,17 +90,21 @@ function beatDurationMs(beat) {
 }
 
 /**
- * Turn the display beats into a timed performance: each beat gets a start/end
- * (ms) proportional to its length, with a breath between. This drives both the
- * live stage playback and (next milestone) the exported video — same timeline.
- * @returns {{ segments: Array<{beat, index, startMs, endMs}>, totalMs: number }}
+ * Turn the display beats into a timed performance: an opening hook (leadMs), each
+ * beat with a start/end (ms) + a breath between, then a closing CTA (tailMs). This
+ * drives both the live reel and the exported video — same timeline (parity).
+ * Beats keep their indices and shift by leadMs, so per-beat audio mapping holds.
+ * @returns {{ segments: Array<{beat, index, startMs, endMs}>, totalMs, leadMs, tailMs }}
  */
 export function buildTimeline(beats, opts = {}) {
   // When real per-beat audio durations are supplied (voiced render), pace the
   // timeline to the SPOKEN audio so captions + scene track the performance.
   // Otherwise fall back to the word-count estimate (live / silent).
   const durationsMs = opts.durationsMs;
-  let t = 0;
+  const has = !!(beats && beats.length);
+  const leadMs = has ? (opts.leadMs ?? LEAD_MS) : 0; // 0 disables a window
+  const tailMs = has ? (opts.tailMs ?? TAIL_MS) : 0;
+  let t = leadMs;
   const segments = (beats || []).map((beat, index) => {
     const dur =
       durationsMs && Number.isFinite(durationsMs[index]) && durationsMs[index] > 0
@@ -106,9 +115,8 @@ export function buildTimeline(beats, opts = {}) {
     t = endMs + GAP_MS;
     return { beat, index, startMs, endMs };
   });
-  // totalMs INCLUDES the final gap (t), so the scrubber reaches 100% exactly when
-  // the last beat's breath ends. 0 segments → 0 (StagePlayer guards on this).
-  return { segments, totalMs: segments.length ? t : 0 };
+  // t now = end of last beat + breath; add the CTA tail. 0 segments → 0.
+  return { segments, totalMs: has ? t + tailMs : 0, leadMs, tailMs };
 }
 
 /**

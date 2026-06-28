@@ -37,6 +37,9 @@ export const StageScene = React.memo(function StageScene({
   backgroundUrl, // when set, the HOST layers the real gameplay video; we go transparent
   fauxStyle = "blocks", // which faux-gameplay backdrop to draw when there's no real loop
   clips = [], // per-beat voice clips (carry word timings for karaoke captions), aligned by beat index
+  leadMs = 0, // opening-hook window: [0, leadMs)
+  tailMs = 0, // closing-CTA window: [totalMs - tailMs, totalMs)
+  totalMs = 0,
   reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
 }) {
   const idx = activeIndexAt(segments, timeMs);
@@ -47,6 +50,9 @@ export const StageScene = React.memo(function StageScene({
   const reacts = type === "punch" || type === "closer" || type === "crowd";
   const callieState = callieStateForBeat(type, reaction);
   const calliePop = reacts && !reduceMotion ? popPulse(timeMs, seg ? seg.startMs : 0, 700) : 0;
+  // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
+  const inLead = leadMs > 0 && timeMs < leadMs;
+  const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
 
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden", color: "#fff", fontFamily: "var(--font-display, inherit)" }} data-testid="stage-scene">
@@ -73,8 +79,14 @@ export const StageScene = React.memo(function StageScene({
         </Sticker>
       )}
 
-      {/* BIG viral word-by-word captions */}
-      <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} reduceMotion={reduceMotion} />
+      {/* center stage: opening hook → captions → closing CTA */}
+      {inLead ? (
+        <Hook carLabel={carLabel} timeMs={timeMs} leadMs={leadMs} reduceMotion={reduceMotion} />
+      ) : inTail ? (
+        <Outro performerName={performerName} timeMs={timeMs} startMs={totalMs - tailMs} reduceMotion={reduceMotion} />
+      ) : (
+        <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} reduceMotion={reduceMotion} />
+      )}
 
       {/* the comic — static sticker, the performer */}
       <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center" }}>
@@ -130,9 +142,11 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
   } else {
     active = Math.min(tokens.length - 1, Math.floor(clamp01(rel / dur) * tokens.length));
   }
+  // Long beats wrap to more lines → shrink so they stay in the safe center.
+  const fs = tokens.length > 12 ? "clamp(20px, 6vw, 36px)" : tokens.length > 8 ? "clamp(23px, 7.5vw, 44px)" : "clamp(26px, 9vw, 52px)";
 
   return (
-    <div style={{ position: "absolute", left: "6%", right: "6%", top: "52%", transform: "translateY(-50%)", zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
+    <div style={{ position: "absolute", left: "8%", right: "8%", top: "50%", transform: "translateY(-50%)", zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
       {tokens.map((tok, i) => {
         const revealed = i <= active;
         const isActive = i === active;
@@ -144,9 +158,9 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
           <span
             key={i}
             style={{
-              font: "var(--type-d2)",
+              fontFamily: "var(--font-display, inherit)",
               fontWeight: 900,
-              fontSize: "clamp(26px, 9vw, 52px)",
+              fontSize: fs,
               lineHeight: 1.04,
               textTransform: "uppercase",
               color: hot ? "var(--ink)" : "#fff",
@@ -164,6 +178,34 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
           </span>
         );
       })}
+    </div>
+  );
+}
+
+/* --------------------------- chrome: hook + CTA --------------------------- */
+
+const centerStage = { position: "absolute", left: "8%", right: "8%", top: "50%", transform: "translateY(-50%)", zIndex: 6, textAlign: "center" };
+const bigText = { fontFamily: "var(--font-display, inherit)", fontWeight: 900, textTransform: "uppercase", lineHeight: 1.02, WebkitTextStroke: "2px #1a1008", textShadow: "0 4px 0 rgba(0,0,0,0.5)" };
+
+// Opening hook — presents the car by name + a "this is gonna be good" beat.
+function Hook({ carLabel, timeMs, leadMs, reduceMotion }) {
+  const p = reduceMotion ? 1 : clamp01(timeMs / Math.max(1, leadMs * 0.5));
+  return (
+    <div style={centerStage}>
+      <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)", opacity: p }}>tonight's victim</div>
+      <div style={{ ...bigText, color: "#fff", fontSize: "clamp(30px, 11vw, 64px)", marginTop: 6, transform: `scale(${0.9 + 0.1 * p})` }}>{carLabel || "your ride"}</div>
+      <div style={{ fontSize: "clamp(30px, 12vw, 68px)", marginTop: 4, opacity: p }} aria-hidden="true">💀</div>
+    </div>
+  );
+}
+
+// Closing CTA — convert.
+function Outro({ performerName, timeMs, startMs, reduceMotion }) {
+  const p = reduceMotion ? 1 : clamp01((timeMs - startMs) / 500);
+  return (
+    <div style={{ ...centerStage, opacity: p }}>
+      <div style={{ ...bigText, color: "var(--sticker-yellow)", fontSize: "clamp(34px, 13vw, 72px)", transform: `scale(${0.92 + 0.08 * p})` }}>Roast<br />yours</div>
+      <div style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, color: "#fff", marginTop: 10, fontSize: "clamp(20px, 7vw, 36px)" }}>👉 @roastmyride</div>
     </div>
   );
 }
