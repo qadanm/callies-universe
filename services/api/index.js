@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateRoast as defaultGenerateRoast, identifyCar as defaultIdentify } from "@callies-universe/brain";
+import { createLedger } from "./ledger.js";
 import { synthesizeSet as defaultSynthesize } from "@callies-universe/voice";
 import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster } from "@callies-universe/render";
 
@@ -56,6 +57,12 @@ export function createApiServer(opts = {}) {
   const defaultDryRun = opts.dryRun ?? !!process.env.ROAST_RENDER_DRYRUN;
   const defaultScale = opts.scale ?? (Number(process.env.ROAST_RENDER_SCALE) || 1);
   const browserExecutable = opts.browserExecutable || process.env.CHROMIUM_BIN || process.env.CHROME || undefined;
+
+  // Credit ledger (server source of truth) keyed by identity. Anonymous identity =
+  // the device id the app sends in x-roast-identity; a real auth adapter would
+  // VERIFY a token → subject (documented). Exposed on the server for the webhook (grant).
+  const ledger = opts.ledger || createLedger({ file: process.env.ROAST_LEDGER_FILE, free: Number(process.env.ROAST_FREE_CREDITS) || 3 });
+  const identityOf = (req) => (req.headers["x-roast-identity"] || "").toString().slice(0, 128) || null;
 
   // Async render jobs: POST /render?async=1 → { jobId }; progress streams over
   // GET /render/:id/events (SSE); the MP4 is fetched from GET /render/:id/file.
@@ -112,6 +119,20 @@ export function createApiServer(opts = {}) {
     try {
       if (req.method === "GET" && (path === "/" || path === "/health")) {
         return json(res, 200, { ok: true, offline, dryRun: defaultDryRun });
+      }
+
+      // Credit ledger
+      if (path === "/credits" && (req.method === "GET" || req.method === "POST")) {
+        const id = identityOf(req);
+        if (!id) return json(res, 400, { error: "missing x-roast-identity" });
+        return json(res, 200, { credits: ledger.balance(id) });
+      }
+      if (req.method === "POST" && path === "/credits/consume") {
+        const id = identityOf(req);
+        if (!id) return json(res, 400, { error: "missing x-roast-identity" });
+        const r = ledger.consume(id, 1);
+        if (!r.ok) return json(res, 402, { error: "no credits", credits: r.credits });
+        return json(res, 200, { credits: r.credits });
       }
 
       if (req.method === "POST" && path === "/roast") {

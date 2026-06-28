@@ -9,9 +9,10 @@
 // to render, but are STRIPPED before the brain call (sanitizeForBrain) — the
 // model only needs presence + identity, never megabytes of base64.
 
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { generateRoast } from "../services/roast.js";
 import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
+import { hasCreditsApi, fetchCredits, consumeCredit } from "../services/credits.js";
 import { offlineBrain } from "@callies-universe/brain";
 
 const DEFAULT_INPUT = {
@@ -72,6 +73,14 @@ export function FlowProvider({ children }) {
     });
   }, []);
 
+  // When a backend is present, the SERVER ledger is the source of truth — sync the
+  // balance on mount (seeds free credits for a new identity). No backend → the
+  // localStorage credits above stay authoritative.
+  useEffect(() => {
+    if (!hasCreditsApi()) return;
+    fetchCredits().then((c) => setCredits(c)).catch(() => {});
+  }, [setCredits]);
+
   const update = useCallback((patch) => setInput((prev) => ({ ...prev, ...patch })), []);
 
   // The one call into the roast pipeline. The brain gets a sanitized input
@@ -94,8 +103,15 @@ export function FlowProvider({ children }) {
     const r = await generateRoast(sanitizeForBrain(active));
     setResult(r);
     // Charge for a delivered roast — but NOT when a live attempt degraded to the
-    // offline fallback (our failure shouldn't cost the user).
-    if (!r.degraded) setCredits((c) => c - 1);
+    // offline fallback (our failure shouldn't cost the user). Backend present →
+    // consume from the server ledger (authoritative); else decrement locally.
+    if (!r.degraded) {
+      if (hasCreditsApi()) {
+        try { const c = await consumeCredit(); if (c.ok) setCredits(c.credits); } catch { /* keep local */ }
+      } else {
+        setCredits((c) => c - 1);
+      }
+    }
     return r;
   }, [input, setCredits]);
 
