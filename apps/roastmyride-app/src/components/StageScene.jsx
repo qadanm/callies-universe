@@ -50,6 +50,13 @@ export const StageScene = React.memo(function StageScene({
   const reacts = type === "punch" || type === "closer" || type === "crowd";
   const callieState = callieStateForBeat(type, reaction);
   const calliePop = reacts && !reduceMotion ? popPulse(timeMs, seg ? seg.startMs : 0, 700) : 0;
+  // Per-comic caption signature: each comedian highlights in their core ring color,
+  // so a Kenji reel and a Tony reel read differently at a glance.
+  const seed = Roaster.roster.find((r) => r.id === comedianId) || Roaster.roster[0];
+  const hiColor = (seed && seed.ring) || "var(--sticker-yellow)";
+  // Punch-in: emphasis pulse on the punch/closer beats (the caption + the comic hit).
+  const emphasize = (type === "punch" || type === "closer") && !reduceMotion;
+  const beatPop = emphasize ? popPulse(timeMs, seg ? seg.startMs : 0, 600) : 0;
   // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
   const inLead = leadMs > 0 && timeMs < leadMs;
   const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
@@ -89,11 +96,11 @@ export const StageScene = React.memo(function StageScene({
       ) : inTail ? (
         <Outro performerName={performerName} timeMs={timeMs} startMs={totalMs - tailMs} reduceMotion={reduceMotion} />
       ) : (
-        <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} reduceMotion={reduceMotion} />
+        <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} hi={hiColor} emphasis={beatPop} reduceMotion={reduceMotion} />
       )}
 
-      {/* the comic — static sticker, the performer */}
-      <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center" }}>
+      {/* the comic — sticker performer; hits a little on the punch/closer beats */}
+      <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
         <Comic comedianId={comedianId} />
         <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
           🎤 {firstName(performerName)}
@@ -130,7 +137,7 @@ function tokenize(beat) {
   return out;
 }
 
-function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotion = false }) {
+function Captions({ beat, startMs, endMs, timeMs, words: timedWords, hi = "var(--sticker-yellow)", emphasis = 0, reduceMotion = false }) {
   // tokenize is keyed on the beat (stable within a segment), so we don't re-split
   // the same text every animation frame as timeMs ticks.
   const tokens = useMemo(() => tokenize(beat), [beat]);
@@ -150,7 +157,7 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
   const fs = tokens.length > 12 ? "clamp(20px, 6vw, 36px)" : tokens.length > 8 ? "clamp(23px, 7.5vw, 44px)" : "clamp(26px, 9vw, 52px)";
 
   return (
-    <div style={{ position: "absolute", left: "8%", right: "8%", top: "50%", transform: "translateY(-50%)", zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
+    <div style={{ position: "absolute", left: "8%", right: "8%", top: "50%", transform: `translateY(-50%) scale(${1 + 0.06 * emphasis})`, zIndex: 6, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.18em 0.32em" }}>
       {tokens.map((tok, i) => {
         const revealed = i <= active;
         const isActive = i === active;
@@ -168,7 +175,7 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, reduceMotio
               lineHeight: 1.04,
               textTransform: "uppercase",
               color: hot ? "var(--ink)" : "#fff",
-              background: hot ? "var(--sticker-yellow)" : "transparent",
+              background: hot ? hi : "transparent",
               padding: hot ? "0 0.12em" : 0,
               borderRadius: 8,
               WebkitTextStroke: hot ? "0" : "2px #1a1008",
