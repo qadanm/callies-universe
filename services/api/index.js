@@ -25,6 +25,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateRoast as defaultGenerateRoast, identifyCar as defaultIdentify } from "@callies-universe/brain";
 import { createLedger } from "./ledger.js";
+import { createLimiter } from "./limiter.js";
+import { logRequest, captureError } from "./observability.js";
 import { synthesizeSet as defaultSynthesize } from "@callies-universe/voice";
 import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster } from "@callies-universe/render";
 
@@ -64,6 +66,17 @@ export function createApiServer(opts = {}) {
   // VERIFY a token → subject (documented). Exposed on the server for the webhook (grant).
   const ledger = opts.ledger || createLedger({ file: process.env.ROAST_LEDGER_FILE, free: Number(process.env.ROAST_FREE_CREDITS) || 3 });
   const identityOf = (req) => (req.headers["x-roast-identity"] || "").toString().slice(0, 128) || null;
+
+  // Rate limiting + cost guardrails (in-memory; Redis is the documented swap).
+  // `rate` throttles all work endpoints; `cost` is a tighter cap on the EXPENSIVE
+  // ones (roast + render) over a longer window. Keyed by identity (else IP).
+  const rate = opts.rateLimit || createLimiter({ windowMs: Number(process.env.ROAST_RATE_WINDOW_MS) || 60000, max: Number(process.env.ROAST_RATE_MAX) || 60 });
+  const cost = opts.costLimit || createLimiter({ windowMs: Number(process.env.ROAST_COST_WINDOW_MS) || 3600000, max: Number(process.env.ROAST_COST_MAX) || 60 });
+  const keyOf = (req) => identityOf(req) || (req.socket && req.socket.remoteAddress) || "anon";
+  const tooMany = (res, r, label) => {
+    res.setHeader("Retry-After", Math.ceil(r.resetMs / 1000));
+    return json(res, 429, { error: `rate limited (${label})`, retryAfterMs: r.resetMs });
+  };
 
   // Payments: Stripe Checkout (real) behind STRIPE_SECRET_KEY, else a verifiable
   // TEST mode (no key) — a simulated session a fake webhook can complete. Either
@@ -126,9 +139,24 @@ export function createApiServer(opts = {}) {
     }
     const path = url.pathname.replace(/\/+$/, "") || "/";
 
+    // structured request log on completion
+    const t0 = Date.now();
+    res.on("finish", () => logRequest({ method: req.method, path, status: res.statusCode, ms: Date.now() - t0, identity: identityOf(req) }));
+
     try {
       if (req.method === "GET" && (path === "/" || path === "/health")) {
         return json(res, 200, { ok: true, offline, dryRun: defaultDryRun });
+      }
+
+      // Rate limit + cost guardrail on the work endpoints (keyed by identity/IP).
+      if (req.method === "POST" && ["/roast", "/identify", "/voice", "/render", "/poster"].includes(path)) {
+        const k = keyOf(req);
+        const r = rate.hit(k);
+        if (!r.ok) return tooMany(res, r, "per-minute");
+        if (path === "/roast" || path === "/render") {
+          const c = cost.hit(k);
+          if (!c.ok) return tooMany(res, c, "quota");
+        }
       }
 
       // Credit ledger
@@ -352,7 +380,7 @@ export function createApiServer(opts = {}) {
 
       return json(res, 404, { error: "not found" });
     } catch (err) {
-      console.error(`[api] ${req.method} ${path} failed:`, (err && err.message) || err);
+      captureError(err, { path, method: req.method });
       return json(res, 500, { error: (err && err.message) || "internal error" });
     }
   });
