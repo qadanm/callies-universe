@@ -1,4 +1,4 @@
-// services/render — render CLI. Renders a Remotion composition to an MP4 from a
+// services/render render CLI. Renders a Remotion composition to an MP4 from a
 // scene-spec JSON. Host-agnostic; reuse an installed Chrome via --browser.
 //
 // Usage:

@@ -1,22 +1,22 @@
-# RoastMyRide — Roadmap
+# RoastMyRide: Roadmap
 
 ## Shipped
 
-**Milestone 1 — core.** Tokens, Callie (9-state mascot), 8 Roaster avatars, primitives,
+**Milestone 1: core.** Tokens, Callie (9-state mascot), 8 Roaster avatars, primitives,
 CastPicker; tsup-built, render-verified.
 
 **Foundation (Sprint 1).** services/brain (research→write→grade + offline fallback + cache),
 services/voice (ElevenLabs + silent fallback), services/render (Remotion → MP4), the app flow,
-and the viral **roast reel** — gameplay background + sticker overlays + word-by-word captions.
+and the viral **roast reel**: gameplay background + sticker overlays + word-by-word captions.
 Plus: real photos, the deterministic stage scene, exact-MP4 export, per-beat voice.
 
-**Sprint 2 — perfect the reel.** Word-level karaoke sync (ElevenLabs timestamps), opening
+**Sprint 2: perfect the reel.** Word-level karaoke sync (ElevenLabs timestamps), opening
 hook + CTA outro + safe margins + fonts, car/owner **showcase** moment, audio mix (ducked
 gameplay/music + synth SFX), the full **8-voice cast** config + Voice Design prompts, per-comic
 caption signatures + punch-in directing, **cost telemetry**, **poster/PNG** export, real
 **monetization** (persist/gate/deduct + purchase seam), and a visual-polish + adversarial-review pass.
 
-**Sprint 3 — operate it.** Server-side **live brain** (`POST /roast`), **photo car-ID** (vision),
+**Sprint 3: operate it.** Server-side **live brain** (`POST /roast`), **photo car-ID** (vision),
 **async render jobs** (SSE progress + storage), **accounts + credit ledger**, **Stripe** checkout
 + webhook, **resilience** (error boundary, timeouts, offline indicator, degraded note),
 **observability + rate limiting + cost guardrails**, **CI** (verify + e2e on PR),

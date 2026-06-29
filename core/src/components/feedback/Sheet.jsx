@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Sheet — bouncy bottom sheet / modal. Clean content; the mascot may host
+ * Sheet: bouncy bottom sheet / modal. Clean content; the mascot may host
  * the header. Scrim never blocks the close affordance.
  */
 export function Sheet({

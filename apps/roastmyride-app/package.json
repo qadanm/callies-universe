@@ -2,7 +2,7 @@
   "name": "@callies-universe/roastmyride-app",
   "version": "0.1.0",
   "private": true,
-  "description": "RoastMyRide — the first app in Callie's Universe. A thin layer on @callies-universe/core: ember accent + hero screens + app-specific Callie reactions. Roast generation is mocked behind a service-shaped seam.",
+  "description": "RoastMyRide is the first app in Callie's Universe. A thin layer on @callies-universe/core: ember accent + hero screens + app-specific Callie reactions. Roast generation is mocked behind a service-shaped seam.",
   "type": "module",
   "scripts": {
     "dev": "vite",

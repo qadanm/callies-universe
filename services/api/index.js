@@ -1,8 +1,8 @@
-// @callies-universe/api — the roast backend.
+// @callies-universe/api: the roast backend.
 //
 // A tiny HTTP host (node:http, no framework) over the two server-side
 // capabilities, so the app can turn "Save video" into one tap and play the
-// reel's audio live — without ever holding a secret in the browser:
+// reel's audio live, without ever holding a secret in the browser:
 //
 //   POST /voice   { comedianId, performerName, beats }      → SynthesizedSet (clips JSON)
 //   POST /render  <buildRenderSpec output> [?dryRun&frames&scale] → video/mp4 (or the
@@ -15,7 +15,7 @@
 // behavior, so the offline build/e2e never depend on this server.
 //
 // Layer rule: this service may import voice + render (services→services is allowed);
-// it must NOT import apps/** — the Remotion entry is passed as a PATH STRING.
+// it must NOT import apps/**; the Remotion entry is passed as a PATH STRING.
 
 import http from "node:http";
 import crypto from "node:crypto";
@@ -83,7 +83,7 @@ export function createApiServer(opts = {}) {
   };
 
   // Payments: Stripe Checkout (real) behind STRIPE_SECRET_KEY, else a verifiable
-  // TEST mode (no key) — a simulated session a fake webhook can complete. Either
+  // TEST mode (no key): a simulated session a fake webhook can complete. Either
   // way, a completed payment grants credits to the ledger.
   const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
   const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -130,12 +130,12 @@ export function createApiServer(opts = {}) {
       { id: spec.comedianId, name: spec.performerName },
       voiceConfig()
     );
-    // The SAME mapping the render CLI uses — keep these in lockstep.
+    // The SAME mapping the render CLI uses; keep these in lockstep.
     return v.clips.map((c) => ({ index: c.index, dataUrl: c.dataUrl, durationMs: c.durationMs, words: c.words }));
   };
 
   return http.createServer(async (req, res) => {
-    // permissive CORS — the app is served from a different port (dev/self-host)
+    // permissive CORS: the app is served from a different port (dev/self-host)
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "content-type, x-roast-identity");
@@ -223,7 +223,7 @@ export function createApiServer(opts = {}) {
         const raw = await readRaw(req);
         const parsed = JSON.parse(raw || "{}");
 
-        // RevenueCat (Apple/Play IAP, consumables) — shape: { event: { type, app_user_id, product_id } }.
+        // RevenueCat (Apple/Play IAP, consumables), shape: { event: { type, app_user_id, product_id } }.
         if (parsed && parsed.event && parsed.event.type) {
           if (REVENUECAT_WEBHOOK_AUTH && req.headers.authorization !== `Bearer ${REVENUECAT_WEBHOOK_AUTH}`) {
             return json(res, 401, { error: "bad auth" });

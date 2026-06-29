@@ -1,14 +1,14 @@
 /* ============================================================
-   CALLIE'S UNIVERSE — CORE PALETTE
+   CALLIE'S UNIVERSE: CORE PALETTE
    Derived from Callie the calico cat's coat: CREAM + GINGER + CHARCOAL.
-   These are the SHARED brand neutrals — constant across every app.
+   These are the SHARED brand neutrals, constant across every app.
    Each app then layers ONE bright ACCENT on top (see app theme.css);
    the core's default accent is calico ginger so the core stands alone.
    ============================================================ */
 
 :root {
   /* ---- Calico coat → brand neutrals (FIXED across all apps) ---- */
-  --cream:      #FFF6EC;  /* the white/cream patch — page canvas */
+  --cream:      #FFF6EC;  /* the white/cream patch, page canvas */
   --cream-50:   #FFFDF9;
   --cream-200:  #FBEEDF;  /* recessed surface wash */
 
@@ -28,7 +28,7 @@
      Apps set ONLY these to reskin. Components reference the brand ramp
      (--ember-* etc. in colors.css) which is aliased to these. ---- */
   --accent-700:    var(--ginger-700);
-  --accent-600:    var(--ginger-600);  /* primary action bg — must pass white-text AA */
+  --accent-600:    var(--ginger-600);  /* primary action bg, must pass white-text AA */
   --accent-500:    var(--ginger-500);
   --accent-bright: var(--ginger-400);  /* highlight / punch fills (ink label) */
   --accent-bright-2: var(--ginger-300);

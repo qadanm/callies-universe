@@ -1,4 +1,4 @@
-// CookingProgress — the "Callie is working" panel: mascot + title + a stepping
+// CookingProgress: the "Callie is working" panel: mascot + title + a stepping
 // status line + progress bar. Shared by the Warming-up screen (writing the set)
 // and Reveal's render overlay (saving the video), so both read identically.
 import React from "react";

@@ -1,4 +1,4 @@
-// Screen 6b — Share success (the celebrate sheet over the reveal).
+// Screen 6b: Share success (the celebrate sheet over the reveal).
 // CORE-REUSED: Sheet, CallieHost (context "celebrate"), Confetti, Badge, Button, Callie.
 // ROASTMYRIDE-NEW: stand-up share copy + the posted clip (standup ShareCard).
 import React from "react";

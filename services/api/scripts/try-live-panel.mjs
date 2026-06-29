@@ -1,7 +1,7 @@
-// Try the LIVE Panel ("Green Room") end to end — paste your keys, run this.
+// Try the LIVE Panel ("Green Room") end to end. Paste your keys, run this.
 //
-//   ANTHROPIC_API_KEY=...  (required — the comedy brain)
-//   ELEVENLABS_API_KEY=... (optional — real voices; omit → silent timing only)
+//   ANTHROPIC_API_KEY=...  (required: the comedy brain)
+//   ELEVENLABS_API_KEY=... (optional: real voices; omit → silent timing only)
 //   VOICE_DEFAULT_ID=...   (an ElevenLabs voiceId; or per-comic VOICE_MAMA_ID etc.)
 //
 //   node services/api/scripts/try-live-panel.mjs
@@ -27,7 +27,7 @@ const hr = (s) => console.log("\n" + "─".repeat(64) + (s ? `  ${s}` : ""));
 const first = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
 
 if (!env.ANTHROPIC_API_KEY) {
-  console.log("⚠  No ANTHROPIC_API_KEY — this will run the OFFLINE (curated) panel, not the live brain.");
+  console.log("⚠  No ANTHROPIC_API_KEY, so this will run the OFFLINE (curated) panel, not the live brain.");
 }
 
 // --- Build the input ---
@@ -88,10 +88,10 @@ if (!voice.voiced) {
     writeFileSync(file, Buffer.from(m[2] || "", "base64"));
     console.log(`  ${file}  (${who}, ${Math.round(c.durationMs)}ms)`);
   });
-  console.log(`\n→ wrote ${voice.clips.length} clips to ./${OUT}/ — play them in order to hear the back-and-forth.`);
+  console.log(`\n→ wrote ${voice.clips.length} clips to ./${OUT}/. Play them in order to hear the back-and-forth.`);
 }
 
 hr();
 console.log(result.engine === "live"
   ? "✓ LIVE panel generated. This is the real two-comic dialogue the app produces."
-  : "Ran OFFLINE (no ANTHROPIC_API_KEY) — set the key to see the live brain write it.");
+  : "Ran OFFLINE (no ANTHROPIC_API_KEY). Set the key to see the live brain write it.");

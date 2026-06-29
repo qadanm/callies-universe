@@ -1,7 +1,7 @@
-# Callie's Universe — Creative Positioning Plan
+# Callie's Universe: Creative Positioning Plan
 ## A Creative Director's Blueprint for Product, Brand, UX, Marketing, and Virality
 
-> **The one-line truth:** Callie's Universe is not "a bunch of roast apps with a cat." It is **the world's first AI comedy franchise** — a shared character universe where an original cast of comedians perform roasts, and Callie is the host, the brand mascot, and the connective tissue that makes every app feel like an episode of the same show.
+> **The one-line truth:** Callie's Universe is not "a bunch of roast apps with a cat." It is **the world's first AI comedy franchise**: a shared character universe where an original cast of comedians perform roasts, and Callie is the host, the brand mascot, and the connective tissue that makes every app feel like an episode of the same show.
 
 ---
 
@@ -27,10 +27,10 @@ A user opens **Roast My Ride**. They see a cute cat mascot. They upload their ca
 
 - **"Who is this cat?"**
 - **"Why is she here?"**
-- **"Is she the one roasting me?"** (No — the comedian is.)
+- **"Is she the one roasting me?"** (No, the comedian is.)
 - **"Is she a separate app? A pet? A logo?"**
 
-The current design treats Callie as a **decorative mascot** — a cute thing that reacts. But because she's *so* present (every screen, every emote, every reaction) and *so* undefined, she becomes the **single biggest cognitive load** in the app. Users don't ignore her. They get confused by her.
+The current design treats Callie as a **decorative mascot**, a cute thing that reacts. But because she's *so* present (every screen, every emote, every reaction) and *so* undefined, she becomes the **single biggest cognitive load** in the app. Users don't ignore her. They get confused by her.
 
 ### The deeper product problem
 
@@ -103,32 +103,32 @@ Think of it this way:
 
 > **Callie is a talent agent. For comedians. Who are also AI.**
 >
-> She discovered that the best comedy comes from roasting *real things* — not generic setups, but actual cars, actual texts, actual outfits that real people own. So she built a universe: a rotating cast of comedians from every corner of the world, each with their own voice, their own style, their own way of reading a room.
+> She discovered that the best comedy comes from roasting *real things*, not generic setups, but actual cars, actual texts, actual outfits that real people own. So she built a universe: a rotating cast of comedians from every corner of the world, each with their own voice, their own style, their own way of reading a room.
 >
-> She doesn't perform. She hosts. She finds the talent. She sets the stage. She watches the chaos. And she reacts — because watching a great roast is almost as fun as delivering one.
+> She doesn't perform. She hosts. She finds the talent. She sets the stage. She watches the chaos. And she reacts, because watching a great roast is almost as fun as delivering one.
 >
 > Her full name is **Calliope** (the Greek muse of epic poetry). Her friends call her Callie. She prefers Callie. Less pressure.
 >
-> She is a calico because calicos are the most genetically diverse cats — three colors, no two alike. Just like her comedian roster. No, she did not plan this. Yes, it works perfectly.
+> She is a calico because calicos are the most genetically diverse cats: three colors, no two alike. Just like her comedian roster. No, she did not plan this. Yes, it works perfectly.
 >
 > She lives in a green room that exists in a dimension between apps. When you open any Callie's Universe app, you're walking into her green room. The subject changes. The show stays the same.
 
 ### Why this works
 
-1. **It answers "Why a cat?"** — She's not a cat. She's a talent agent who happens to be a cat. The form is arbitrary; the function is everything. (But the form is cute, so we keep it.)
-2. **It explains the cross-app presence** — She's the host of the franchise. Of course she's in every app. It's her show.
-3. **It explains why she doesn't roast** — She's not a comedian. She's the producer. She hires the comedians.
-4. **It gives her a personality** — Hype. Reaction. Anticipation. Celebration. She's the emotional anchor.
-5. **It's funny without trying too hard** — A cat talent agent who runs an AI comedy franchise is absurd in exactly the right way. It's the kind of absurdity that makes the app memorable.
+1. **It answers "Why a cat?"** She's not a cat. She's a talent agent who happens to be a cat. The form is arbitrary; the function is everything. (But the form is cute, so we keep it.)
+2. **It explains the cross-app presence.** She's the host of the franchise. Of course she's in every app. It's her show.
+3. **It explains why she doesn't roast.** She's not a comedian. She's the producer. She hires the comedians.
+4. **It gives her a personality.** Hype. Reaction. Anticipation. Celebration. She's the emotional anchor.
+5. **It's funny without trying too hard.** A cat talent agent who runs an AI comedy franchise is absurd in exactly the right way. It's the kind of absurdity that makes the app memorable.
 
 ### The tone rules for Callie's copy
 
 Callie's voice (in copy, tips, onboarding) is:
-- **Warm, not corporate** — "Hey, I'm Callie." not "Welcome to the platform."
-- **Hype, not pushy** — "Bring me something GOOD." not "Upload your content now."
-- **Reacting, not narrating** — "Ooh, they're COOKING you." not "The roast is being generated."
-- **In on the joke, not above it** — "I would NOT want to be you right now." not "Please enjoy the content."
-- **Always PG-13** — Clever, never cruel. Even when she's laughing at you, she's laughing WITH you.
+- **Warm, not corporate:** "Hey, I'm Callie." not "Welcome to the platform."
+- **Hype, not pushy:** "Bring me something GOOD." not "Upload your content now."
+- **Reacting, not narrating:** "Ooh, they're COOKING you." not "The roast is being generated."
+- **In on the joke, not above it:** "I would NOT want to be you right now." not "Please enjoy the content."
+- **Always PG-13:** Clever, never cruel. Even when she's laughing at you, she's laughing WITH you.
 
 ---
 
@@ -170,7 +170,7 @@ We are NOT:
 
 ### The problem with the current approach
 
-Right now, each app is the same shell with a different accent color and upload label. This is **functionally correct** but **creatively thin.** For App Store Guideline 4.3, we need each app to feel like a **genuinely different product** — not just a reskin.
+Right now, each app is the same shell with a different accent color and upload label. This is **functionally correct** but **creatively thin.** For App Store Guideline 4.3, we need each app to feel like a **genuinely different product**, not just a reskin.
 
 ### The new creative framework: "Episodes of the Same Show"
 
@@ -264,7 +264,7 @@ That's what each app is. Same studio. Different episode.
 
 ### The "Callie reaction overlay" (a proposed new feature)
 
-When the roast video plays, add a **small Callie reaction overlay** in the corner — a tiny picture-in-picture of Callie reacting to each beat in real-time. When the comedian lands a punchline, Callie goes "shook." When the closer hits, Callie goes "mind-blown." This is **literally the host reacting to the show.**
+When the roast video plays, add a **small Callie reaction overlay** in the corner: a tiny picture-in-picture of Callie reacting to each beat in real-time. When the comedian lands a punchline, Callie goes "shook." When the closer hits, Callie goes "mind-blown." This is **literally the host reacting to the show.**
 
 This is a low-technical-cost, high-perceived-value feature that makes Callie's role unmistakable.
 
@@ -276,7 +276,7 @@ This is a low-technical-cost, high-perceived-value feature that makes Callie's r
 
 **The story we tell:**
 
-> "Callie's Universe is a comedy franchise built for the short-form era. One host. A rotating cast of original comedians. And you — the guest star who brings the material. Every app is a different episode. The show is the same: you're the target. The comedians are the talent. Callie is the host. And the video you get is the episode."
+> "Callie's Universe is a comedy franchise built for the short-form era. One host. A rotating cast of original comedians. And you, the guest star who brings the material. Every app is a different episode. The show is the same: you're the target. The comedians are the talent. Callie is the host. And the video you get is the episode."
 
 ### The share card redesign (the #1 virality lever)
 
@@ -284,7 +284,7 @@ This is a low-technical-cost, high-perceived-value feature that makes Callie's r
 
 **Proposed share card:** The roast video + a **"Callie Stamp of Approval"** + a **"Roasted by [Comedian] on Callie's Universe"** watermark + the score + the challenge CTA.
 
-The share card should feel like **a TV show clip** — not an AI-generated video. The branding should be:
+The share card should feel like **a TV show clip**, not an AI-generated video. The branding should be:
 - **The show title:** "Callie's Universe: Roast My [Subject]"
 - **The episode title:** The comedian's name + the subject
 - **The host credit:** "Hosted by Callie" (tiny, in the corner)
@@ -317,10 +317,10 @@ A separate content strategy: **"Callie Reacts"** social media posts where Callie
 
 ### The ASO copy reframe (per-app)
 
-**Current:** "Roast My Ride — your car, roasted by AI comedians."
+**Current:** "Roast My Ride: your car, roasted by AI comedians."
 
 **Proposed:**
-> **"Roast My Ride — An Episode of Callie's Universe**
+> **"Roast My Ride: An Episode of Callie's Universe**
 > *Drop a photo of your car. Pick a comedian from Callie's cast. Get roasted in a video. Callie reacts. You share. The show goes on.*"
 >
 > **"Callie's Universe is the AI comedy show where you're the guest star. One host. Eight comedians. Infinite subjects. You bring the material. We bring the heat."**
@@ -335,9 +335,9 @@ The app description is now **show marketing**, not **feature marketing.**
 
 Each app should have a **"Callie's Universe: Next Episode"** section in Settings that shows the other apps as **episodes of the same show.**
 
-- "Roast My Texts — Episode 2: The Texts Episode"
-- "Roast My Outfit — Episode 3: The Fit Episode"
-- "Roast My Room — Episode 4: The Room Episode"
+- "Roast My Texts, Episode 2: The Texts Episode"
+- "Roast My Outfit, Episode 3: The Fit Episode"
+- "Roast My Room, Episode 4: The Room Episode"
 
 The frame is: **"You're watching Episode 1. Episode 2 is right there."**
 
@@ -354,14 +354,14 @@ The character bible is **deep and excellent.** But the user never sees it. Tony 
 Add a **"Meet the Cast"** screen accessible from Settings or the Cast picker. It shows:
 
 - **The comedian's avatar** (kawaii, expressive)
-- **Their full name** (not just "Tony" — "Tony 'Two-Times' Calabrese")
+- **Their full name** (not just "Tony" but "Tony 'Two-Times' Calabrese")
 - **Their one-line bio** ("The New Yorker who has personally been inconvenienced by your [subject]")
 - **Their catchphrase** ("I’m not mad at the [subject]. I’m mad at the [subject]. Both. Both times.")
 - **Their origin** ("Bensonhurst, Brooklyn")
 - **Their comedic register** ("Fast, exasperated, big-hearted")
 - **Their "soft spot"** (the thing that makes them affectionate, not cruel)
 - **Their stats** ("Roasted 0 [subjects] with you")
-- **A preview button** ("Hear Tony's voice" — plays a sample clip)
+- **A preview button** ("Hear Tony's voice", which plays a sample clip)
 
 This turns the cast from **a list of voices** into **a roster of characters** that users follow, collect, and screenshot.
 
@@ -394,13 +394,13 @@ But it needs one more layer: **the show graphics layer.**
 
 Add a set of **show-graphic elements** that frame every video and screen as an episode of a show:
 
-1. **The title card:** When the video starts, a 1-second title card: "Callie's Universe: Roast My [Subject] — Episode [n]"
-2. **The lower third:** When the comedian starts roasting, a lower-third graphic: "[Comedian Name] — [Catchphrase]"
+1. **The title card:** When the video starts, a 1-second title card: "Callie's Universe: Roast My [Subject], Episode [n]"
+2. **The lower third:** When the comedian starts roasting, a lower-third graphic: "[Comedian Name]: [Catchphrase]"
 3. **The score card:** When the score appears, a "Cook Level X/10" graphic that looks like a game show score
 4. **The end card:** The challenge CTA with a "Next Episode: [Other App]" tease
 5. **The network bug:** A tiny "CU" logo in the corner of every video (like a TV network watermark)
 
-These elements make the video feel **like a TV show clip** — not an AI-generated video. The perceived value skyrockets.
+These elements make the video feel **like a TV show clip**, not an AI-generated video. The perceived value skyrockets.
 
 ### The "episode number" concept (a subtle but powerful frame)
 
@@ -415,7 +415,7 @@ This is not a functional feature. It's a **framing device.** It tells the user: 
 
 The episode number appears:
 - In the app header (tiny, subtle: "Ep. 1")
-- In the share card ("Callie's Universe — Episode 1: Roast My Ride")
+- In the share card ("Callie's Universe, Episode 1: Roast My Ride")
 - In the cross-app promo ("Episode 2: Roast My Texts")
 
 ### The "season" concept (future)
@@ -428,7 +428,7 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 
 ## 10. Implementation Roadmap (Creative Layer Only)
 
-### Phase 1: Callie's Host Narrative (Immediate — 1 sprint)
+### Phase 1: Callie's Host Narrative (Immediate, 1 sprint)
 
 **Goal:** Make Callie's role crystal clear in every screen. No new features. Just copy + micro-interactions.
 
@@ -443,7 +443,7 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 
 **Impact:** Zero technical risk. Purely copy + timing changes. Massive perceived-value increase.
 
-### Phase 2: The Cast Surfaces (1–2 sprints)
+### Phase 2: The Cast Surfaces (1 to 2 sprints)
 
 **Goal:** Surface the character depth that's already in the bible. Turn the cast from voices into characters.
 
@@ -457,7 +457,7 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 
 **Impact:** Low technical risk. Reuses existing assets. High emotional-attachment increase.
 
-### Phase 3: Show Graphics Layer (2–3 sprints)
+### Phase 3: Show Graphics Layer (2 to 3 sprints)
 
 **Goal:** Add TV-style graphics to the video output. Make every share feel like a TV show clip.
 
@@ -482,7 +482,7 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 - [ ] Comedian-of-the-week in-app feature + social push
 - [ ] Cross-app "episode" marketing ("Episode 2 is now live")
 - [ ] Season launch events ("Season 2: New comedians, new subjects, same Callie")
-- [ ] Merchandise pipeline (stickers, avatars, soundbites — low priority, future)
+- [ ] Merchandise pipeline (stickers, avatars, soundbites; low priority, future)
 
 **Impact:** Zero technical risk. Marketing-only. Franchise-building.
 
@@ -493,8 +493,8 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 **Deliverables:**
 - [ ] Add "About Callie" screen in Settings (her backstory, origin myth, "Why a cat?")
 - [ ] Easter eggs: hidden Callie emotes triggered by rare actions (e.g., upload 10 roasts → Callie does a "sleepy" emote that says "You're keeping me busy, human.")
-- [ ] Seasonal Callie costumes (Halloween cat, Holiday cat, Summer cat — low priority, future)
-- [ ] Comedian "origin stories" — unlockable backstory paragraphs as you use a comedian more
+- [ ] Seasonal Callie costumes (Halloween cat, Holiday cat, Summer cat; low priority, future)
+- [ ] Comedian "origin stories": unlockable backstory paragraphs as you use a comedian more
 
 **Impact:** Low technical risk. Delight factor. Fandom-building.
 
@@ -504,7 +504,7 @@ This is the language of TV shows. It's the language of franchises. It's not the 
 
 **The one-paragraph answer to give anyone who asks:**
 
-> "Callie is the host of Callie's Universe — the AI comedy show where you're the guest star. She's a calico talent agent who discovered that the best comedy comes from roasting real things, so she built a rotating cast of comedians from around the world to do exactly that. She doesn't perform. She hosts. She introduces the cast. She reacts to the roasts. And she makes sure every app feels like an episode of the same show. Her full name is Calliope — the Greek muse of epic poetry. But she prefers Callie. Less pressure."
+> "Callie is the host of Callie's Universe, the AI comedy show where you're the guest star. She's a calico talent agent who discovered that the best comedy comes from roasting real things, so she built a rotating cast of comedians from around the world to do exactly that. She doesn't perform. She hosts. She introduces the cast. She reacts to the roasts. And she makes sure every app feels like an episode of the same show. Her full name is Calliope, the Greek muse of epic poetry. But she prefers Callie. Less pressure."
 
 **This paragraph should be copy-pasteable into:**
 - App Store descriptions
@@ -553,13 +553,13 @@ This is the language of TV shows. It's the language of franchises. It's not the 
                     LOW PERCEIVED VALUE
 ```
 
-**The goal:** Callie's Universe sits in the **high-creativity, high-perceived-value** quadrant. It's not a generic tool. It's not a meme generator. It's a **franchise with characters, a host, and a show format.** The perceived value comes from the character depth, the show graphics, and the franchise consistency — not from slick tech.
+**The goal:** Callie's Universe sits in the **high-creativity, high-perceived-value** quadrant. It's not a generic tool. It's not a meme generator. It's a **franchise with characters, a host, and a show format.** The perceived value comes from the character depth, the show graphics, and the franchise consistency, not from slick tech.
 
 ---
 
 ## One Last Thing: The Elevator Pitch
 
-> **"Callie's Universe is the AI comedy show where you're the guest star. One host — Callie, a calico talent agent who runs the show. Eight comedians from around the world who deliver the roasts. And you — who brings the material. Every app is a different episode. The show is the same: upload, pick, get roasted, share. It's PG-13, clever, never cruel. And Callie reacts to everything."**
+> **"Callie's Universe is the AI comedy show where you're the guest star. One host: Callie, a calico talent agent who runs the show. Eight comedians from around the world who deliver the roasts. And you, the one who brings the material. Every app is a different episode. The show is the same: upload, pick, get roasted, share. It's PG-13, clever, never cruel. And Callie reacts to everything."**
 
 That's the story. That's the brand. That's the creative direction.
 

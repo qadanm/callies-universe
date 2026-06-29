@@ -42,7 +42,7 @@ for (const cfg of CONFIGS) {
 srv.close();
 
 console.log("\n=== BRAIN cost (measured) + VOICE estimate ===");
-console.log("(voice: ElevenLabs ~$0.18/1k chars Creator tier, ~$0.24/1k pay-as-you-go — adjust to your plan)");
+console.log("(voice: ElevenLabs ~$0.18/1k chars Creator tier, ~$0.24/1k pay-as-you-go; adjust to your plan)");
 const VOICE_PER_K = 0.18;
 for (const r of rows) {
   const voice = (r.chars / 1000) * VOICE_PER_K;

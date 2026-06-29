@@ -1,4 +1,4 @@
-// services/brain — PANEL ("Green Room") check (no network).
+// services/brain: PANEL ("Green Room") check (no network).
 //
 // Verifies the two-comic format end to end without a key: the deterministic
 // offline weave, the live best-of-N dialogue path (scripted fake model), the
@@ -17,7 +17,7 @@ const failures = [];
 const assert = (cond, msg) => { if (!cond) failures.push(msg); };
 
 // ---------------------------------------------------------------------------
-// 1. OFFLINE panel — deterministic weave of two curated solo sets.
+// 1. OFFLINE panel: deterministic weave of two curated solo sets.
 // ---------------------------------------------------------------------------
 const p = offlineBrain({ subject: "car", format: "panel", roasterIds: ["mama", "tony"], config: { offline: true } });
 assert(p.format === "panel", "offline: format is panel");
@@ -45,7 +45,7 @@ const [da, db] = resolvePanelPerformers(["mama", "mama"]);
 assert(da.id !== db.id, "resolve: duplicate → distinct B");
 
 // ---------------------------------------------------------------------------
-// 3. Prompt builder — two distinct comics, subject framing, dialogue ask.
+// 3. Prompt builder: two distinct comics, subject framing, dialogue ask.
 // ---------------------------------------------------------------------------
 const A = resolvePerformer("mama"), B = resolvePerformer("kenji");
 const research = { car: { label: "2006 Chrysler PT Cruiser" }, summary: "s", runningJokes: ["j"], knownProblems: ["p"], whatPeopleSay: ["w"], sources: [] };
@@ -54,12 +54,12 @@ const research = { car: { label: "2006 Chrysler PT Cruiser" }, summary: "s", run
   assert(system.toLowerCase().includes("podcast"), "panel msg: podcast-submission frame");
   assert(system.includes("#1 AI tell"), "panel msg: bans the antithesis-quip construction");
   assert(system.includes("Mama Denièce") && system.includes("Kenji"), "panel msg: both hosts named");
-  assert(system.includes('"a" —') && system.includes('"b" —'), "panel msg: speaker labels");
+  assert(system.includes('"a" is') && system.includes('"b" is'), "panel msg: speaker labels");
   assert(user.includes("2006 Chrysler PT Cruiser"), "panel msg: grounded in the submission");
 }
 
 // ---------------------------------------------------------------------------
-// 3b. Panel-aware GRADING — the grader sees both comics + speaker-attributed lines.
+// 3b. Panel-aware GRADING: the grader sees both comics + speaker-attributed lines.
 // ---------------------------------------------------------------------------
 {
   const panelSet = { beats: [
@@ -76,7 +76,7 @@ const research = { car: { label: "2006 Chrysler PT Cruiser" }, summary: "s", run
 }
 
 // ---------------------------------------------------------------------------
-// 4. LIVE panel — best-of-N dialogue via a scripted fake model.
+// 4. LIVE panel: best-of-N dialogue via a scripted fake model.
 // ---------------------------------------------------------------------------
 function fakePanelModel() {
   return {
@@ -122,7 +122,7 @@ if (failures.length) {
   for (const f of failures) console.error("   - " + f);
   process.exit(1);
 }
-console.log("✓ brain panel check passed — the Green Room works end to end:");
+console.log("✓ brain panel check passed: the Green Room works end to end:");
 console.log("  · offline: deterministic two-comic weave (car + texts), distinct from single, graded");
 console.log("  · live: best-of-N dialogue via the writer, both speakers, anti-cringe gate");
-console.log("  · prompt names both comics + subject framing; duo resolution is robust");
+console.log("  · prompt names both comics + subject framing; duo resolution holds up");

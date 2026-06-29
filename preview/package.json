@@ -2,7 +2,7 @@
   "name": "@callies-universe/preview",
   "version": "0.1.0",
   "private": true,
-  "description": "Render sandbox for @callies-universe/core — the milestone acceptance test. Renders every token, component, Callie's 9 states, and the cast picker.",
+  "description": "Render sandbox for @callies-universe/core: the milestone acceptance test. Renders every token, component, Callie's 9 states, and the cast picker.",
   "type": "module",
   "scripts": {
     "dev": "vite",

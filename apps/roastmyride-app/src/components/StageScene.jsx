@@ -1,4 +1,4 @@
-// RoastMyRide — StageScene [ROASTMYRIDE-NEW: app-layer]. THE roast reel.
+// RoastMyRide StageScene [ROASTMYRIDE-NEW: app-layer]. THE roast reel.
 //
 // The viral "gameplay + voiceover + big subtitles" format: the comedian's roast
 // plays as a VO over looping gameplay, with the comic as a static sticker, the
@@ -40,7 +40,7 @@ export const StageScene = React.memo(function StageScene({
   tailMs = 0, // closing-CTA window: [totalMs - tailMs, totalMs)
   totalMs = 0,
   reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
-  performers = null, // PANEL: [A, B] — when set with format "panel", render the two-shot
+  performers = null, // PANEL: [A, B]. When set with format "panel", render the two-shot
   format = "single",
 }) {
   const idx = activeIndexAt(segments, timeMs);
@@ -84,7 +84,7 @@ export const StageScene = React.memo(function StageScene({
         </span>
       </div>
 
-      {/* the subject — ALWAYS on screen, as a tilted polaroid sticker (crossfades in
+      {/* the subject, ALWAYS on screen, as a tilted polaroid sticker (crossfades in
           after the big showcase during the hook) */}
       <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)", opacity: cornerReveal }} tag={cfg("theme.stickerTag")} tone="var(--sticker-yellow)">
         {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={imgFill} /> : <PlaceholderSubject label={carLabel} />}
@@ -100,7 +100,7 @@ export const StageScene = React.memo(function StageScene({
       )}
 
       {panel ? (
-        /* PANEL — the two-shot: both comics on stage, the active speaker pops,
+        /* PANEL, the two-shot: both comics on stage, the active speaker pops,
            the other reacts (dimmed). Callie steps aside; the duo IS the show. */
         <>
           <PanelComic performer={performers[0]} side="left" active={activeSpeaker === "a"} pop={activeSpeaker === "a" ? beatPop : 0} />
@@ -108,7 +108,7 @@ export const StageScene = React.memo(function StageScene({
         </>
       ) : (
         <>
-          {/* the comic — sticker performer; hits a little on the punch/closer beats */}
+          {/* the comic: sticker performer; hits a little on the punch/closer beats */}
           <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
             <Comic comedianId={comedianId} />
             <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
@@ -244,7 +244,7 @@ function ShowcaseFrame({ w, rotate = 0, tag, children }) {
   );
 }
 
-// Closing CTA — convert.
+// Closing CTA: convert.
 function Outro({ performerName, timeMs, startMs, reduceMotion }) {
   const p = reduceMotion ? 1 : clamp01((timeMs - startMs) / 500);
   return (
@@ -363,8 +363,8 @@ const PanelComic = React.memo(function PanelComic({ performer, side, active, pop
 });
 const Reaction = React.memo(function Reaction({ state }) {
   // Freeze Callie's wall-clock CSS keyframes: the scene is timeMs-deterministic
-  // (her pop comes from the wrapper above), and Remotion can't seek CSS animations
-  // — left on, they jitter/flicker frame-to-frame in the export.
+  // (her pop comes from the wrapper above), and Remotion can't seek CSS animations.
+  // Left on, they jitter/flicker frame-to-frame in the export.
   return <Callie state={state} size={64} reduceMotion />;
 });
 

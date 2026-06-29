@@ -1,4 +1,4 @@
-// services/voice — ElevenLabs provider (the reference TTS adapter).
+// services/voice: ElevenLabs provider (the reference TTS adapter).
 //
 // The swap point: implements `synthesize({ text, profile }) → { dataUrl, mime,
 // durationMs }`. Requests PCM so we can compute the exact clip duration (and wrap
@@ -9,7 +9,7 @@
 // Env: ELEVENLABS_API_KEY (or config.apiKey). Per-character voice ids come from
 // the voice profile (config.voices / VOICE_<ID>_ID).
 //
-// MODEL CHOICE — we stay on eleven_multilingual_v2 (see
+// MODEL CHOICE: we stay on eleven_multilingual_v2 (see
 // docs/voice-accents-troubleshooting.md). Eleven v3 renders designed accents more
 // faithfully BUT only serves MP3 (raw PCM downgrades to an older model), so it
 // breaks our exact /with-timestamps karaoke alignment and needs an ffmpeg decode.

@@ -1,4 +1,4 @@
-// Credit ledger — the server's source of truth for credits, keyed by identity.
+// Credit ledger: the server's source of truth for credits, keyed by identity.
 // In-memory by default; a JSON file (ROAST_LEDGER_FILE) for simple persistence; a
 // real DB (Postgres/Supabase) is the documented swap (same balance/consume/grant API).
 // A new identity is seeded with `free` credits on first touch.

@@ -1,4 +1,4 @@
-// Screen 9 — Settings / account. The quiet functional zone — now wired: live
+// Screen 9: Settings / account. The quiet functional zone, now wired: live
 // credit balance, restore purchases, reset-local-data, and links to the legal docs.
 // CORE-REUSED: CallieHost. ROASTMYRIDE-NEW: functional setting rows.
 import React, { useState } from "react";
@@ -22,15 +22,15 @@ export function Settings() {
   const onRestore = async () => {
     try {
       const r = await restore();
-      if (r && typeof r.credits === "number") { setCredits(r.credits); setMsg(`Restored — ${r.credits} ${cfg("monetization.creditLabel")}`); }
+      if (r && typeof r.credits === "number") { setCredits(r.credits); setMsg(`Restored: ${r.credits} ${cfg("monetization.creditLabel")}`); }
       else setMsg("Nothing to restore");
     } catch (e) {
-      setMsg("Restore failed — try again");
+      setMsg("Restore failed. Try again");
     }
   };
   const onReset = () => {
     try { localStorage.removeItem("rmr.credits"); localStorage.removeItem("rmr.deviceId"); } catch { /* no storage */ }
-    setMsg("Local data cleared — reload to apply");
+    setMsg("Local data cleared. Reload to apply");
   };
 
   const roasterName = resolvePerformer(input.roasterId).name;

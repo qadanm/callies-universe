@@ -1,4 +1,4 @@
-// RoastMyRide — StagePlayer [ROASTMYRIDE-NEW: app-layer].
+// RoastMyRide: StagePlayer [ROASTMYRIDE-NEW: app-layer].
 //
 // Plays the roast reel (StageScene) over its performance timeline: a
 // requestAnimationFrame clock advances `timeMs`, which drives the deterministic
@@ -7,7 +7,7 @@
 // clock). Auto-plays; play/pause + replay; scrubber via ref.
 //
 // If `backgroundUrl` is set, a looping gameplay <video> is layered behind the
-// (transparent) scene — the same asset Remotion layers with <OffthreadVideo>.
+// (transparent) scene: the same asset Remotion layers with <OffthreadVideo>.
 // StrictMode-safe: each effect owns its rAF; elapsed lives in a ref.
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
@@ -27,7 +27,7 @@ export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
   const bgUrl = backgroundUrl ?? pick.backgroundUrl;
 
   // When a backend is configured, fetch the comedian's per-beat audio (cached) so
-  // the live reel is voiced — and pace the timeline to the REAL spoken durations,
+  // the live reel is voiced, and pace the timeline to the REAL spoken durations,
   // the same durations the exported MP4 uses, keeping live and export in lockstep.
   // No backend / any failure → null → silent + word-count estimate, exactly as before.
   const voice = useRoastVoice(standup.comedianId, result.roasterName, standup.beats);
@@ -74,7 +74,7 @@ export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
         const cur = audioRefs.current[audioIdx];
         if (cur) {
           try { cur.currentTime = 0; } catch { /* not yet seekable */ }
-          cur.play().catch(() => {}); // autoplay policy / not loaded — stay silent
+          cur.play().catch(() => {}); // autoplay policy / not loaded, stay silent
         }
       }
       if (e >= totalMs) {
@@ -170,7 +170,7 @@ export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
         )}
       </div>
 
-      {/* the comedian's voice — one hidden clip per beat, driven by the rAF tick */}
+      {/* the comedian's voice: one hidden clip per beat, driven by the rAF tick */}
       {voice && voice.clips.length > 0 && (
         <div aria-hidden="true" style={{ display: "none" }}>
           {voice.clips.map((c, i) => (
@@ -204,7 +204,7 @@ function carLabelOf(result) {
 }
 
 // Live playback honors the OS "reduce motion" setting (the exported video always
-// animates — it's deterministic and not tied to any viewer's preference).
+// animates, since it's deterministic and not tied to any viewer's preference).
 function usePrefersReducedMotion() {
   const mqOf = () => (typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null);
   const [reduce, setReduce] = useState(() => !!mqOf()?.matches);

@@ -1,8 +1,8 @@
-// services/brain — OFFLINE smoke (the CI half of the acceptance test).
+// services/brain: OFFLINE smoke (the CI half of the acceptance test).
 //
 // Runs the brain's offline path (no API key, no network) across the whole cast
 // and asserts the EVOLVED contract holds: structured graded sets, the legacy
-// render surface preserved, valid Callie reaction states, and — crucially —
+// render surface preserved, valid Callie reaction states, and (crucially)
 // that different characters produce genuinely DIFFERENT sets (not reskins).
 //
 // This keeps `pnpm verify` green with no key. Run: node scripts/offline-check.mjs
@@ -83,7 +83,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ brain offline smoke passed — ${results.length} characters, all distinct sets.`);
+console.log(`✓ brain offline smoke passed: ${results.length} characters, all distinct sets.`);
 console.log(`  · evolved contract (set/performer/research/grade) intact`);
 console.log(`  · legacy render surface (segments/plainText/reaction) preserved`);
 console.log(`  · reactions are valid core Callie states`);

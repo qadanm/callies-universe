@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * Button — glossy inflatable, chunky, display-font label.
+ * Button: glossy inflatable, chunky, display-font label.
  * Squish-and-spring on press. Functional layer: AA contrast, obvious states.
  */
 export function Button({

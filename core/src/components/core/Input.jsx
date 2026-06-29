@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * Input — clean, high-contrast, obvious focus. The functional layer:
+ * Input: clean, high-contrast, obvious focus. The functional layer:
  * minimal decoration, AA legible, clear error state.
  */
 export function Input({

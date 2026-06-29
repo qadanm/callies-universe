@@ -1,13 +1,13 @@
-// RoastMyRide — the stand-up DISPLAY adapter [ROASTMYRIDE-NEW].
+// RoastMyRide: the stand-up DISPLAY adapter [ROASTMYRIDE-NEW].
 //
 // The brain returns the rich RoastResult (contract.d.ts in @callies-universe/brain).
-// The stand-up screens present the HANDOFF's StandupSet display shape — a 4-type
+// The stand-up screens present the HANDOFF's StandupSet display shape: a 4-type
 // beat vocabulary (setup | punch | crowd | closer) plus the bit title and a
 // runtime for the billing/scrubber. This adapter is the one place that maps
 // between them, so the screens stay simple and the brain contract stays rich.
 //
 // `comicStyle(id)` reads the comedian's one-line comedic identity straight from
-// the brain's persona layer (which reads core's Roaster seed) — no duplication.
+// the brain's persona layer (which reads core's Roaster seed), so no duplication.
 
 import { resolvePerformer } from "@callies-universe/brain";
 import { pickBackground } from "./gameplayBackgrounds.js";
@@ -112,7 +112,7 @@ function beatDurationMs(beat) {
 /**
  * Turn the display beats into a timed performance: an opening hook (leadMs), each
  * beat with a start/end (ms) + a breath between, then a closing CTA (tailMs). This
- * drives both the live reel and the exported video — same timeline (parity).
+ * drives both the live reel and the exported video, the same timeline (parity).
  * Beats keep their indices and shift by leadMs, so per-beat audio mapping holds.
  * @returns {{ segments: Array<{beat, index, startMs, endMs}>, totalMs, leadMs, tailMs }}
  */
@@ -141,7 +141,7 @@ export function buildTimeline(beats, opts = {}) {
 
 /**
  * The active segment index at a given time. Caption N stays active from its own
- * start until the NEXT beat's start — so a beat naturally lingers through the
+ * start until the NEXT beat's start, so a beat naturally lingers through the
  * breath/gap that follows it rather than blanking out. Returns -1 for an empty
  * timeline; the last index once past the final start.
  */

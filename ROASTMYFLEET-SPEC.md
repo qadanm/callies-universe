@@ -1,12 +1,12 @@
-# Roast My ___ — Per-App Product Spec
+# Roast My ___ : Per-App Product Spec
 
 Concrete, build-ready spec for each app in the fleet. Companion to `ROASTMYFLEET-PLAN.md`
-(strategy) — this is the *what each app actually is*. Each app = the shared shell +
+(strategy). This is the *what each app actually is*. Each app = the shared shell +
 the subject pack (`services/brain/src/subjects/`) + the per-app tokens below.
 
 ---
 
-## The Constant (identical in every app — never varies)
+## The Constant (identical in every app, never varies)
 
 These are the shared design system and engine. Do **not** fork them per app.
 
@@ -16,7 +16,7 @@ These are the shared design system and engine. Do **not** fork them per app.
 - **Sticker decoration set** (fixed): yellow `#FFCB2B`, lime `#8BE04E`, cyan `#2BD4E8`,
   pink `#FF4FA3`, purple `#8B5CF6`, sky `#3B9DFF`. Decoration layer only.
 - **Typography**: Schibsted display + the core type scale. **Motion**: core timings.
-- **Brand ramp aliases** (`--ember/--flame/--heat`) resolve to the app's accent — so a
+- **Brand ramp aliases** (`--ember/--flame/--heat`) resolve to the app's accent, so a
   reskin overrides the accent ramp **alone**.
 - **Engine**: Callie mascot + reaction rig, the 8-comedian cast, the
   cook → reveal → reel flow, the grade/anti-cringe rubric, credits/paywall, share/reel render.
@@ -24,14 +24,14 @@ These are the shared design system and engine. Do **not** fork them per app.
 **The differentiation budget per app = one accent ramp + icon + input flow + chips +
 comedic targeting + output theme + ASO.** Everything below is exactly that.
 
-> **Accent ramp shape** (mirror `apps/roastmyride-app/theme.css`): 8 stops —
+> **Accent ramp shape** (mirror `apps/roastmyride-app/theme.css`): 8 stops.
 > `--accent-700` (darkest) → `-600` (the **AA white-text** stop, target ≥4.5:1) →
 > `-500` → `-bright` → `-bright-2` → `-warm` → `-warm-2` → `-soft` (lightest tint).
 > Hex below are chosen to that structure; **contrast-check each `-600` before shipping.**
 
 ---
 
-## 1. Roast My Ride — `car` *(shipped — reference)*
+## 1. Roast My Ride: `car` *(shipped, reference)*
 
 | Field | Value |
 |---|---|
@@ -49,7 +49,7 @@ comedic targeting + output theme + ASO.** Everything below is exactly that.
 
 ---
 
-## 2. Roast My Texts — `texts` *(shipped — flagship)*
+## 2. Roast My Texts: `texts` *(shipped, flagship)*
 
 | Field | Value |
 |---|---|
@@ -67,7 +67,7 @@ comedic targeting + output theme + ASO.** Everything below is exactly that.
 
 ---
 
-## 3. Roast My Fit — `outfit`
+## 3. Roast My Fit: `outfit`
 
 | Field | Value |
 |---|---|
@@ -85,7 +85,7 @@ comedic targeting + output theme + ASO.** Everything below is exactly that.
 
 ---
 
-## 4. Roast My Room — `room`
+## 4. Roast My Room: `room`
 
 | Field | Value |
 |---|---|
@@ -103,7 +103,7 @@ comedic targeting + output theme + ASO.** Everything below is exactly that.
 
 ---
 
-## 5. Roast My Profile — `profile` *(dating)*
+## 5. Roast My Profile: `profile` *(dating)*
 
 | Field | Value |
 |---|---|
@@ -121,7 +121,7 @@ comedic targeting + output theme + ASO.** Everything below is exactly that.
 
 ---
 
-## +1. Roast My Wrapped — `wrapped` *(Q4 seasonal event — not in the core 5)*
+## +1. Roast My Wrapped: `wrapped` *(Q4 seasonal event, not in the core 5)*
 
 | Field | Value |
 |---|---|

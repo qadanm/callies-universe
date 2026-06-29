@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Badge — small status / count pill. Tone maps to semantic or sticker colors.
+ * Badge: small status / count pill. Tone maps to semantic or sticker colors.
  */
 export function Badge({ tone = "ember", ink = false, children, style, ...rest }) {
   const tones = {

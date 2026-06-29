@@ -1,6 +1,6 @@
-// services/brain — SUBJECT PACK: profile (Roast My Profile).
+// services/brain: SUBJECT PACK: profile (Roast My Profile).
 //
-// The profile's material is INSIDE the screenshot — bio, prompts, photo choices,
+// The profile's material is INSIDE the screenshot: bio, prompts, photo choices,
 // composition. This is the MOST SENSITIVE subject: we roast the CHOICES, never
 // the person's looks, body, or worth. Grounding is a vision pass UPSTREAM that
 // produces a structured description; ground() then extracts into the research shape.
@@ -26,7 +26,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Observe. The male has listed 'fluent in sarcasm.'" },
       { type: "setup", text: "In the wild, this is the mating cry of the unoriginal." },
-      { type: "punchline", text: "Here, it is merely a bio — and the photos are from 2017.", punch: "from 2017" },
+      { type: "punchline", text: "Here, it is merely a bio, and the photos are from 2017.", punch: "from 2017" },
       { type: "closer", text: "Magnificent. And yet… the profile persists." },
     ],
   },
@@ -42,11 +42,11 @@ const OFFLINE_SETS = {
   },
   abuomar: {
     title: "My Son, The Prompts",
-    performanceNote: "Warm uncle framing; love first, the dagger second — aimed at the choices, never the person.",
+    performanceNote: "Warm uncle framing; love first, the dagger second. Aimed at the choices, never the person.",
     beats: [
       { type: "opener", text: "My son. Come. Sit. The prompts, I do not love." },
       { type: "setup", text: "I say this because I love you, you understand." },
-      { type: "punchline", text: "'My love language is quality time' — but the photos are all gym selfies?", punch: "all gym selfies" },
+      { type: "punchline", text: "'My love language is quality time,' but the photos are all gym selfies?", punch: "all gym selfies" },
       { type: "closer", text: "Habibi… put the phone down." },
     ],
   },
@@ -64,7 +64,7 @@ const OFFLINE_SETS = {
     title: "The Profile That Broke My Heart",
     performanceNote: "Telenovela melodrama; the profile choices as a lover who betrayed him.",
     beats: [
-      { type: "opener", text: "The bio — the bio has broken my heart." },
+      { type: "opener", text: "The bio… the bio has broken my heart." },
       { type: "act-out", text: "I poured my SOUL into that swipe. EVERYTHING." },
       { type: "punchline", text: "And beneath it, one word: 'Pizza.' Nothing more.", punch: "Pizza" },
       { type: "closer", text: "I cannot look at the app. …I will look at it tomorrow." },
@@ -136,9 +136,9 @@ export const profilePack = {
         "You are a comedy writer's researcher analyzing a description of someone's dating/social profile " +
         "from a screenshot. Pull the SPECIFIC, funny-but-true material a stand-up could build a bit on: " +
         "the bio clichés, prompt choices, photo composition crimes, red flags, and the overall strategy. " +
-        "Be specific to THIS profile — never generic. Aim EVERY observation at the CHOICES (the bio, the " +
+        "Be specific to THIS profile, never generic. Aim EVERY observation at the CHOICES (the bio, the " +
         "prompts, the photo angles), NEVER at the person's looks, body, worth, or any group. This is the " +
-        "most sensitive subject — keep it on the profile, not the person.",
+        "most sensitive subject, so keep it on the profile, not the person.",
       user:
         `The profile description:\n${profile.description}\n\n` +
         `Extract: a one-paragraph read of the profile's strategy and choices; the running jokes it sets up; ` +
@@ -166,7 +166,7 @@ export const profilePack = {
     return {
       profile: { label: "your profile" },
       summary: meta.degraded
-        ? "Live analysis unavailable — running the offline set."
+        ? "Live analysis unavailable. Running the offline set."
         : "Offline mode: no live analysis; using the character's curated set.",
       runningJokes: [],
       knownProblems: [],

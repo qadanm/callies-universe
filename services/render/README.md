@@ -1,8 +1,8 @@
-# @callies-universe/render — the video render capability
+# @callies-universe/render: the video render capability
 
 Turns a roast into a real **MP4 that is exactly the scene that plays on screen**.
 It runs the app's Remotion composition (the same `StageScene` the app plays live,
-driven by the frame clock) — so the saved video is frame-identical by
+driven by the frame clock), so the saved video is frame-identical by
 construction, not a separately-generated thing.
 
 ```
@@ -13,7 +13,7 @@ services/render  →  Remotion bundle + render  →  roast.mp4
 ```
 
 This package is **generic** (it executes *a* Remotion composition) and
-**host-agnostic** — the same `renderStageVideo()` runs locally, in CI, on a small
+**host-agnostic**: the same `renderStageVideo()` runs locally, in CI, on a small
 Node server, or on AWS Lambda (`@remotion/lambda`) later. It never imports the
 app; it's handed the app's composition entry as a path.
 
@@ -34,8 +34,8 @@ pnpm --filter @callies-universe/render render -- \
 ```
 
 Output: an H.264 MP4 (plays everywhere, incl. iOS). The app builds the spec via
-`buildRenderSpec(result, input)` (standup.js) — carrying the real car photo as a dataUrl
-— so the video shows the actual ride.
+`buildRenderSpec(result, input)` (standup.js), carrying the real car photo as a dataUrl,
+so the video shows the actual ride.
 
 ## API
 
@@ -57,7 +57,7 @@ await renderStageVideo({
 
 `renderStageVideo()` is the core; wrap it in whatever you deploy:
 - **Small Node server** (Fly/Railway/Render): one POST route → `renderStageVideo` →
-  stream the MP4 back. ~$5–10/mo flat.
+  stream the MP4 back. About $5 to $10/mo flat.
 - **AWS Lambda**: swap to `@remotion/lambda` (`renderMediaOnLambda`) for
   pay-per-render autoscaling (~cents/clip).
 Then the app's "⤓ Save video" POSTs the spec and gets the MP4 instead of
@@ -74,4 +74,4 @@ downloading the spec JSON.
 - **Remotion licensing:** free for individuals and companies ≤3 people; larger /
   funded companies need a Remotion company license. If that doesn't fit, this same
   shape works with a headless-Chromium + ffmpeg renderer instead (more glue, no
-  license) — the composition and scene spec are unchanged.
+  license). The composition and scene spec are unchanged.

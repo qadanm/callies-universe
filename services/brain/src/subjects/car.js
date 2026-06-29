@@ -1,10 +1,10 @@
-// services/brain — SUBJECT PACK: car (the reference subject).
+// services/brain: SUBJECT PACK: car (the reference subject).
 //
 // A subject pack bundles everything subject-specific the engine needs:
-//   • ground()         — STEP 1: produce the research the writer grounds on
-//   • offlineSets      — per-character curated sets for the no-key / CI path
-//   • offlineResearch()— the research stub the offline path attaches
-//   • framing          — the subject-specific prompt wording (see framing.js)
+//   • ground():          STEP 1: produce the research the writer grounds on
+//   • offlineSets:       per-character curated sets for the no-key / CI path
+//   • offlineResearch(): the research stub the offline path attaches
+//   • framing:           the subject-specific prompt wording (see framing.js)
 //
 // This pack reproduces the original car behavior EXACTLY (same grounding call,
 // same default car, same curated sets), so the car path is byte-identical.
@@ -67,7 +67,7 @@ const OFFLINE_SETS = {
     title: "It Broke My Heart",
     performanceNote: "Telenovela melodrama; the car as a lover who betrayed him.",
     beats: [
-      { type: "opener", text: "The car — the car has broken my heart." },
+      { type: "opener", text: "The car… the car has broken my heart." },
       { type: "act-out", text: "I gave it everything. EVERYTHING." },
       { type: "punchline", text: "And it broke my heart AND the axle.", punch: "AND the axle" },
       { type: "closer", text: "I cannot look at it. …I will look at it tomorrow." },
@@ -109,7 +109,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Well now… set still a minute. Lemme look at ya." },
       { type: "setup", text: "That thing's been parked so long the grass growed up through the floorboard." },
-      { type: "punchline", text: "Bless its little heart — it ain't a car, it's a leftover.", punch: "a leftover" },
+      { type: "punchline", text: "Bless its little heart. It ain't a car, it's a leftover.", punch: "a leftover" },
       { type: "closer", text: "I have known mules with more git-up." },
     ],
   },
@@ -120,7 +120,7 @@ const OFFLINE_SETS = {
       { type: "opener", text: "Aw geez, sorry to say this aboot her, bud, but…" },
       { type: "crowd-work", text: "No offence, eh? You seein' this too?" },
       { type: "punchline", text: "Them rims look like a beer-league playoff overtime. Sorry.", punch: "playoff overtime" },
-      { type: "closer", text: "But hey — she's got heart, eh? Give'er." },
+      { type: "closer", text: "But hey, she's got heart, eh? Give'er." },
     ],
   },
 };
@@ -129,7 +129,7 @@ export const carPack = {
   id: "car",
   framing: CAR_FRAMING,
 
-  /** STEP 1 — research the specific car (live). Identical to the original call. */
+  /** STEP 1: research the specific car (live). Identical to the original call. */
   async ground(input, model, cache /* , config */) {
     return researchCar(normalizeCar(input), model, cache);
   },
@@ -142,7 +142,7 @@ export const carPack = {
     return {
       car: car || { label: "your ride" },
       summary: meta.degraded
-        ? "Live research unavailable — running the offline set."
+        ? "Live research unavailable. Running the offline set."
         : "Offline mode: no live research; using the character's curated set.",
       runningJokes: [],
       knownProblems: [],

@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Tape — a strip of translucent washi tape, for the "stuck on" scrapbook feel.
+ * Tape: a strip of translucent washi tape, for the "stuck on" scrapbook feel.
  * Absolutely positioned by the caller (e.g. top center of a card). Inked edges.
  */
 export function Tape({

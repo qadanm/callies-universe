@@ -1,4 +1,4 @@
-// Screen 2 — Home / upload (the single "roast my car" CTA; real car photo pick).
+// Screen 2: Home / upload (the single "roast my car" CTA; real car photo pick).
 // CORE-REUSED: CallieHost (context "home", with tip), Card, Badge, Button, Callie.
 // ROASTMYRIDE-NEW: real photo capture (compressed in-browser) + a REQUIRED "what
 // car is this?" field (auto-ID pre-fills it as a guess; a wrong trim/year would
@@ -139,7 +139,7 @@ export function Home() {
           <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
         )}
 
-        {/* Required identity field — the owner confirms the exact car. */}
+        {/* Required identity field: the owner confirms the exact car. */}
         {requireIdentity && (
           <div style={{ marginTop: "var(--space-4)", textAlign: "left" }}>
             <label htmlFor="car-identity" style={{ font: "var(--type-cap)", fontWeight: 800, color: "var(--ink)", display: "block", marginBottom: 5 }}>
@@ -170,7 +170,7 @@ export function Home() {
       </Card>
 
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "0 var(--space-2)" }}>
-        {/* design used a now-retired "watching" emote — core's nearest 9-state is "curious". */}
+        {/* design used a now-retired "watching" emote; core's nearest 9-state is "curious". */}
         <Callie state="curious" size={48} />
         <span style={{ font: "var(--type-sm)", color: "var(--text-muted)" }}>
           {cfg("mascot.home")}

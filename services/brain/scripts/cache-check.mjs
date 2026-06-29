@@ -1,4 +1,4 @@
-// services/brain — research CACHE check (no network).
+// services/brain: research CACHE check (no network).
 //
 // Verifies the persistent research cache: filesystem persistence across
 // instances, TTL expiry, stampede dedup, success-only writes (a thrown produce
@@ -148,4 +148,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("✓ brain cache check passed — persistence, stampede dedup, TTL, success-only, key-safety, memory mode.");
+console.log("✓ brain cache check passed: persistence, stampede dedup, TTL, success-only, key-safety, memory mode.");

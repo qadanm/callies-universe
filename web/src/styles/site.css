@@ -1,4 +1,4 @@
-/* Marketing layer — sits on top of @callies-universe/core tokens. Colors/fonts come
+/* Marketing layer: sits on top of @callies-universe/core tokens. Colors/fonts come
    from core + the active site's injected accent ramp, so every site is on-brand. */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }

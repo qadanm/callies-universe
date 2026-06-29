@@ -1,17 +1,17 @@
 /**
- * @callies-universe/brain — the EVOLVED roast contract.
+ * @callies-universe/brain: the EVOLVED roast contract.
  *
  * This supersedes RoastMyRide's mock contract (apps/roastmyride-app/src/services/
- * roast.contract.d.ts). The function signature is UNCHANGED —
+ * roast.contract.d.ts). The function signature is UNCHANGED:
  *
  *     generateRoast(input: RoastInput): Promise<RoastResult>
  *
- * — so the app's swap point (roast.js) stays a one-liner. What grows is the
+ * so the app's swap point (roast.js) stays a one-liner. What grows is the
  * payload on both sides:
  *
- *   INPUT  — gains the car IDENTITY (so the brain can research the real car) on
- *            top of the fields the app already collected.
- *   OUTPUT — grows from a flat string into a structured, graded stand-up SET:
+ *   INPUT  gains the car IDENTITY (so the brain can research the real car) on
+ *          top of the fields the app already collected.
+ *   OUTPUT grows from a flat string into a structured, graded stand-up SET:
  *            the performed bit (beats), the performing character, the live
  *            research that grounded it, the grader's scores, and the Callie
  *            reaction state(s) to fire.
@@ -31,9 +31,9 @@
  *    + research       : the live material that grounded the set + sources (NEW)
  *    + grade          : the grader's scores + verdict + AI-tells caught (NEW)
  *    + reactionSequence : ordered Callie states to fire across the reveal (NEW)
- *    + engine         : "live" | "offline" — which path produced this (NEW)
+ *    + engine         : "live" | "offline", which path produced this (NEW)
  *    = id, roasterId, roasterName, register, spice, segments, plainText,
- *      reaction, durationMs  (unchanged — legacy render surface)
+ *      reaction, durationMs  (unchanged; the legacy render surface)
  * ---------------------------------------------------------------------------
  */
 import type { CallieState, RoasterId } from "@callies-universe/core";
@@ -125,7 +125,7 @@ export interface CarResearch {
   whatPeopleSay: string[];
   /** Sources the material came from. */
   sources: ResearchSource[];
-  /** True if the car was defaulted (no identity supplied) — flags un-grounded runs. */
+  /** True if the car was defaulted (no identity supplied); flags un-grounded runs. */
   defaulted?: boolean;
   /** True when produced by the offline path (no live search). */
   offline?: boolean;
@@ -187,13 +187,13 @@ export interface StandUpSet {
 
 /* ============================ GRADE ============================ */
 
-/** The anti-cringe rubric, scored 0–10 per axis. The axis NAMES are subject-agnostic;
+/** The anti-cringe rubric, scored 0 to 10 per axis. The axis NAMES are subject-agnostic;
  *  the per-axis guidance the grader reads is subject-specific and lives in each pack's
  *  framing (SubjectFraming.axisDescriptions in src/subjects/framing.js). */
 export interface RubricScores {
   /** Would a real audience laugh, not groan? */
   funny: number;
-  /** Sounds human, not AI. The reject axis — low here fails outright. */
+  /** Sounds human, not AI. The reject axis: low here fails outright. */
   human: number;
   /** Grounded in THIS subject's real, specific material (not generic filler). */
   specific: number;
@@ -212,7 +212,7 @@ export interface AiTell {
 
 export interface Grade {
   scores: RubricScores;
-  /** Weighted composite (0–10). */
+  /** Weighted composite (0 to 10). */
   composite: number;
   /** Did it clear the bar on every gate? (1 major tell, or >1 minor, fails.) */
   pass: boolean;
@@ -294,7 +294,7 @@ export interface RoastResult {
 /**
  * Generate a graded, character-shaped stand-up roast for the given input.
  * Async + Promise-returning so the live service is a drop-in for the mock.
- * Never throws on a missing key or a network failure — it falls back to the
+ * Never throws on a missing key or a network failure; it falls back to the
  * deterministic offline brain instead.
  */
 export function generateRoast(input: RoastInput): Promise<RoastResult>;

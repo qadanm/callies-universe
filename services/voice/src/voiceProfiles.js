@@ -1,25 +1,25 @@
-// services/voice — per-character VOICE profiles.
+// services/voice: per-character VOICE profiles.
 //
 // Like the brain's comedic-craft layer, this layers a delivery profile over the
 // core Roaster seed: which voice each comedian uses + how they perform (pace,
 // expressiveness). Voice IDs are provider-specific (ElevenLabs by default) and
-// are meant to be configured per deployment — via config.voices[id] or env
-// VOICE_<ID>_ID — so no real IDs are hard-coded here.
+// are meant to be configured per deployment, via config.voices[id] or env
+// VOICE_<ID>_ID, so no real IDs are hard-coded here.
 
 import { Roaster } from "@callies-universe/core";
 
 // Delivery DNA per character (provider-agnostic 0..1 knobs the adapter maps).
 const DELIVERY = {
   reginald: { pace: 0.85, stability: 0.8, expressiveness: 0.25, note: "dry, measured nature-doc narrator" },
-  tony: { pace: 1.1, stability: 0.45, expressiveness: 0.58, note: "animated NY Italian-American — incredulous, hands-moving, slightly exaggerated; fast & clipped but conversational, never shouting" },
-  abuomar: { pace: 0.95, stability: 0.45, expressiveness: 0.5, similarity: 0.95, note: "theatrical Egyptian uncle — the big accent lives in the designed voice; keep style moderate + similarity high so it doesn't drift American" },
+  tony: { pace: 1.1, stability: 0.45, expressiveness: 0.58, note: "animated NY Italian-American: incredulous, hands-moving, slightly exaggerated; fast & clipped but conversational, never shouting" },
+  abuomar: { pace: 0.95, stability: 0.45, expressiveness: 0.5, similarity: 0.95, note: "theatrical Egyptian uncle: the big accent lives in the designed voice; keep style moderate + similarity high so it doesn't drift American" },
   mama: { pace: 1.0, stability: 0.4, expressiveness: 0.9, note: "church-fan snap, big and loving" },
   mateo: { pace: 1.05, stability: 0.3, expressiveness: 0.95, note: "operatic telenovela melodrama" },
   jeanluc: { pace: 0.8, stability: 0.85, expressiveness: 0.2, note: "flat, bored, unbothered" },
   priya: { pace: 1.0, stability: 0.5, expressiveness: 0.7, note: "brisk, knowing, backhanded" },
   kenji: { pace: 0.7, stability: 0.9, expressiveness: 0.15, note: "glacial, serene, minimal" },
-  buford: { pace: 0.64, stability: 0.78, expressiveness: 0.58, note: "deep molasses Gulf-Coast drawl — slow, low, deadpan button" },
-  gord: { pace: 0.88, stability: 0.6, expressiveness: 0.75, note: "warm deep Canadian hoser — apologetic, sing-song 'eh' lilt" },
+  buford: { pace: 0.64, stability: 0.78, expressiveness: 0.58, note: "deep molasses Gulf-Coast drawl: slow, low, deadpan button" },
+  gord: { pace: 0.88, stability: 0.6, expressiveness: 0.75, note: "warm deep Canadian hoser: apologetic, sing-song 'eh' lilt" },
 };
 
 const DEFAULT_DELIVERY = { pace: 1.0, stability: 0.5, expressiveness: 0.6, note: "neutral" };
@@ -42,7 +42,7 @@ export function spokenText(beat) {
   return [beat.text, beat.punch, beat.tail].filter(Boolean).join("").replace(/\s+/g, " ").trim();
 }
 
-// Speaking pace (words/sec) used for offline duration estimates — kept in step
+// Speaking pace (words/sec) used for offline duration estimates, kept in step
 // with the app's timeline estimate so silent renders pace like voiced ones.
 export const WPS = 2.6;
 

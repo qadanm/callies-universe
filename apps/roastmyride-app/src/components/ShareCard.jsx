@@ -1,19 +1,19 @@
 import React from "react";
 
 /**
- * ShareCard — the signature output frame: the still/video card that IS the
+ * ShareCard: the signature output frame, the still/video card that IS the
  * social content. Brand caption style, mascot tag, watermark, punch-word
  * highlight. Built 9:16-friendly; clean legible roast over an authored frame.
  *
- * `format` (additive, backward-compatible — defaults to "video"):
- *   "video"   — the original roast-clip frame.
- *   "standup" — the live-set clip: a "🎤 Live set" mic badge, the comedian +
+ * `format` (additive, backward-compatible, defaults to "video"):
+ *   "video"   : the original roast-clip frame.
+ *   "standup" : the live-set clip: a "🎤 Live set" mic badge, the comedian +
  *               their `act` style line, a stage-spotlight wash, "stand-up clip"
  *               footer. The marketing landing + any existing caller are unchanged.
  */
 export function ShareCard({
   roast,              // string OR array of {text, punch?:true} segments
-  mascot = null,      // a <Mascot/> node — Callie REACTING in the corner (never the author)
+  mascot = null,      // a <Mascot/> node: Callie REACTING in the corner (never the author)
   roasterName = "Ms. Burnt", // the VOICE persona that delivered the roast (not the cat)
   spice = "savage",   // "mild" | "savage"
   format = "video",   // "video" (default, unchanged) | "standup"
@@ -46,7 +46,7 @@ export function ShareCard({
         backgroundSize: "26px 26px",
       }} />
 
-      {/* top: the billing — a roast clip vs. a live-set clip */}
+      {/* top: the billing, a roast clip vs. a live-set clip */}
       <div style={{ display: "flex", flexDirection: "column", gap: "6px", padding: "16px 18px 0" }}>
         <span style={{
           alignSelf: "flex-start",
@@ -59,7 +59,7 @@ export function ShareCard({
         )}
       </div>
 
-      {/* the roast — clean legible bones over the loud frame */}
+      {/* the roast: clean legible bones over the loud frame */}
       <div style={{
         flex: 1, display: "flex", alignItems: "center",
         padding: "8px 22px 0",
@@ -79,7 +79,7 @@ export function ShareCard({
         </p>
       </div>
 
-      {/* Callie reacting, pinned bottom-right (the bystander cat — not the author) */}
+      {/* Callie reacting, pinned bottom-right (the bystander cat, not the author) */}
       {mascot && (
         <div style={{ position: "absolute", right: 6, bottom: 40 }}>{mascot}</div>
       )}

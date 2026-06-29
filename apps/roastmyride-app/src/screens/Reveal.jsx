@@ -1,6 +1,6 @@
-// Screen 6 — Reveal: the SET (the hero moment), the comedy special.
+// Screen 6: Reveal, the SET (the hero moment), the comedy special.
 // CORE-REUSED: Callie, Button.
-// ROASTMYRIDE-NEW (app-layer): StagePlayer (the animated stage scene — car on a
+// ROASTMYRIDE-NEW (app-layer): StagePlayer (the animated stage scene: car on a
 // screen, comic performing, Callie in the crowd), the grader verdict, the standup
 // ShareCard clip, and the full set transcript below.
 //
@@ -55,7 +55,7 @@ export function Reveal() {
 
   // Save-as-video. When a render backend is configured (VITE_ROAST_API), POST the
   // exact render spec and get back the frame-identical MP4 in one tap (share on
-  // mobile, else download). With no backend — or on any failure — fall back to
+  // mobile, else download). With no backend, or on any failure, fall back to
   // downloading the render spec JSON (the CLI turns it into the same MP4).
   const downloadSpec = (spec) => {
     const blob = new Blob([JSON.stringify(spec, null, 2)], { type: "application/json" });
@@ -109,7 +109,7 @@ export function Reveal() {
     }
   };
 
-  // Step the render overlay's status line while saving (time-based — the render is
+  // Step the render overlay's status line while saving (time-based, since the render is
   // a single request; this is honest indeterminate progress, like Warming-up).
   useEffect(() => {
     if (!saving) { setRenderStep(0); return undefined; }
@@ -133,12 +133,12 @@ export function Reveal() {
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", background: "radial-gradient(120% 60% at 50% 0%, var(--heat-300) 0%, var(--canvas) 50%)" }}>
       <ScreenScroll style={{ paddingBottom: "var(--space-4)" }}>
-        {/* the stage scene — the show plays here (and is what the video will be) */}
+        {/* the stage scene: the show plays here (and is what the video will be) */}
         <div style={{ animation: "rmr-pop-in var(--dur-4) var(--ease-spring) both" }}>
           <StagePlayer result={roast} subjectPhoto={subjectPhoto} />
         </div>
 
-        {/* grader verdict — the anti-cringe guarantee, made visible */}
+        {/* grader verdict: the anti-cringe guarantee, made visible */}
         {roast.grade && (
           <div style={{ font: "var(--type-cap)", color: "var(--text-hint)", textAlign: "center" }}>
             Cleared the booker {roast.grade.pass ? "✅" : "⚠️"} · funny {roast.grade.scores.funny} ·
@@ -147,10 +147,10 @@ export function Reveal() {
           </div>
         )}
 
-        {/* degraded fallback — be transparent + reassure (we didn't bill it) */}
+        {/* degraded fallback: be transparent + reassure (we didn't bill it) */}
         {roast.degraded && (
           <div style={{ font: "var(--type-cap)", color: "var(--warning, #B8730A)", textAlign: "center" }}>
-            ⚡ Offline mode — couldn't reach the live writer, so here's the house set. This one's on us.
+            ⚡ Offline mode. Couldn't reach the live writer, so here's the house set. This one's on us.
           </div>
         )}
 
@@ -175,7 +175,7 @@ export function Reveal() {
           />
         </div>
 
-        {/* the full set — text transcript (accessible, skimmable) */}
+        {/* the full set: text transcript (accessible, skimmable) */}
         <div>
           <Eyebrow>{cfg("reveal.heading")}</Eyebrow>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
@@ -207,7 +207,7 @@ export function Reveal() {
         </div>
       </div>
 
-      {/* render overlay — shown while the backend produces the exact MP4 */}
+      {/* render overlay: shown while the backend produces the exact MP4 */}
       {saving && (
         <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(120% 70% at 50% 30%, var(--heat-300) 0%, var(--canvas) 60%)" }}>
           <CookingProgress title="Rendering your reel…" steps={renderSteps} step={renderStep} pct={renderPct ?? undefined} hint="Saving the exact video you see" size={180} />

@@ -1,7 +1,7 @@
 // Env-gated client for @callies-universe/api (the roast backend).
 //
 // VITE_ROAST_API is the base URL of a running services/api server. When it is
-// UNSET — dev, CI, e2e, and any build without it — hasRoastApi() is false and every
+// UNSET (dev, CI, e2e, and any build without it), hasRoastApi() is false and every
 // caller falls back to today's behavior (Save downloads the render spec; the live
 // reel stays silent). So the offline build/e2e never depend on a server.
 //

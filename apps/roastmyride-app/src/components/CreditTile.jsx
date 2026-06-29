@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * CreditTile — a collectible, sticker-ish credit bundle for the paywall.
+ * CreditTile: a collectible, sticker-ish credit bundle for the paywall.
  * Playful but clear: obvious value and price, "best value" flag.
  */
 export function CreditTile({

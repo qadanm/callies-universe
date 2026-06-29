@@ -1,8 +1,8 @@
 /* ============================================================
-   CALLIE'S UNIVERSE — COLOR (core)
+   CALLIE'S UNIVERSE: COLOR (core)
    Calico-derived neutrals (see palette.css) + the brand ramp aliased to
    the per-app ACCENT. Components reference the ember / flame / heat ramp as
-   before, but those now resolve to the app's accent — so an app reskins by
+   before, but those now resolve to the app's accent, so an app reskins by
    overriding the accent alone. RoastMyRide's accent = ember/flame.
    All functional text/UI pairings pass WCAG AA.
    ============================================================ */
@@ -17,7 +17,7 @@
   --heat-400:  var(--accent-warm);       /* @kind color */
   --heat-300:  var(--accent-warm-2);     /* @kind color */
 
-  /* ---- Clash accent (use TINY — sticker energy only) ---- */
+  /* ---- Clash accent (use TINY, sticker energy only) ---- */
   --pop-cyan:  #07B6CE;  /* @kind color */
   --pop-pink:  #FF2E9A;  /* @kind color */
 

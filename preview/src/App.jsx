@@ -127,7 +127,7 @@ function Swatch({ token, label }) {
 /* ---- Tokens ---- */
 function Tokens() {
   return (
-    <Section id="tokens" title="1 · Design tokens" blurb="The fixed calico base palette (cream / ginger / charcoal — Callie's coat) plus the documented --accent-* slot, which defaults to ginger so the core stands alone. Type, spacing, radius, elevation, and motion follow.">
+    <Section id="tokens" title="1 · Design tokens" blurb="The fixed calico base palette (cream / ginger / charcoal, Callie's coat) plus the documented --accent-* slot, which defaults to ginger so the core stands alone. Type, spacing, radius, elevation, and motion follow.">
       <h3 style={hd}>Color</h3>
       <Row gap="var(--space-4)">
         {COLOR_TOKENS.map(([t, l]) => (
@@ -135,7 +135,7 @@ function Tokens() {
         ))}
       </Row>
 
-      <h3 style={hd}>Sticker set — decoration layer only</h3>
+      <h3 style={hd}>Sticker set: decoration layer only</h3>
       <Row gap="var(--space-4)">
         {STICKER_TOKENS.map((t) => (
           <Swatch key={t} token={t} />
@@ -148,7 +148,7 @@ function Tokens() {
         <div style={{ font: "var(--type-d1)", color: "var(--ink)" }}>Display 1 · 52</div>
         <div style={{ font: "var(--type-d3)", color: "var(--ink)" }}>Display 3 · 30</div>
         <div style={{ font: "var(--type-lead)", color: "var(--ink)" }}>Lead body · 18 (Hanken Grotesque)</div>
-        <div style={{ font: "var(--type-body)", color: "var(--ink)" }}>Body · 16 — the quiet companion carries all small functional text.</div>
+        <div style={{ font: "var(--type-body)", color: "var(--ink)" }}>Body · 16. The quiet companion carries all small functional text.</div>
         <div style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>Caption · 13</div>
       </div>
 
@@ -196,7 +196,7 @@ function Tokens() {
         <div style={{ width: 56, height: 56, borderRadius: "var(--radius-md)", background: "var(--flame-500)", animation: "rmr-bob 2.4s var(--ease-out) infinite" }} />
         <div style={{ width: 56, height: 56, borderRadius: "var(--radius-md)", background: "var(--pop-cyan)", animation: "rmr-jiggle 0.9s var(--ease-out) infinite" }} />
         <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
-          squish · bob · jiggle — all have a calm <code>prefers-reduced-motion</code> fallback.
+          squish · bob · jiggle, and all have a calm <code>prefers-reduced-motion</code> fallback.
         </span>
       </Row>
     </Section>
@@ -210,7 +210,7 @@ function CallieShowcase() {
   const set = (s) => { setCurrent(s); callie.current?.setState(s); };
 
   return (
-    <Section id="callie" title="3 · Callie — the 9-state mascot" blurb="One kawaii calico, reused everywhere via a named state system. She reacts, never narrates. Placeholder art, swappable later without changing the API.">
+    <Section id="callie" title="3 · Callie, the 9-state mascot" blurb="One kawaii calico, reused everywhere via a named state system. She reacts, never narrates. Placeholder art, swappable later without changing the API.">
       <h3 style={hd}>All nine states</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "var(--space-4)" }}>
         {CALLIE_STATES.map((s) => (
@@ -220,7 +220,7 @@ function CallieShowcase() {
         ))}
       </div>
 
-      <h3 style={hd}>Imperative API — <code>callie.setState('…')</code></h3>
+      <h3 style={hd}>Imperative API: <code>callie.setState('…')</code></h3>
       <Row gap="var(--space-5)">
         <CallieStage ref={callie} initialState="idle" size={120} />
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -230,12 +230,12 @@ function CallieShowcase() {
             ))}
           </Row>
           <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
-            Driven by name over a ref — currently <strong>{current}</strong>.
+            Driven by name over a ref, currently <strong>{current}</strong>.
           </span>
         </div>
       </Row>
 
-      <h3 style={hd}>Behavioral host — entrance · idle-cycle · tip bubble</h3>
+      <h3 style={hd}>Behavioral host: entrance · idle-cycle · tip bubble</h3>
       <Row gap="var(--space-8)">
         {["home", "cooking", "reveal", "celebrate"].map((ctx) => (
           <div key={ctx} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, paddingTop: 40 }}>
@@ -268,7 +268,7 @@ function CastShowcase() {
       </div>
       {picked && (
         <p style={{ font: "var(--type-cap)", color: "var(--text-muted)", marginTop: "var(--space-3)" }}>
-          Selected: <strong>{picked.name}</strong> — {picked.register} · {picked.spice}
+          Selected: <strong>{picked.name}</strong> · {picked.register} · {picked.spice}
         </p>
       )}
     </Section>
@@ -292,7 +292,7 @@ const chipStyle = (corner, bg) => ({
 function FaceliftShowcase() {
   const cast = Roaster.roster.filter((r) => !r.comingSoon);
   return (
-    <Section id="facelift" title="0 · The facelift" blurb="Superellipse corners, a hand-inked wobble on borders, die-cut sticker depth, color tints, and comic accents — all pure CSS/SVG, defined in core so it cascades to web, app, and video. (Squircles render on Chromium; Safari/iOS fall back to rounded.)">
+    <Section id="facelift" title="0 · The facelift" blurb="Superellipse corners, a hand-inked wobble on borders, die-cut sticker depth, color tints, and comic accents. All pure CSS/SVG, defined in core so it cascades to web, app, and video. (Squircles render on Chromium; Safari/iOS fall back to rounded.)">
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)", alignItems: "center" }}>
         <div style={{ position: "relative", width: 150, height: 150, display: "grid", placeItems: "center" }}>
           <span className="ink" aria-hidden style={{ position: "absolute", inset: -22, background: "var(--sticker-yellow)", clipPath: "polygon(50% 0,59% 18%,78% 8%,75% 30%,97% 28%,82% 46%,100% 60%,78% 64%,86% 88%,63% 78%,55% 100%,44% 79%,22% 90%,28% 66%,4% 64%,22% 48%,2% 32%,24% 30%,20% 8%,40% 18%)" }} />
@@ -328,7 +328,7 @@ function FaceliftShowcase() {
         ))}
       </Row>
 
-      <h3 style={hd}>Halftone band — the contrast moment</h3>
+      <h3 style={hd}>Halftone band: the contrast moment</h3>
       <HalftoneBand star bg="#46199A" style={{ borderRadius: "var(--radius-xl)", cornerShape: "var(--corner-card)", padding: "30px 26px" }}>
         <h4 style={{ color: "#fff", font: "var(--type-d3)", margin: "0 0 18px", textShadow: "3px 3px 0 var(--ember-600)" }}>Stick 'em anywhere.</h4>
         <Row gap="var(--space-5)">
@@ -341,7 +341,7 @@ function FaceliftShowcase() {
         </Row>
       </HalftoneBand>
 
-      <h3 style={hd}>Corner-shape language — one API, four roles</h3>
+      <h3 style={hd}>Corner-shape language: one API, four roles</h3>
       <Row gap="var(--space-4)">
         <div style={chipStyle("--corner-card", "#FFE7B8")}>squircle · cards</div>
         <div style={chipStyle("--corner-tag", "#CFE9FF")}>notch · tags</div>
@@ -364,7 +364,7 @@ export function App() {
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
           <Callie state="delighted" size={108} />
         </div>
-        <h1 style={{ font: "var(--type-d1)", margin: "0 0 6px" }}>Callie's Universe — core</h1>
+        <h1 style={{ font: "var(--type-d1)", margin: "0 0 6px" }}>Callie's Universe: core</h1>
         <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: 0 }}>
           <code>@callies-universe/core@0.1.0</code> · the shared foundation, rendered.
         </p>
@@ -396,7 +396,7 @@ function ComponentsBridge({ onOpenSheet, onBoom }) {
   const [chips, setChips] = useState({ daily: true, mods: false, track: false });
   return (
     <Section id="components" title="2 · Component library" blurb="App-agnostic primitives: Button, Chip, Card, Input, Badge, Sheet, Toast, Confetti. Clean, AA-legible bones; decoration only on the optional skin layer.">
-      <h3 style={hd}>Button — variants × sizes</h3>
+      <h3 style={hd}>Button: variants × sizes</h3>
       <Row>
         <Button variant="primary">Primary</Button>
         <Button variant="accent">Accent</Button>
@@ -414,14 +414,14 @@ function ComponentsBridge({ onOpenSheet, onBoom }) {
         <Button variant="primary" size="lg" block>Block button</Button>
       </div>
 
-      <h3 style={hd}>Chip — multi-select (toggle me)</h3>
+      <h3 style={hd}>Chip: multi-select (toggle me)</h3>
       <Row>
         <Chip emoji="🚗" selected={chips.daily} onToggle={(v) => setChips((c) => ({ ...c, daily: v }))}>Daily driver</Chip>
         <Chip emoji="🔧" selected={chips.mods} onToggle={(v) => setChips((c) => ({ ...c, mods: v }))}>Modded</Chip>
         <Chip emoji="🏁" selected={chips.track} onToggle={(v) => setChips((c) => ({ ...c, track: v }))}>Track toy</Chip>
       </Row>
 
-      <h3 style={hd}>Card — clean bones + optional corner sticker</h3>
+      <h3 style={hd}>Card: clean bones + optional corner sticker</h3>
       <Row gap="var(--space-5)">
         <Card style={{ maxWidth: 260 }}>
           <h4 style={{ font: "var(--type-d4)", margin: "0 0 6px", color: "var(--ink)" }}>Clean interior</h4>
@@ -429,25 +429,25 @@ function ComponentsBridge({ onOpenSheet, onBoom }) {
         </Card>
         <Card sticker={<Badge tone="flame">NEW</Badge>} stickerCorner="tr" style={{ maxWidth: 260 }}>
           <h4 style={{ font: "var(--type-d4)", margin: "0 0 6px", color: "var(--ink)" }}>With a sticker</h4>
-          <p style={{ font: "var(--type-body)", color: "var(--text-body)", margin: 0 }}>Decoration pins to a corner — never over text or a tap target.</p>
+          <p style={{ font: "var(--type-body)", color: "var(--text-body)", margin: 0 }}>Decoration pins to a corner, never over text or a tap target.</p>
         </Card>
       </Row>
 
-      <h3 style={hd}>Input — default · focus · error</h3>
+      <h3 style={hd}>Input: default · focus · error</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--space-4)", maxWidth: 760 }}>
         <Input label="Your name" placeholder="Tap to focus (cyan ring)" hint="Helper text lives here." />
         <Input label="Email" defaultValue="not-an-email" error="That doesn't look right." />
         <Input label="With icon" iconLeft={<span aria-hidden>🔎</span>} placeholder="Search the cast" />
       </div>
 
-      <h3 style={hd}>Badge — tones</h3>
+      <h3 style={hd}>Badge: tones</h3>
       <Row>
         {["ember", "flame", "success", "info", "cool", "pink", "ink"].map((t) => (
           <Badge key={t} tone={t}>{t}</Badge>
         ))}
       </Row>
 
-      <h3 style={hd}>Toast — tones</h3>
+      <h3 style={hd}>Toast: tones</h3>
       <Row>
         <Toast tone="ink" icon={<span aria-hidden>💾</span>}>Saved</Toast>
         <Toast tone="success" icon={<span aria-hidden>✅</span>}>Roast ready</Toast>

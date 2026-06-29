@@ -14,8 +14,8 @@ const OUT = env.OUT || "live-panel-out/live-pipeline.mp4";
 const DUO = (env.DUO || "mama,tony").split(",").map((s) => s.trim());
 const SCALE = Number(env.SCALE) || 0.5;
 if (!env.CHROMIUM_BIN && !env.CHROME) { console.error("set CHROMIUM_BIN"); process.exit(1); }
-if (!env.ANTHROPIC_API_KEY) console.warn("! no ANTHROPIC_API_KEY — identify/roast will be offline");
-if (!env.ELEVENLABS_API_KEY) console.warn("! no ELEVENLABS_API_KEY — voice will be silent");
+if (!env.ANTHROPIC_API_KEY) console.warn("! no ANTHROPIC_API_KEY: identify/roast will be offline");
+if (!env.ELEVENLABS_API_KEY) console.warn("! no ELEVENLABS_API_KEY: voice will be silent");
 
 const photoDataUrl = `data:image/jpeg;base64,${readFileSync(PHOTO).toString("base64")}`;
 const srv = createApiServer({}); // LIVE: real identify/roast/voice + real render
@@ -25,7 +25,7 @@ const post = async (p, body) => fetch(`${base}${p}`, { method: "POST", headers: 
 const t0 = Date.now();
 const ms = () => `${((Date.now() - t0) / 1000).toFixed(1)}s`;
 let ok = true;
-const step = (cond, label, extra = "") => { ok = ok && cond; console.log(`  ${cond ? "✓" : "✗"} ${label}${extra ? " — " + extra : ""}  [${ms()}]`); };
+const step = (cond, label, extra = "") => { ok = ok && cond; console.log(`  ${cond ? "✓" : "✗"} ${label}${extra ? ": " + extra : ""}  [${ms()}]`); };
 
 try {
   // 1) IDENTIFY (car photo -> make/model, vision)
@@ -61,8 +61,8 @@ try {
   step(vRes.status === 200 && voice.clips && voice.clips.length === beats.length,
     "voice", `engine=${voice.engine} voiced=${voice.voiced} clips=${voice.clips && voice.clips.length}`);
 
-  if (env.SKIP_RENDER) { console.log("[4/4] render — SKIPPED (SKIP_RENDER=1)"); throw { __skip: true }; }
-  // 4) RENDER (async, server voices during render) — the exact Save-video path
+  if (env.SKIP_RENDER) { console.log("[4/4] render: SKIPPED (SKIP_RENDER=1)"); throw { __skip: true }; }
+  // 4) RENDER (async, server voices during render): the exact Save-video path
   console.log("[4/4] POST /render?async=1 (real Chromium, SSE) …");
   const spec = {
     comedianId: roast.roasterId, performerName: roast.roasterName || "the comic",

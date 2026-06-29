@@ -1,5 +1,5 @@
 // The voice cast: the 8 comedians and the env var that holds each one's ElevenLabs
-// voice id. No real ids are hard-coded — they're configured per deployment (env
+// voice id. No real ids are hard-coded; they're configured per deployment (env
 // VOICE_<ID>_ID, or VOICE_DEFAULT_ID as a shared fallback, or config.voices[id]).
 // This is the single source the cast-check + docs read.
 

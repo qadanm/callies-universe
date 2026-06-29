@@ -1,4 +1,4 @@
-// Render a real MP4 of a PANEL ("Green Room") — brain → voice → Remotion, local.
+// Render a real MP4 of a PANEL ("Green Room"): brain, voice, Remotion, all local.
 //   ANTHROPIC_API_KEY, ELEVENLABS_API_KEY, VOICE_*_ID, CHROMIUM_BIN required.
 //   CAR="Kia K900 V8" PHOTO=live-panel-out/car.jpg node services/api/scripts/render-panel.mjs
 import { readFileSync } from "node:fs";
@@ -33,7 +33,7 @@ const splitPunch = (text, punch) => {
   return { lead: text.slice(0, i), punch, tail: text.slice(i + punch.length) };
 };
 
-console.log(`generating panel — "${CAR}" — duo ${DUO.join(" + ")} …`);
+console.log(`generating panel "${CAR}", duo ${DUO.join(" + ")} …`);
 const result = await generateRoast({
   subject: "car", format: "panel", roasterIds: DUO,
   car: { label: CAR, make: "Kia", model: "K900" },

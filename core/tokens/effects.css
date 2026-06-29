@@ -1,5 +1,5 @@
 /* ============================================================
-   Callie's Universe — EFFECTS / DECORATION LAYER (the facelift)
+   Callie's Universe: EFFECTS / DECORATION LAYER (the facelift)
    The FIRST tokens file that emits real rules, not just :root vars.
    Houses the hand-inked wobble utility + halftone + the off-switch.
    Loaded LAST by styles.css (it references radius/elevation/color
@@ -7,7 +7,7 @@
 
    The #ink / #ink2 SVG filters these reference are provided once per
    page/app by <FilterHost/> (core). Without it, .ink is simply a no-op
-   (clean border) — never a broken render.
+   (clean border), never a broken render.
    ============================================================ */
 
 :root {
@@ -22,7 +22,7 @@
   --marker-hl: var(--accent-bright, var(--gold, #FFC526));
 }
 
-/* The hand-inked wobble — apply to a BORDER-bearing element or an <svg>.
+/* The hand-inked wobble: apply to a BORDER-bearing element or an <svg>.
    Keep it OFF text-heavy small controls (chips, inputs, captions). */
 .ink { filter: var(--filter-ink); }
 
@@ -36,7 +36,7 @@
 /* Die-cut sticker depth as a utility (flat elements). */
 .sticker { box-shadow: var(--shadow-sticker-md); }
 
-/* Halftone dot field — lay behind content; set color on the element. */
+/* Halftone dot field: lay behind content; set color on the element. */
 .halftone {
   background-image: radial-gradient(var(--halftone-dot) 1.3px, transparent 1.6px);
   background-size: var(--halftone-size);
@@ -45,7 +45,7 @@
 /* ---- OFF-SWITCH ---------------------------------------------------------
    Drop the (GPU-compounding) displacement filter when the user asks for less
    motion/data, or when a host sets .no-ink on <html> (e.g. low-power WKWebView).
-   The layout NEVER depends on the wobble — borders fall back to clean
+   The layout NEVER depends on the wobble; borders fall back to clean
    superellipse/rounded, so this is purely cosmetic degradation. */
 @media (prefers-reduced-motion: reduce) {
   .ink, .ink-hover:hover { filter: none; }

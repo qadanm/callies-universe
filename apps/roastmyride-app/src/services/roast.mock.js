@@ -1,17 +1,17 @@
-// RoastMyRide — MOCK roast pipeline [ROASTMYRIDE-NEW].
+// RoastMyRide: MOCK roast pipeline [ROASTMYRIDE-NEW].
 //
 // Fulfils the `generateRoast` contract (see roast.contract.d.ts) with canned
-// data. No model, no network, no services/ — just enough to drive the flow:
+// data. No model, no network, no services/, just enough to drive the flow:
 // it returns a roast for the chosen cast member and the Callie reaction state.
 //
 // It reads the cast metadata (name/register/spice) straight from the CORE roster
-// [CORE-REUSED] so the mock never duplicates cast data — only the canned lines
+// [CORE-REUSED] so the mock never duplicates cast data. Only the canned lines
 // live here.
 
 import { Roaster } from "@callies-universe/core";
 import { ROAST_REACTION } from "../callieReactions.js";
 
-/** Canned roast copy per cast member — every joke aimed at the CAR, PG-13. */
+/** Canned roast copy per cast member: every joke aimed at the CAR, PG-13. */
 const LINES = {
   reginald: [
     { text: "Observe: the rare hatchback, motionless in " },
@@ -34,7 +34,7 @@ const LINES = {
     { text: ", and I'm answering." },
   ],
   mateo: [
-    { text: "The car — it has broken " },
+    { text: "The car... it has broken " },
     { text: "my heart AND the axle", punch: true },
     { text: "." },
   ],

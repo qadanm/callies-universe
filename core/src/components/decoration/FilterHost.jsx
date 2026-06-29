@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * FilterHost — the single owner of the hand-inked SVG filter defs (#ink, #ink2).
+ * FilterHost: the single owner of the hand-inked SVG filter defs (#ink, #ink2).
  * Mount EXACTLY ONCE per page/app (web: Base.astro <body>; app: App root;
  * video: inside the Remotion <AbsoluteFill>). Every `.ink` element / `filter:url(#ink)`
  * reference resolves against these.
@@ -12,7 +12,7 @@ import React from "react";
  * on :hover (live-only; never triggered during a render).
  *
  * The explicit filter region (x/y/width/height = 110%/112%) keeps displaced edges from
- * clipping at scale 7–9. Purely presentational; renders zero layout.
+ * clipping at scale 7 to 9. Purely presentational; renders zero layout.
  */
 export function FilterHost() {
   return (

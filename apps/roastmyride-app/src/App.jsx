@@ -1,4 +1,4 @@
-// RoastMyRide — app shell + router [ROASTMYRIDE-NEW].
+// RoastMyRide app shell + router [ROASTMYRIDE-NEW].
 //
 // Real routing (react-router-dom): every screen has its own URL, so the whole
 // flow is navigable/click-through. The phone frame + tab bar + a dev-only
@@ -30,7 +30,7 @@ import { Paywall } from "./screens/Paywall.jsx";
 import { Settings } from "./screens/Settings.jsx";
 import { Legal } from "./screens/Legal.jsx";
 
-// path, picker label — order = the intended flow.
+// path, picker label. Order = the intended flow.
 const SCREENS = [
   ["/", "Onboard"],
   ["/home", "Home"],
@@ -81,7 +81,7 @@ function TabBar() {
 }
 
 function Layout() {
-  // Native (Capacitor): fill the real device — no simulated phone bezel, no fake
+  // Native (Capacitor): fill the real device, with no simulated phone bezel, no fake
   // status bar, no dev picker. Safe-area insets come from the .native-app CSS.
   if (isNative()) {
     return (

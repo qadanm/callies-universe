@@ -1,5 +1,5 @@
 /* ============================================================
-   RoastMyRide — MOTION TOKENS
+   RoastMyRide: MOTION TOKENS
    Maximal & playful: bounce, squish, spring, confetti.
    Every motion has a calm reduce-motion fallback (see bottom).
    ============================================================ */
@@ -35,7 +35,7 @@
 }
 @keyframes rmr-pop-in {
   /* transform-only so a frozen animation clock (screenshots, PDF, inactive tabs)
-     never leaves the element invisible — resting opacity stays 1. */
+     never leaves the element invisible; resting opacity stays 1. */
   0%   { transform: scale(0.9) translateY(10px); }
   100% { transform: scale(1) translateY(0); }
 }
@@ -51,24 +51,24 @@
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.06); }
 }
-/* kawaii blink — eyes squish shut for a beat. transform-box: fill-box + center origin. */
+/* kawaii blink: eyes squish shut for a beat. transform-box: fill-box + center origin. */
 @keyframes rmr-blink {
   0%, 90%, 100% { transform: scaleY(1); }
   94%           { transform: scaleY(0.08); }
 }
-/* soft squishy idle — gentle breathe + lean, no harsh rotation */
+/* soft squishy idle: gentle breathe + lean, no harsh rotation */
 @keyframes rmr-squish-idle {
   0%, 100% { transform: translateY(0) scale(1, 1); }
   50%      { transform: translateY(-5px) scale(1.03, 0.97); }
 }
-/* laugh/react jiggle — quick happy shake */
+/* laugh/react jiggle: quick happy shake */
 @keyframes rmr-jiggle {
   0%, 100% { transform: rotate(-2.5deg) scale(1, 1); }
   25%      { transform: rotate(2.5deg) scale(1.02, 0.98); }
   50%      { transform: rotate(-2deg) scale(0.99, 1.01); }
   75%      { transform: rotate(2deg) scale(1.02, 0.98); }
 }
-/* tiny floaty drift — for hearts / sparkles overlays */
+/* tiny floaty drift: for hearts / sparkles overlays */
 @keyframes rmr-float {
   0%   { transform: translateY(0) scale(0.9); opacity: 0; }
   30%  { opacity: 1; }

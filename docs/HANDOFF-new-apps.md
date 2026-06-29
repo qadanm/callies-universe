@@ -1,7 +1,7 @@
-# Handoff — build the rest of the Callie's Universe app portfolio
+# Handoff: build the rest of the Callie's Universe app portfolio
 
 You are taking over to build **four more "Roast My ___" apps**. The reference app
-(**Roast My Ride**) is nearly ship-ready and is being fine-tuned by someone else —
+(**Roast My Ride**) is nearly ship-ready and is being fine-tuned by someone else, so
 **do not modify the car path or the shared engine's behavior** (byte-parity is
 asserted in `scripts/subjects-check.mjs`). You add *new subjects*; you don't change
 the engine.
@@ -19,29 +19,29 @@ mascot **Callie** (a calico cat) reacts but never speaks. Each subject ships as 
 Guideline 4.3 "duplicate app" rejection).
 
 ## 2. Your apps (priority order)
-1. **Roast My Texts** (`texts`) — screenshot of a conversation → roast the *dynamics*
-   (dry replies, double-texts, left-on-read). **Partially built — finish + ship.**
-2. **Roast My Outfit / Fit Check** (`outfit`) — photo of an outfit → roast the *fit*.
-3. **Roast My Room** (`room`) — photo of a room → roast the *decor/mess/layout*.
-4. **Roast My Profile** (`profile`) — screenshot of a dating/social profile → roast
+1. **Roast My Texts** (`texts`): screenshot of a conversation → roast the *dynamics*
+   (dry replies, double-texts, left-on-read). **Partially built; finish + ship.**
+2. **Roast My Outfit / Fit Check** (`outfit`): photo of an outfit → roast the *fit*.
+3. **Roast My Room** (`room`): photo of a room → roast the *decor/mess/layout*.
+4. **Roast My Profile** (`profile`): screenshot of a dating/social profile → roast
    the *bio/prompts/photo choices*. Highest sensitivity (see §9).
 
 Plus the **app wrapper / per-app theming** so each is its own shippable build (§6).
 
-## 3. Architecture — the subject seam (two layers)
+## 3. Architecture: the subject seam (two layers)
 Everything subject-specific lives in two small files per subject; the engine, the
 cast, the podcast scene, voices, and Callie are **shared and untouched**.
 
-**A. Brain pack** — `services/brain/src/subjects/<id>.js`, exports `<id>Pack`:
-- `ground(input, model, cache)` — produce the research (see §4).
-- `offlineSets` — per-comic curated sets for the no-key / CI path (one per ACTIVE
+**A. Brain pack** (`services/brain/src/subjects/<id>.js`, exports `<id>Pack`):
+- `ground(input, model, cache)`: produce the research (see §4).
+- `offlineSets`: per-comic curated sets for the no-key / CI path (one per ACTIVE
   comic minimum; model on `car.js` / `texts.js`).
-- `offlineResearch()` — the research stub the offline path attaches.
-- `framing` — imported from `framing.js` (see §5).
+- `offlineResearch()`: the research stub the offline path attaches.
+- `framing`: imported from `framing.js` (see §5).
 Register it in `services/brain/src/subjects/index.js` (`PACKS`). `resolveSubjectPack(id)`
 returns it; unknown → car.
 
-**B. App config** — `apps/roastmyride-app/src/subjects/<id>.js` (default export object).
+**B. App config** (`apps/roastmyride-app/src/subjects/<id>.js`, default export object).
 Keys (copy the shape from `car.js`): `id, appName, handle, upload, mascot, brain,
 chips, theme, media, monetization, cooking, grade, onboarding, celebrate, reveal,
 research, legal, aso`. Register it in `apps/roastmyride-app/src/subjects/index.js`
@@ -54,26 +54,26 @@ The writer/grader consume ONE shape no matter the subject:
 Your `ground()` must return that shape.
 
 - **car** researches the web (a car has a public reputation).
-- **texts / outfit / room / profile** have NO web reputation — the material is INSIDE
+- **texts / outfit / room / profile** have NO web reputation; the material is INSIDE
   the image. So grounding is a **vision pass**: a model reads the photo/screenshot
   UPSTREAM (in `services/api`, mirroring how the car flow runs `/identify` first) and
   produces a structured description; `ground()` then extracts it into the research
-  shape. **`texts` is your closest template** — copy its approach (vision → transcript
+  shape. **`texts` is your closest template**, so copy its approach (vision → transcript
   in `input.conversation` → extract → same schema). For outfit/room/profile, the
   upstream vision output is a structured description of the image instead of a
   transcript; thread it on `input.<something>` and extract identically.
 
-Keep the research shape EXACTLY — that's the contract that makes the shared writer,
+Keep the research shape EXACTLY. That's the contract that makes the shared writer,
 grader, and panel "just work" for a new subject.
 
-## 5. Framing — `services/brain/src/subjects/framing.js`
+## 5. Framing: `services/brain/src/subjects/framing.js`
 Add an `<ID>_FRAMING` object (copy `TEXTS_FRAMING`). It supplies the ~5% of the
 writer/grader prompts that are subject-specific: `roastTarget, possessive,
 genericFiller, aimTarget, ownerNoun, fillerNoun, gradeSubjectWord, submissionNoun,
-angles[], subjectPhrase(research), gradeLabel(research)`. **`aimTarget`/`ownerNoun`
+angles[], subjectPhrase(research), gradeLabel(research)`. **`aimTarget` and `ownerNoun`
 are how you keep the comedy on the SUBJECT, not the person** (see §9).
 
-## 6. Per-app branding / theming — THE GAP YOU MUST CLOSE
+## 6. Per-app branding / theming: THE GAP YOU MUST CLOSE
 Right now `apps/roastmyride-app/src/main.jsx` hard-imports `../theme.css` (the ember
 accent) + `./app.css` (RoastMyRide decoration). So building `VITE_SUBJECT=texts`
 today gives RoastMyTexts *copy* but RoastMyRide's *look*. For genuinely distinct App

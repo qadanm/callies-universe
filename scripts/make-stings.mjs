@@ -1,6 +1,6 @@
 // Procedurally synthesize Callie's Universe brand audio → 16-bit mono WAVs.
 // Tuned CUTE & SOFT (music-box mallets + warm pads, low + gentle) to match the
-// brand vibe — not sparkly/excited. No samples, no libraries. Deterministic.
+// brand vibe, not sparkly/excited. No samples, no libraries. Deterministic.
 //   node scripts/make-stings.mjs
 import { writeFileSync, mkdirSync } from "node:fs";
 
@@ -14,7 +14,7 @@ const N = (n) => {
 };
 const buf = (s) => new Float32Array(Math.ceil(SR * s));
 
-// sustained voice (ADSR) — for warm pads
+// sustained voice (ADSR), for warm pads
 function add(b, freq, t0, dur, o = {}) {
   const { type = "sine", gain = 0.3, a = 0.01, d = 0.05, s = 0.7, r = 0.1 } = o;
   const i0 = Math.floor(t0 * SR), len = Math.floor(dur * SR);
@@ -36,7 +36,7 @@ function add(b, freq, t0, dur, o = {}) {
 }
 const chord = (b, notes, t0, dur, o) => notes.forEach((n) => add(b, N(n), t0, dur, o));
 
-// soft music-box mallet — warm, rounded, gentle decay (cute, not sparkly)
+// soft music-box mallet: warm, rounded, gentle decay (cute, not sparkly)
 function mallet(b, freq, t0, dur, gain = 0.28) {
   const i0 = Math.floor(t0 * SR), len = Math.floor(dur * SR);
   for (let i = 0; i < len; i++) {
@@ -132,7 +132,7 @@ function toWav(b) {
   console.log("wrote sting-outro.wav (cute, ~2.2s)");
 }
 
-/* ===== BED: soft warm loopable pad (kept — user likes it) ===== */
+/* ===== BED: soft warm loopable pad (kept, user likes it) ===== */
 {
   const b = buf(4.0);
   const prog = [["C3", "E4", "G4"], ["A3", "C4", "E4"], ["F3", "A4", "C5"], ["G3", "B4", "D5"]];

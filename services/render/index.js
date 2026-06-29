@@ -1,9 +1,9 @@
-// @callies-universe/render — generic video render capability.
+// @callies-universe/render: generic video render capability.
 //
 // Executes a Remotion composition to an MP4. It is APP-AGNOSTIC: given an entry
 // (a file that registerRoot()s a composition) + the input props, it bundles and
 // renders. The app owns its composition (the StageScene); this service just runs
-// it — so the same scene the app plays becomes the video, exactly.
+// it, so the same scene the app plays becomes the video, exactly.
 //
 // Host-agnostic: this runs anywhere Node + a Chromium are available (local, CI,
 // a small server, or Lambda via @remotion/lambda later). Pass `browserExecutable`
@@ -56,7 +56,7 @@ export async function renderStageVideo({
 }
 
 /**
- * Render a single PNG poster frame from the same composition — a shareable still
+ * Render a single PNG poster frame from the same composition: a shareable still
  * (feeds, thumbnails). Defaults to a strong mid-set frame; override with `frame`
  * (absolute) or `at` (0..1 fraction of the duration).
  * @returns {Promise<string>} the outFile path

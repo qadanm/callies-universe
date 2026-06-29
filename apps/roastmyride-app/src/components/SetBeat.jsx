@@ -1,10 +1,10 @@
-// RoastMyRide — SetBeat [ROASTMYRIDE-NEW: app-layer].
+// RoastMyRide: SetBeat [ROASTMYRIDE-NEW: app-layer].
 //
 // Renders one beat of the stand-up set transcript by type:
-//   setup  — a muted lead-in line
-//   punch  — the big display line, with the punch word in a yellow sticker
-//   crowd  — a "🎤 crowd work" aside, with Callie reacting (the audience)
-//   closer — the "🎤 mic drop": the final big line + highlighted payload
+//   setup  : a muted lead-in line
+//   punch  : the big display line, with the punch word in a yellow sticker
+//   crowd  : a "🎤 crowd work" aside, with Callie reacting (the audience)
+//   closer : the "🎤 mic drop": the final big line + highlighted payload
 //
 // CORE-REUSED: Callie (reacts on crowd beats; she never takes the mic).
 import React from "react";

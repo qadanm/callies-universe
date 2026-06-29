@@ -1,22 +1,22 @@
 # @callies-universe/core
 
-The **shared core** of Callie's Universe — the single source of truth every app
+The **shared core** of Callie's Universe: the single source of truth every app
 inherits. Depends on nothing; imports nothing internal. Implements the
 [`core/HANDOFF.md`](../project/core/HANDOFF.md) spec.
 
 What's inside:
 
-- **Design tokens** — the fixed calico base palette (cream / ginger / charcoal,
+- **Design tokens**: the fixed calico base palette (cream / ginger / charcoal,
   derived from Callie's coat) plus the documented `--accent-*` slot (default
   ginger), and type / spacing / radius / elevation / motion. Ship as plain CSS.
-- **Component library** — `Button`, `Chip`, `Card`, `Input`, `Badge`, `Sheet`,
+- **Component library**: `Button`, `Chip`, `Card`, `Input`, `Badge`, `Sheet`,
   `Toast`, `Confetti`. App-agnostic only.
-- **Callie** — the 9-state mascot (`Mascot`/`Callie`), the `CallieHost` behavior
+- **Callie**: the 9-state mascot (`Mascot`/`Callie`), the `CallieHost` behavior
   brain, and `CallieStage` (imperative `setState` by name).
-- **The cast** — `Roaster` (8 avatars + `Roaster.roster` metadata) and
+- **The cast**: `Roaster` (8 avatars + `Roaster.roster` metadata) and
   `CastPicker`.
 
-> ShareCard and CreditTile are **app-layer**, per the handoff — they are *not* in
+> ShareCard and CreditTile are **app-layer**, per the handoff. They are *not* in
 > this package.
 
 ## Install
@@ -42,7 +42,7 @@ import { Button, Callie, CastPicker } from "@callies-universe/core";
 
 Every component references the brand ramp (`--ember-* / --flame-* / --heat-*`),
 which is aliased to `--accent-*`. An app reskins the whole library by overriding
-the accent **only** — ship a `theme.css` and load it after `styles.css`:
+the accent **only**. Ship a `theme.css` and load it after `styles.css`:
 
 ```css
 /* app theme.css — RoastMyRide ember/flame */

@@ -1,5 +1,5 @@
 /* ============================================================
-   RoastMyRide — RADIUS TOKENS
+   RoastMyRide: RADIUS TOKENS
    Chunky rounded corners = the inflatable / squishy language.
    ============================================================ */
 
@@ -24,7 +24,7 @@
      Progressive enhancement layered on top of border-radius. Chromium (incl.
      the video render) draws the superellipse "squircle"; Safari / iOS WKWebView
      ignore corner-shape and fall back to the rounded border-radius above.
-     One API, four roles — squircle/notch/scoop/bevel. */
+     One API, four roles: squircle/notch/scoop/bevel. */
   --corner-card:   superellipse(3);    /* cards, tiles, sheets, hero panels */
   --corner-button: superellipse(2.4);  /* CTAs */
   --corner-chip:   superellipse(2.2);  /* chips, small pills */

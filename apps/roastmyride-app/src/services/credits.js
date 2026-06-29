@@ -1,5 +1,5 @@
 // Credits via the server ledger (keyed by identity). When no backend is configured,
-// the app uses its localStorage credits instead (FlowContext) — these are only
+// the app uses its localStorage credits instead (FlowContext). These are only
 // called behind hasCreditsApi().
 import { authHeaders } from "./auth.js";
 

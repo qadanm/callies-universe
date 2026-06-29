@@ -1,4 +1,4 @@
-// Music beds — the "bgm under the VO" library, mirroring gameplayBackgrounds.
+// Music beds: the "bgm under the VO" library, mirroring gameplayBackgrounds.
 // We ship NO copyrighted music. Drop CC0/licensed loops in public/music/ and add
 // entries with a `src`; pickMusic() chooses one deterministically per reel. With
 // none, pickMusic returns null → the export has no music bed (just VO + SFX).

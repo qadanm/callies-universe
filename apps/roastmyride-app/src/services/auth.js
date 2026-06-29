@@ -1,4 +1,4 @@
-// Identity. Anonymous by default — a persisted device id (UUID in localStorage)
+// Identity. Anonymous by default: a persisted device id (UUID in localStorage)
 // is the identity the server ledger keys on. A real auth provider (Supabase /
 // Clerk magic-link) is the documented swap behind VITE_AUTH_PROVIDER; its adapter
 // would return a verified token here and the server would verify it → subject.

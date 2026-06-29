@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Burst — an outlined comic starburst chip (the "NEW" / "HOT" sticker).
+ * Burst: an outlined comic starburst chip (the "NEW" / "HOT" sticker).
  * Hand-inked via #ink2. Drop it next to a CTA or a price.
  */
 export function Burst({

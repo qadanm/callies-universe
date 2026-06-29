@@ -1,4 +1,4 @@
-// @callies-universe/voice — public API.
+// @callies-universe/voice public API.
 //
 // synthesizeSet(beats, performer, config) → SynthesizedSet (per-beat clips with
 // real durations). Swappable provider (ElevenLabs reference) + deterministic

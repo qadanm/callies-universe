@@ -1,6 +1,6 @@
-// PodcastScene — the PANEL ("Green Room") reel: a two-host podcast STUDIO.
+// PodcastScene: the PANEL ("Green Room") reel, a two-host podcast STUDIO.
 //
-// Static, unzoomed framing the whole time (no camera cuts/push-ins) — cleaner and
+// Static, unzoomed framing the whole time (no camera cuts/push-ins), which reads cleaner and
 // reads better on a phone. Optimized for vertical social: BIG captions sized in
 // container units (cqi) so they're large on a phone regardless of render scale.
 // Hosts + Callie react subtly (no wobble/bounce); Callie reacts through her FACE
@@ -16,7 +16,7 @@ import { cfg } from "../subjects/index.js";
 // Social safe zones (1080×1920): the studio BACKGROUND bleeds full-frame, but every
 // face / caption / CTA stays inside this band so the platform UI (right action rail,
 // bottom caption + buttons, top status) never covers it. Cross-platform compromise
-// (TikTok ~120px right / ~320px bottom; Reels bottom ~420px) — graceful, not boxed-in.
+// (TikTok ~120px right / ~320px bottom; Reels bottom ~420px), so it breathes instead of feeling boxed-in.
 const SAFE = { top: 9, right: 12, bottom: 18, left: 5 };
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0] || "Host";
@@ -57,7 +57,7 @@ export const PodcastScene = React.memo(function PodcastScene({
   const callieState = callieStateForBeat(beat && beat.type, reaction);
   const hardBeat = !!(beat && (beat.type === "punch" || beat.type === "closer"));
   const calliePop = hardBeat && !reduceMotion && seg ? popPulse(timeMs, seg.startMs, 550) : 0;
-  // Callie's own motion MUST be timeMs-driven (deterministic) — her built-in CSS
+  // Callie's own motion MUST be timeMs-driven (deterministic): her built-in CSS
   // keyframes run on the wall clock, which Remotion can't seek, so they jitter in
   // the export. We freeze them (reduceMotion on <Callie>) and breathe her by time.
   const callieBreath = reduceMotion ? 0 : Math.sin((timeMs || 0) / 1500);
@@ -195,7 +195,7 @@ function Waveform({ ring, timeMs }) {
   );
 }
 
-// Callie HOSTS — desk center. She reacts with her FACE (her own state engine); a
+// Callie HOSTS, desk center. She reacts with her FACE (her own state engine); a
 // tiny scale pop on the hard beats. No rotation, no idle wobble.
 function CallieDesk({ state, pop, breath = 0 }) {
   return (
@@ -233,7 +233,7 @@ function Stars({ timeMs }) {
   );
 }
 
-// One cohesive cold open — the network presents the show on a single card
+// One cohesive cold open: the network presents the show on a single card
 // (combines the old ident + title screens so it doesn't feel like two intros).
 function BrandCard({ timeMs, p }) {
   const show = cfg("appName").replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase();

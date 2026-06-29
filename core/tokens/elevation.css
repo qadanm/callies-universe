@@ -1,6 +1,6 @@
 /* ============================================================
-   RoastMyRide — ELEVATION TOKENS
-   Soft, glossy, inflatable — NOT flat. Warm-tinted shadows.
+   RoastMyRide: ELEVATION TOKENS
+   Soft, glossy, inflatable, NOT flat. Warm-tinted shadows.
    Primary elements get an inner top-highlight (the "gloss") plus
    a chunky drop shadow so they read as pressable / squishy.
    ============================================================ */
@@ -34,7 +34,7 @@
   /* ---- Sticker shadow (crisp, slightly offset, like a peel-off) ---- */
   --shadow-sticker: 0 2px 0 rgba(34, 20, 3, 0.18), 0 6px 12px rgba(34, 20, 3, 0.12);
 
-  /* ---- Die-cut sticker depth (the facelift) — hard, single-direction offset.
+  /* ---- Die-cut sticker depth (the facelift): hard, single-direction offset.
      Box-shadow variants for flat elements; drop-shadow variants for tilted /
      irregular (ink-bordered) elements where box-shadow would follow the rect. */
   --shadow-sticker-sm:    3px 4px 0 rgba(34, 20, 3, 0.92);

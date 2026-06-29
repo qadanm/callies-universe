@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * Chip — sticker-like tap pill for fast multi-select context.
+ * Chip: sticker-like tap pill for fast multi-select context.
  * Selected = filled ember with a tiny pop. Easy to deselect.
  */
 export function Chip({

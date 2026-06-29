@@ -1,4 +1,4 @@
-// Screen 8 — Credits / paywall.
+// Screen 8: Credits / paywall.
 // CORE-REUSED: CallieHost (context "paywall", with tip), Button.
 // ROASTMYRIDE-NEW (app-layer): CreditTile; bundle layout.
 import React, { useState } from "react";
@@ -42,7 +42,7 @@ export function Paywall() {
       if (!r.redirected) go("/home"); // web Stripe redirects to checkout instead
     } catch (e) {
       console.warn(`[paywall] purchase failed (${e && e.message})`);
-      setMsg("Purchase didn't go through — try again");
+      setMsg("Purchase didn't go through. Try again");
     } finally {
       setBusy(false);
     }
@@ -53,13 +53,13 @@ export function Paywall() {
       const r = await restore();
       if (r && typeof r.credits === "number") {
         setCredits(r.credits);
-        setMsg(`Restored — ${r.credits} roasts`);
+        setMsg(`Restored: ${r.credits} roasts`);
       } else {
         setMsg("Nothing to restore");
       }
     } catch (e) {
       console.warn(`[paywall] restore failed (${e && e.message})`);
-      setMsg("Restore failed — try again");
+      setMsg("Restore failed. Try again");
     }
   };
 

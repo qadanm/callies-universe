@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 /*
- * CSS load order matters — exactly as the handoff prescribes:
+ * CSS load order matters, exactly as the handoff prescribes:
  *   1. core styles.css   → calico base palette + every token (the clean bones)
  *   2. theme.css         → fallback accent fills the --accent-* slot
  *   3. app.css           → decoration layer (the skin)

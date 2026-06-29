@@ -1,7 +1,7 @@
-/* RoastMyRide — app shell + decoration layer [ROASTMYRIDE-NEW].
+/* RoastMyRide: app shell + decoration layer [ROASTMYRIDE-NEW].
    The maximalist "skin": the dark studio backdrop, the iPhone frame, the dev
    screen-picker. The functional bones (screens, controls, text) come from core
-   components and stay AA-legible — decoration never sits on a tap target. */
+   components and stay AA-legible. Decoration never sits on a tap target. */
 
 html, body { margin: 0; height: 100%; }
 
@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
 }
 
-/* dev-only screen picker — jump straight to any screen for click-through */
+/* dev-only screen picker: jump straight to any screen for click-through */
 .picker {
   display: flex;
   flex-wrap: wrap;
@@ -130,7 +130,7 @@ body {
 /* ── Roast reel ───────────────────────────────────────────────────────────── */
 /* The scene (StageScene) is fully timeMs-driven inline (deterministic for the
    video export), so it needs no keyframes. Just the scrubber-fill base width
-   (owned by the rAF loop via a ref — never set in JSX, or a re-render resets it). */
+   (owned by the rAF loop via a ref, never set in JSX, or a re-render resets it). */
 .rmr-scrub-fill { width: 0; }
 
 /* ── Native (Capacitor) shell ──────────────────────────────────────────────── */

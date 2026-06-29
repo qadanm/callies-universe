@@ -1,5 +1,5 @@
 /* ============================================================
-   Callie's Universe — Design System entry point.
+   Callie's Universe: Design System entry point.
    Consumers link THIS file. It only @imports; no rules here.
    palette.css (calico base + accent) MUST load before colors.css.
    ============================================================ */
@@ -12,4 +12,4 @@
 @import url("./tokens/radius.css");
 @import url("./tokens/elevation.css");
 @import url("./tokens/motion.css");
-@import url("./tokens/effects.css"); /* facelift: ink/halftone utilities — LAST (uses the above) */
+@import url("./tokens/effects.css"); /* facelift: ink/halftone utilities, LAST (uses the above) */

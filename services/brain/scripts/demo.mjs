@@ -1,4 +1,4 @@
-// services/brain — the cross-character PROOF harness.
+// services/brain: the cross-character PROOF harness.
 //
 // Given a real car + a set of characters, it shows its work:
 //   • the live research it used (with sources),
@@ -47,7 +47,7 @@ const label = car.label || [car.year, car.make, car.model].filter(Boolean).join(
 const out = [];
 const log = (s = "") => { console.log(s); out.push(s); };
 
-// Generate first, THEN report — so the header reflects the engine that ACTUALLY
+// Generate first, THEN report, so the header reflects the engine that ACTUALLY
 // ran (a live attempt can fall back to offline on an API error; don't claim LIVE
 // when we silently degraded).
 const results = [];
@@ -68,12 +68,12 @@ const engineLine =
   liveCount === results.length && live
     ? "LIVE (Claude research + grading)"
     : liveCount > 0
-      ? `MIXED — ${liveCount}/${results.length} live, the rest fell back offline`
+      ? `MIXED: ${liveCount}/${results.length} live, the rest fell back offline`
       : live
-        ? "OFFLINE — the live attempt FAILED and fell back (re-run with BRAIN_DEBUG=1 to see why; common cause: invalid/missing ANTHROPIC_API_KEY)"
-        : "OFFLINE (no API key — deterministic fallback)";
+        ? "OFFLINE: the live attempt FAILED and fell back (re-run with BRAIN_DEBUG=1 to see why; common cause: invalid/missing ANTHROPIC_API_KEY)"
+        : "OFFLINE (no API key, deterministic fallback)";
 
-log(`# RoastMyRide — cross-character proof`);
+log(`# RoastMyRide: cross-character proof`);
 log(``);
 log(`**Car:** ${label}`);
 log(`**Engine:** ${engineLine}`);
@@ -83,7 +83,7 @@ if (live && liveCount < results.length) {
   console.error(`\n⚠️  Live was requested but ${results.length - liveCount}/${results.length} set(s) fell back to OFFLINE. Re-run with BRAIN_DEBUG=1 for the error (most often an invalid ANTHROPIC_API_KEY).\n`);
 }
 
-// Research is shared across the cast — show it once.
+// Research is shared across the cast, so show it once.
 const research = results[0].research;
 log(`## The research that grounded these sets`);
 log(``);
@@ -98,7 +98,7 @@ log(``);
 
 for (const res of results) {
   const g = res.grade;
-  log(`## ${res.performer.name} — ${res.performer.comedicIdentity}`);
+  log(`## ${res.performer.name}: ${res.performer.comedicIdentity}`);
   log(``);
   log(`_${res.set.performanceNote}_`);
   log(``);
@@ -110,12 +110,12 @@ for (const res of results) {
   }
   log(``);
   log(
-    `**Grade** — composite ${g.composite}/10 · ${g.pass ? "✅ PASS" : "❌ did not pass"} ` +
+    `**Grade**: composite ${g.composite}/10 · ${g.pass ? "✅ PASS" : "❌ did not pass"} ` +
     `(funny ${g.scores.funny}, human ${g.scores.human}, specific ${g.scores.specific}, ` +
     `edge ${g.scores.edge}, voice ${g.scores.voice}) · ${g.candidates} candidate(s), ${g.rounds} round(s)`
   );
   if (g.aiTells.length)
-    log(`**AI-tells caught:** ${g.aiTells.map((t) => `${(t.severity || "major").toUpperCase()} — ${t.note || t}`).join("; ")}`);
+    log(`**AI-tells caught:** ${g.aiTells.map((t) => `${(t.severity || "major").toUpperCase()}: ${t.note || t}`).join("; ")}`);
   log(`**Callie reacts:** ${res.reaction} → [${res.reactionSequence.join(", ")}]`);
   log(``);
 }

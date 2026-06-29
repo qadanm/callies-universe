@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Squiggle — a hand-drawn marker underline. Sits under a headline keyword.
+ * Squiggle: a hand-drawn marker underline. Sits under a headline keyword.
  * Inked via #ink2 so the stroke wobbles like a felt-tip swipe.
  */
 export function Squiggle({

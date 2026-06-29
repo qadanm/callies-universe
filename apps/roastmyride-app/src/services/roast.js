@@ -1,4 +1,4 @@
-// RoastMyRide — the roast pipeline BOUNDARY.
+// RoastMyRide: the roast pipeline BOUNDARY.
 //
 // Screens import `generateRoast` from HERE, never from the mock directly. This
 // file is the single swap point: when `services/brain` ships, replace the one
@@ -7,7 +7,7 @@
 //   // before (the mock milestone):
 //   export { generateRoast } from "./roast.mock.js";
 //
-//   // now (the real brain — one-line drop-in, same signature):
+//   // now (the real brain, a one-line drop-in with the same signature):
 //   export { generateRoast } from "@callies-universe/brain";
 //
 // The shape is locked by the contract, so the swap is type-safe. The brain
@@ -20,7 +20,7 @@
 // SWAPPED: the real brain is now live.
 //
 // Server-side seam: when a backend is configured (VITE_ROAST_API), the brain runs
-// SERVER-SIDE (POST /roast) where the API key + SDK live — that's the only place
+// SERVER-SIDE (POST /roast) where the API key + SDK live. That's the only place
 // the LIVE, research-driven comedy actually runs. With no backend, or on any
 // failure, we run the brain IN-BROWSER, which has no key/SDK and so returns the
 // deterministic offline set (today's behavior). Either way the screens are unchanged.

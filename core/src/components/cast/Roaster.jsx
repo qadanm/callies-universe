@@ -1,11 +1,11 @@
 import React from "react";
 
 /**
- * Roaster — the VOICE CAST avatars. Eight named, backstoried comedic personas
+ * Roaster: the VOICE CAST avatars. Eight named, backstoried comedic personas
  * who deliver the roast (the CAST performs; Callie the mascot only reacts).
  *
  * Each avatar is a unique kawaii bust in Callie's world (round, soft, thick
- * outline, flat fill) — distinguished by skin tone, hair, wardrobe, expression,
+ * outline, flat fill), distinguished by skin tone, hair, wardrobe, expression,
  * and a signature prop. PLACEHOLDER art, built to be swapped for final
  * illustration keyed to the same `id`.
  *
@@ -75,7 +75,7 @@ const ROSTER = {
   buford:   { name: "Buford “Sweet Tea” Coalsworth", tag: "Front-porch uncle", register: "Slow · molasses", spice: "Mild", phrase: "Bless its little heart… that ain’t a car, son.", skin: "#D8A772", cloth: "#8A4B2F", ring: "#E0A33A" },
   gord:     { name: "Gord “Sorry-Aboot-It” Beaudry", tag: "Hoser rink dad", register: "Warm · sorry-eh", spice: "Medium", phrase: "Aw geez, sorry, bud… no offence, eh?", skin: "#EAC4A0", cloth: "#2C6E49", ring: "#E84855", comingSoon: true },
   abuomar:  { name: "Abu Omar", tag: "Warm Egyptian uncle", register: "Theatrical · warm", spice: "Mild", phrase: "My son… the car, I do not love.", skin: "#C98E58", cloth: "#7A2E3A", ring: "#FFB877", comingSoon: true },
-  mateo:    { name: "Mateo “El Tigre” Rivas", tag: "Telenovela hype-man", register: "Operatic drama", spice: "Spicy", phrase: "The car — the car has broken my heart.", skin: "#D89C68", cloth: "#1A1A1F", ring: "#FF4FA3", comingSoon: true },
+  mateo:    { name: "Mateo “El Tigre” Rivas", tag: "Telenovela hype-man", register: "Operatic drama", spice: "Spicy", phrase: "The car… the car has broken my heart.", skin: "#D89C68", cloth: "#1A1A1F", ring: "#FF4FA3", comingSoon: true },
   jeanluc:  { name: "Jean-Luc Moreau", tag: "Unbothered Frenchman", register: "Deadpan disdain", spice: "Medium", phrase: "It is a car. It is here. I am… unmoved.", skin: "#F1C7A0", cloth: "#2C5AA8", ring: "#8FC2FF", comingSoon: true },
   priya:    { name: "Priya Nair", tag: "Comparison auntie", register: "Lovingly brutal", spice: "Spicy", phrase: "Sharma-ji’s son has better. But it’s nice, beta.", skin: "#B87B4A", cloth: "#1F8A7A", ring: "#5FD6C4", comingSoon: true },
   kenji:    { name: "Kenji “Ken” Tanaka", tag: "Zen minimalist", register: "Three-word KO", spice: "Mild", phrase: "…Hm. It is a car.", skin: "#ECBC8E", cloth: "#3A3A44", ring: "#AEB6C2", comingSoon: true },

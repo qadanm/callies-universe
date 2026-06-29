@@ -1,10 +1,10 @@
-# services/ — shared backend layer (reserved, not implemented)
+# services/: shared backend layer (reserved, not implemented)
 
 The middle layer of Callie's Universe. Shared backend capabilities every app
 calls into: **render**, **voice**, **brain**, **moderation**, **payments**.
 
 **Status: scaffolded, empty.** This milestone builds `core/` only. No service is
-implemented yet — this directory exists so the layer boundary and the
+implemented yet. This directory exists so the layer boundary and the
 inward-only dependency rule are in place from day one.
 
 ## The dependency rule

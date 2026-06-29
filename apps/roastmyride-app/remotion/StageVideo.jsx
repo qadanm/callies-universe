@@ -1,4 +1,4 @@
-// RoastMyRide — the Remotion composition [ROASTMYRIDE-NEW].
+// RoastMyRide: the Remotion composition [ROASTMYRIDE-NEW].
 //
 // Wraps the SAME StageScene the app plays live, driven by Remotion's frame clock
 // (useCurrentFrame → timeMs) instead of the live rAF clock. Because it's the same
@@ -33,19 +33,19 @@ export function StageVideo(props) {
 
   return (
     <AbsoluteFill style={{ background: "#06101f" }}>
-      {/* hand-inked filter defs (#ink/#ink2) — deterministic fixed seed, so the
+      {/* hand-inked filter defs (#ink/#ink2) use a deterministic fixed seed, so the
           wobble is frame-identical across renders. Must live inside the painted tree. */}
       <FilterHost />
-      {/* gameplay background — the user's licensed loop (audio ducked under the VO).
+      {/* gameplay background: the user's licensed loop (audio ducked under the VO).
           Skipped for the panel format, which renders its own opaque studio. */}
       {props.format !== "panel" && props.backgroundUrl && (
         <OffthreadVideo src={props.backgroundUrl} loop volume={GAMEPLAY_VOL} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       )}
 
-      {/* optional music bed (none committed) — ducked under the VO */}
+      {/* optional music bed (none committed), ducked under the VO */}
       {props.musicUrl && <Audio src={props.musicUrl} loop volume={MUSIC_VOL} />}
 
-      {/* Callie's Universe sound design — a soft warm bed under it all, the cute
+      {/* Callie's Universe sound design: a soft warm bed under it all, the cute
           ident chime over the open, one gentle whoosh on the brand→submission cut,
           a soft ding on the verdict, and the button on the endcard. All low + timed
           into the gaps so nothing fights the VO. */}
@@ -61,7 +61,7 @@ export function StageVideo(props) {
         <Sequence from={msToFrames(totalMs - tailMs + tailMs * 0.34)} durationInFrames={msToFrames(tailMs * 0.6)}><Audio src={props.outroStingUrl} volume={0.55} /></Sequence>
       )}
 
-      {/* the comedian's voice — one clip per beat, started at the beat's time (full volume) */}
+      {/* the comedian's voice: one clip per beat, started at the beat's time (full volume) */}
       {audio &&
         audio.map((clip, i) => {
           const seg = segments[i];
@@ -73,8 +73,8 @@ export function StageVideo(props) {
           );
         })}
 
-      {/* synthesized stingers on the punch + closer beats — skipped for the panel,
-          a real podcast conversation has no canned rimshots */}
+      {/* synthesized stingers on the punch + closer beats. Skipped for the panel,
+          since a real podcast conversation has no canned rimshots */}
       {props.format !== "panel" && segments.map((seg, i) => {
         const src = sfxFor(seg.beat && seg.beat.type);
         if (!src) return null;

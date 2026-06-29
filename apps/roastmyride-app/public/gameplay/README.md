@@ -14,10 +14,10 @@ live reel automatically (it layers a looping `<video>` behind the scene).
 Guidelines:
 - **We ship no copyrighted footage.** Use clips you have the rights to (CC0,
   purchased, or self-recorded). Don't commit Minecraft/Subway Surfers captures.
-- Vertical **1080×1920**, seamless loop, ~15–30s, muted-friendly (audio is mixed
-  separately — see the render audio mix).
+- Vertical **1080×1920**, clean loop, ~15 to 30s, muted-friendly (audio is mixed
+  separately, see the render audio mix).
 - With no files here, the reel uses the deterministic in-scene faux backdrops
-  (`blocks` / `runner` / `parkour`) — it always looks like *something*.
+  (`blocks` / `runner` / `parkour`), so it always looks like *something*.
 
 For the **exported** video: a `src` that is an absolute `http(s)` URL works
 directly in Remotion's `<OffthreadVideo>`. For a local file, host it (or place it

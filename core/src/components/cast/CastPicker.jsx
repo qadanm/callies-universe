@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Roaster } from "./Roaster.jsx";
 
 /**
- * CastPicker — the reusable character-tile / cast-picker for the whole universe.
+ * CastPicker: the reusable character-tile / cast-picker for the whole universe.
  * Featured roaster (avatar + catchphrase + spice meter + favorite) over a
  * tap-to-switch grid of all cast members. Reads the cast from `Roaster.roster`,
  * so it auto-extends as new characters are added. App-agnostic: the host adds
@@ -10,7 +10,7 @@ import { Roaster } from "./Roaster.jsx";
  */
 export function CastPicker({ initialId, onChange, style, ...rest }) {
   const roster = Roaster.roster;
-  // Never feature a coming-soon (tabled) character — start on the requested one if
+  // Never feature a coming-soon (tabled) character. Start on the requested one if
   // it's available, else the first active comic.
   const firstActive = Math.max(0, roster.findIndex((r) => !r.comingSoon));
   const wanted = roster.findIndex((r) => r.id === initialId);

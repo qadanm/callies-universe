@@ -1,6 +1,6 @@
-// RoastMyRide — Marquee [ROASTMYRIDE-NEW: app-layer].
+// RoastMyRide: Marquee [ROASTMYRIDE-NEW: app-layer].
 //
-// The playbill header for "Tonight's lineup" — a lightbulb-framed theatre
+// The playbill header for "Tonight's lineup": a lightbulb-framed theatre
 // marquee. Pure decoration over core's clean bones; text stays AA.
 import React from "react";
 

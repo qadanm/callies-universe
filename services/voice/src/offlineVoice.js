@@ -1,9 +1,9 @@
-// services/voice — deterministic OFFLINE fallback.
+// services/voice: deterministic OFFLINE fallback.
 //
 // No TTS key / a provider failure → silent clips whose durations match the
 // estimated speaking time. They're real, valid WAV files (low sample rate to
 // keep them small), so the render still produces a video with a correctly-timed
-// audio track — the whole pipeline runs with no network. Swap in a real provider
+// audio track, so the whole pipeline runs with no network. Swap in a real provider
 // and the same shape carries spoken audio.
 
 import { voiceProfile, spokenText, estimateDurationMs } from "./voiceProfiles.js";

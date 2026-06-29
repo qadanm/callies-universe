@@ -4,7 +4,7 @@
 //   { characters: ["H","e",...], character_start_times_seconds: [...],
 //     character_end_times_seconds: [...] }
 // We group runs of non-whitespace characters into words, each carrying the start
-// of its first char and the end of its last — enough for true karaoke captions.
+// of its first char and the end of its last, enough for true karaoke captions.
 // Returns undefined when there's no usable alignment (caller falls back to an
 // even-time estimate), so the offline/no-key path is unaffected.
 

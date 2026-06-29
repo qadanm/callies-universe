@@ -1,9 +1,9 @@
-// services/brain — LIVE-ORCHESTRATION check (no network).
+// services/brain: LIVE-ORCHESTRATION check (no network).
 //
 // Exercises the real research → best-of-N write → grade → pick → assemble path
 // by injecting a scripted FAKE model (same thin interface as the Claude model).
-// This proves the orchestration logic — research grounding, best-of-N selection,
-// the anti-AI gate, regeneration when nothing passes, and result assembly —
+// This proves the orchestration logic (research grounding, best-of-N selection,
+// the anti-AI gate, regeneration when nothing passes, and result assembly)
 // without an API key, so CI covers the live path's wiring, not just the offline
 // canned sets.
 //
@@ -12,7 +12,7 @@
 import { generateRoast } from "../index.js";
 import { clearCache } from "../src/cache.js";
 
-// Web search is now OPT-IN (model-knowledge grounding is the default — see
+// Web search is now OPT-IN (model-knowledge grounding is the default; see
 // researchCar.js). These cases exercise the search-orchestration path (sources
 // flowing through), so enable it explicitly for the test.
 process.env.BRAIN_WEB_SEARCH = "1";
@@ -67,7 +67,7 @@ function fakeModel(plan) {
         };
       }
       if (props.scores) {
-        // grading call — driven by the plan's grade script
+        // grading call, driven by the plan's grade script
         const g = plan.grades[gradeCount++ % plan.grades.length];
         return g;
       }
@@ -156,7 +156,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("✓ brain pipeline check passed — live orchestration verified without a key:");
+console.log("✓ brain pipeline check passed: live orchestration verified without a key:");
 console.log("  · research material + sources flow into the result");
 console.log("  · best-of-N picks the highest-composite passing candidate");
 console.log("  · AI-tells fail the anti-cringe gate; the brain regenerates");

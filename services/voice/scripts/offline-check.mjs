@@ -1,4 +1,4 @@
-// services/voice — OFFLINE smoke. Verifies the silent fallback produces valid,
+// services/voice: OFFLINE smoke. Verifies the silent fallback produces valid,
 // correctly-timed audio for every character with no key/network, so the render
 // pipeline (and CI) always runs. Run: node scripts/offline-check.mjs
 
@@ -75,4 +75,4 @@ if (failures.length) {
   for (const f of failures) console.error("   - " + f);
   process.exit(1);
 }
-console.log(`✓ voice offline smoke passed — ${Roaster.roster.length} characters, valid timed silent clips.`);
+console.log(`✓ voice offline smoke passed: ${Roaster.roster.length} characters, valid timed silent clips.`);

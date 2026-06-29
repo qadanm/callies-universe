@@ -1,9 +1,9 @@
-// RoastMyRide — app-specific Callie reactions [ROASTMYRIDE-NEW: data only].
+// RoastMyRide: app-specific Callie reactions [ROASTMYRIDE-NEW: data only].
 //
 // Callie's ART and her BRAIN (idle-cycling, tips, the <CallieHost> behavior) are
-// all CORE [CORE-REUSED] — this app commissions no new art. All RoastMyRide adds
+// all CORE [CORE-REUSED]; this app commissions no new art. All RoastMyRide adds
 // is DATA: which of Callie's nine core states she shows at this app's moments,
-// referenced BY NAME. The two-performer rule holds — the cast voices the roast,
+// referenced BY NAME. The two-performer rule holds: the cast voices the roast,
 // Callie only reacts.
 //
 // Core states (the only allowed values): idle · curious · cooking · delighted ·

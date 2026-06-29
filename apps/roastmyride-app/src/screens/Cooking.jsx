@@ -1,5 +1,5 @@
-// Screen 5 — Warming up (was "Cooking"). Backstage while the comic writes tonight's set.
-// CORE-REUSED: CallieHost (context "cooking" — now reads as Callie hosting backstage).
+// Screen 5: Warming up (was "Cooking"). Backstage while the comic writes tonight's set.
+// CORE-REUSED: CallieHost (context "cooking", now reads as Callie hosting backstage).
 // ROASTMYRIDE-NEW: progress bar + "warming up" copy reframed around the performance.
 //
 // This screen calls the roast SEAM via flow.generate() → services/roast.js (the
@@ -27,7 +27,7 @@ export function Cooking() {
   const steps = STEPS(firstName);
 
   useEffect(() => {
-    // Defensive credit gate — a roast costs a credit (generate() deducts on success).
+    // Defensive credit gate: a roast costs a credit (generate() deducts on success).
     if (credits < 1) {
       go("/credits");
       return undefined;
@@ -37,7 +37,7 @@ export function Cooking() {
 
     // In StrictMode this effect runs twice; FlowContext.generate() is already
     // guarded so credits are only deducted once. The promise always resolves
-    // (the brain never throws), so we always navigate — never strand the user.
+    // (the brain never throws), so we always navigate and never strand the user.
     generate()
       .then(() => { if (alive) go("/reveal"); })
       .catch((e) => {

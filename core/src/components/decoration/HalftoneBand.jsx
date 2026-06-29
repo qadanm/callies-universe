@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * HalftoneBand — a full-bleed color section with a ben-day halftone overlay
+ * HalftoneBand: a full-bleed color section with a ben-day halftone overlay
  * (and an optional corner star). The contrast moment: put tinted sticker cards
  * on it. `bg` defaults to the page's own accent so each site/app keeps identity.
  */

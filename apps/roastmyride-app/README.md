@@ -1,6 +1,6 @@
 # @callies-universe/roastmyride-app
 
-RoastMyRide — the **first app** in Callie's Universe, built as a **thin layer** on
+RoastMyRide, the **first app** in Callie's Universe, built as a **thin layer** on
 [`@callies-universe/core`](../../core). Implements
 [`project/apps/roastmyride-app/HANDOFF.md`](../../project/apps/roastmyride-app/HANDOFF.md).
 
@@ -8,7 +8,7 @@ This milestone is a **navigable UI skeleton**: every screen clicks through, Call
 reacts through the flow via her 9 core states, and the roast is **mocked behind a
 service-shaped seam**. No real backend, no `services/`.
 
-## Run it — clone → install → click through
+## Run it: clone, install, click through
 
 From the **repo root**:
 
@@ -25,7 +25,7 @@ pnpm --filter @callies-universe/roastmyride-app dev
 
 The flow: **Onboarding → Home (car photo) → Profile-roast (selfie/profile consent)
 → Context chips → The Cast → Cooking (mock generates) → Reveal (ShareCard) →
-Share success**. The top **dev screen-picker** jumps straight to any screen; the
+Share success**. The top **dev screen-picker** jumps straight to any screen, and the
 bottom tab bar carries Home / Credits / Settings.
 
 ### Headless verification (optional)
@@ -44,18 +44,18 @@ It uses the environment's preinstalled Chromium via `playwright-core`.
 
 ### The only three things RoastMyRide adds
 
-1. **Ember accent — `theme.css` [ROASTMYRIDE-NEW, 1 file]**
+1. **Ember accent: `theme.css` [ROASTMYRIDE-NEW, 1 file]**
    Re-declares only the `--accent-*` slot. Because core's brand ramp
    (`--ember-* / --flame-* / --heat-*`) is aliased to `--accent-*`, **every core
-   component reskins to ember automatically** — zero component edits. The calico
+   component reskins to ember automatically**, with zero component edits. The calico
    base palette stays. Load order (in `src/main.jsx`): core `styles.css` →
    `theme.css` → `app.css` (decoration).
-2. **App-layer components [ROASTMYRIDE-NEW]** — `ShareCard` and `CreditTile`.
+2. **App-layer components [ROASTMYRIDE-NEW]**: `ShareCard` and `CreditTile`.
    Correctly kept **out of core** (they fail the "every app would use this" test);
    they live in `src/components/`.
-3. **App-specific Callie reactions [ROASTMYRIDE-NEW, data only]** —
+3. **App-specific Callie reactions [ROASTMYRIDE-NEW, data only]**:
    `src/callieReactions.js`. Maps this app's moments to core's nine state names.
-   **No new Callie art** — her art and brain are core.
+   **No new Callie art**, her art and brain are core.
 
 Everything else is **[CORE-REUSED]**: all tokens, Button / Chip / Card / Input /
 Badge / Sheet / Toast / Confetti, Callie + CallieHost, Roaster + CastPicker, the
@@ -77,7 +77,7 @@ motion language, and WCAG AA.
 | Settings | `CallieHost`("settings"), tokens | quiet settings rows |
 
 > **Reuse check:** the only genuinely new files are `theme.css`, `ShareCard`,
-> `CreditTile`, `callieReactions.js`, and the mock seam — everything visible on
+> `CreditTile`, `callieReactions.js`, and the mock seam. Everything visible on
 > screen is reused core composed into layouts. `[ROASTMYRIDE-NEW]` stayed small,
 > as the handoff requires.
 
@@ -90,7 +90,7 @@ real service, so the swap is one line.
 src/services/
   roast.contract.d.ts   the typed contract: generateRoast(input) → Promise<RoastResult>
   roast.mock.js         the mock implementation (canned roasts; reads core Roaster.roster)
-  roast.js              the BOUNDARY — screens import from here
+  roast.js              the BOUNDARY: screens import from here
 ```
 
 `roast.js` today:
@@ -100,7 +100,7 @@ export { generateRoast } from "./roast.mock.js";
 ```
 
 When `services/brain` ships, that single line becomes
-`export { generateRoast } from "@callies-universe/brain";` — the contract is
+`export { generateRoast } from "@callies-universe/brain";`. The contract is
 unchanged, so **no screen changes**. Screens only ever import `generateRoast` from
 `roast.js`; `Cooking` calls it (via `flow.generate()`), the result feeds `Reveal`,
 and the result's `reaction` (a core Callie state) drives Callie by name.

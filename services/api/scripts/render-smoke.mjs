@@ -1,4 +1,4 @@
-// services/api OPT-IN render smoke — actually renders a tiny MP4 through POST /render.
+// services/api OPT-IN render smoke: actually renders a tiny MP4 through POST /render.
 // Remotion needs a Chromium, so this is GATED on CHROMIUM_BIN/CHROME and is NOT in
 // the default `verify` chain. Run where Chrome exists:
 //

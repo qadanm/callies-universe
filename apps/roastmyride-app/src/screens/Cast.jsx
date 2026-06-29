@@ -1,4 +1,4 @@
-// Screen 4 — Tonight's lineup. Pick ONE comic (solo) or TWO (the Green Room panel).
+// Screen 4: Tonight's lineup. Pick ONE comic (solo) or TWO (the Green Room panel).
 // CORE-REUSED: CastPicker, Roaster avatars, CallieHost, Button.
 // ROASTMYRIDE-NEW: Solo/Duo format toggle + the duo picker for the panel format.
 import React, { useState } from "react";
@@ -63,7 +63,7 @@ export function Cast() {
         <Marquee kicker="Tonight's lineup" title="Who's taking the stage?">
           {mode === "panel"
             ? "Two comics. One green room. They riff off each other about you."
-            : sel ? `${sel.name} — ${style}` : style}
+            : sel ? `${sel.name} · ${style}` : style}
         </Marquee>
 
         {/* Solo / Duo format toggle */}
@@ -102,7 +102,7 @@ export function Cast() {
             <span aria-hidden="true" style={{ position: "absolute", bottom: -6, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 9, letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--ink)", color: "var(--canvas)", padding: "1px 6px", borderRadius: "var(--radius-pill)", cornerShape: "var(--corner-chip)" }}>★ host</span>
           </div>
           <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
-            {mode === "panel" ? "Pick two — they'll roast you back and forth." : "Callie hosts — she never roasts you. The 🎤 comics do."}
+            {mode === "panel" ? "Pick two. They'll roast you back and forth." : "Callie hosts, she never roasts you. The 🎤 comics do."}
           </span>
         </div>
 

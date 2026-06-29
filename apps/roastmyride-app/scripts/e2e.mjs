@@ -1,7 +1,7 @@
-// RoastMyRide — headless click-through (the milestone acceptance test).
+// RoastMyRide headless click-through (the milestone acceptance test).
 // Boots against an already-running dev server, walks the whole flow, and asserts
 // each screen renders, Callie is present, the ember theme applied, and the mock
-// roast reaches the reveal. No screenshots — pure navigation + content assertions.
+// roast reaches the reveal. No screenshots, just navigation + content assertions.
 //
 // Usage: start the app dev server, then `node apps/roastmyride-app/scripts/e2e.mjs`.
 
@@ -73,7 +73,7 @@ try {
     check(false, "Car photo upload renders a real preview (compressed in-browser)");
   }
 
-  // Required "what car is this?" field — a wrong make/model would derail the roast,
+  // Required "what car is this?" field: a wrong make/model would derail the roast,
   // so the owner confirms it. Offline (no API) → no auto-ID prefill, so we type it.
   await page.fill('[data-testid="car-identity"]', "2015 Kia K900 V8");
   check((await page.locator('[data-testid="car-identity"]').inputValue()) === "2015 Kia K900 V8",
@@ -193,7 +193,7 @@ try {
 }
 
 if (fails.length) {
-  console.error(`\n✗ e2e FAILED — ${fails.length} issue(s).`);
+  console.error(`\n✗ e2e FAILED: ${fails.length} issue(s).`);
   process.exit(1);
 }
-console.log("\n✓ e2e passed — full RoastMyRide flow navigable, Callie reacting, roast mocked.");
+console.log("\n✓ e2e passed: full RoastMyRide flow navigable, Callie reacting, roast mocked.");

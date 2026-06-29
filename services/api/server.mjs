@@ -1,4 +1,4 @@
-// services/api — CLI entry. Boots the roast backend.
+// services/api CLI entry. Boots the roast backend.
 //
 //   ELEVENLABS_API_KEY=... VOICE_MAMA_ID=... \
 //   CHROMIUM_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
@@ -16,5 +16,5 @@ srv.listen(PORT, () => {
   console.log(`[api] listening on http://localhost:${PORT}`);
   console.log(`[api] voice: ${voice}`);
   console.log(`[api] chrome: ${chrome}`);
-  if (process.env.ROAST_RENDER_DRYRUN) console.log("[api] ROAST_RENDER_DRYRUN=1 — /render returns inputProps JSON, no MP4");
+  if (process.env.ROAST_RENDER_DRYRUN) console.log("[api] ROAST_RENDER_DRYRUN=1: /render returns inputProps JSON, no MP4");
 });

@@ -1,7 +1,7 @@
 {
   "name": "@callies-universe/core",
   "version": "0.1.0",
-  "description": "Callie's Universe shared core — design tokens, component library, Callie's 9-state mascot system, and the character cast. Depends on nothing; every app extends it.",
+  "description": "Callie's Universe shared core: design tokens, component library, Callie's 9-state mascot system, and the character cast. Depends on nothing; every app extends it.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": [

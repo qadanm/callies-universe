@@ -1,4 +1,4 @@
-// RoastMyRide — generate a sample render spec (inputProps) for the Remotion
+// RoastMyRide: generate a sample render spec (inputProps) for the Remotion
 // "stage" composition, straight from the offline brain. This is the same shape
 // the app's Save flow will build at runtime (result + photos → spec), so it
 // doubles as a fixture for the render CLI.
@@ -27,4 +27,4 @@ const spec = {
 };
 
 writeFileSync(outFile, JSON.stringify(spec, null, 2));
-console.log(`wrote ${outFile} — ${result.roasterName}, ${su.beats.length} beats, bit "${su.bit}"`);
+console.log(`wrote ${outFile}: ${result.roasterName}, ${su.beats.length} beats, bit "${su.bit}"`);

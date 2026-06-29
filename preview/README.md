@@ -1,6 +1,6 @@
 # @callies-universe/preview
 
-The **render sandbox** for `@callies-universe/core` — and the acceptance test for
+The **render sandbox** for `@callies-universe/core`, and the acceptance test for
 this milestone. It is a dev tool, **not** a product app, which is why it lives at
 the repo root rather than under `apps/` (that layer stays empty until the first
 real app).

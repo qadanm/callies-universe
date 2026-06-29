@@ -58,12 +58,12 @@ export function buildPanelMessages(a, b, research, context, framing, variant = 0
   const chips = (context || []).filter(Boolean);
   const subject = framing.subjectPhrase(research);
   const system = [
-    `You're writing a short clip from a popular comedy PODCAST where listeners send in photos of their ${framing.submissionNoun} for the two hosts to react to. The hosts just pulled up the newest submission — ${subject} — and they're reacting to it live, on mic.`,
+    `You're writing a short clip from a popular comedy PODCAST where listeners send in photos of their ${framing.submissionNoun} for the two hosts to react to. The hosts just pulled up the newest submission, ${subject}, and they're reacting to it live, on mic.`,
     ``,
-    `THE TWO HOSTS — write each as how they actually TALK on a podcast (their personality, not an act). They must NOT sound the same:`,
-    `"a" — ${a.name}: ${a.comedicIdentity}`,
+    `THE TWO HOSTS: write each as how they actually TALK on a podcast (their personality, not an act). They must NOT sound the same:`,
+    `"a" is ${a.name}: ${a.comedicIdentity}`,
     `   talks like: ${a.rhythm}`,
-    `"b" — ${b.name}: ${b.comedicIdentity}`,
+    `"b" is ${b.name}: ${b.comedicIdentity}`,
     `   talks like: ${b.rhythm}`,
     ``,
     `HOW IT SHOULD SOUND — like a REAL podcast, not a written bit:`,

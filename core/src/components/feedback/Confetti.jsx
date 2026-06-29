@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 /**
- * Confetti — DECORATION-ONLY celebratory burst. pointer-events:none, so it
+ * Confetti: DECORATION-ONLY celebratory burst. pointer-events:none, so it
  * never blocks tap targets or text. Honors reduce-motion (renders nothing).
  */
 export function Confetti({ count = 28, active = true, style }) {

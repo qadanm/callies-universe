@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Card — die-cut sticker. Superellipse corners + a bold ink outline + a hard
+ * Card: die-cut sticker. Superellipse corners + a bold ink outline + a hard
  * offset sticker shadow (the facelift surface, system-wide). With `ink` it splits
  * into a hand-wobbled border layer (the skin) behind crisp content (the bones) so
  * text stays sharp while the edge looks drawn. Chromium draws the squircle;
@@ -61,7 +61,7 @@ export function Card({
     );
   }
 
-  // Default: single-layer facelift surface (back-compat structure — children are
+  // Default: single-layer facelift surface (back-compat structure, children are
   // direct, so existing flex/layout styles on the card still apply).
   return (
     <div

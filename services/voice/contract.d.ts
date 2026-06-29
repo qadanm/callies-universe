@@ -1,9 +1,9 @@
-// @callies-universe/voice — contract.
+// @callies-universe/voice contract.
 //
 // synthesizeSet turns the display beats of a stand-up set into per-beat spoken
 // audio clips, each with a REAL duration, so the render's timeline (captions +
-// scene motion) tracks the actual performance. Runs server-side (TTS keys, cost)
-// — the render service calls it before rendering and feeds the clips into the
+// scene motion) tracks the actual performance. Runs server-side (TTS keys, cost):
+// the render service calls it before rendering and feeds the clips into the
 // Remotion composition.
 
 import type { RoasterId } from "@callies-universe/core";
@@ -27,7 +27,7 @@ export interface VoiceClip {
   /** Spoken audio as a data URL (audio/mpeg or audio/wav). */
   dataUrl: string;
   mime: string;
-  /** Real clip length in ms — drives the performance timeline. */
+  /** Real clip length in ms; drives the performance timeline. */
   durationMs: number;
   /** The text that was spoken (beat text flattened). */
   text: string;
@@ -42,7 +42,7 @@ export interface SynthesizedSet {
   voiced: boolean;
   /** "elevenlabs" | "offline" | the provider id. */
   engine: string;
-  /** Per-beat durations (ms), in beat order — convenience for timeline building. */
+  /** Per-beat durations (ms), in beat order, for convenient timeline building. */
   durationsMs: number[];
   /** Total characters synthesized (cost telemetry; provider bills by character). */
   charCount: number;
@@ -59,7 +59,7 @@ export interface VoiceConfig {
 }
 
 /**
- * Synthesize the set. Never throws on a missing key / provider error — falls
+ * Synthesize the set. Never throws on a missing key or provider error; it falls
  * back to deterministic silent clips (with estimated durations) so the render
  * pipeline always runs.
  */

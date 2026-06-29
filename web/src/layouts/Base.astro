@@ -9,7 +9,7 @@ const { title, description } = Astro.props;
 const site = activeSite;
 const isNetwork = site.kind === "network";
 const accentCss = Object.entries(site.accent).map(([k, v]) => `--${k}:${v};`).join("");
-const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
 const desc = description || site.tagline;
 const year = 2026;
 
@@ -63,7 +63,7 @@ const navLinks = isNetwork
         </div>
         <p class="footer__fine">
           © {year} {ENTITY}. All rights reserved. Callie and the comedian cast are original fictional
-          characters — not impersonations of any real people. {ENTITY}™ and the “Roast My ___” names are trademarks of {ENTITY}.
+          characters, not impersonations of any real people. {ENTITY}™ and the “Roast My ___” names are trademarks of {ENTITY}.
         </p>
       </div>
     </footer>

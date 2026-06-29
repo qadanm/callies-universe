@@ -1,10 +1,10 @@
 /**
- * RoastMyRide — the roast pipeline contract (the service-shaped SEAM).
+ * RoastMyRide: the roast pipeline contract (the service-shaped SEAM).
  *
  * This is the boundary between the app and roast "generation". Today it is
  * fulfilled by a mock (`roast.mock.js`). Tomorrow it is fulfilled by the real
  * `services/brain` render service. The CONTRACT below does not change when that
- * swap happens — only the implementation behind `generateRoast` does. That is
+ * swap happens. Only the implementation behind `generateRoast` does. That is
  * the whole point: swapping the mock for the real service is a one-line change
  * in `roast.js`, never a refactor of the screens.
  *
@@ -14,7 +14,7 @@ import type { CallieState, RoasterId } from "@callies-universe/core";
 
 /** What the app collects across the flow and hands to the pipeline. */
 export interface RoastInput {
-  /** The car photo (mocked — we only track presence this milestone). */
+  /** The car photo (mocked, so we only track presence this milestone). */
   carPhoto: { present: boolean };
   /** Which cast member voices the roast. */
   roasterId: RoasterId;
@@ -28,7 +28,7 @@ export interface RoastSegment {
   punch?: boolean;
 }
 
-/** The pipeline's output — feeds the Reveal screen + drives Callie's reaction. */
+/** The pipeline's output: feeds the Reveal screen + drives Callie's reaction. */
 export interface RoastResult {
   id: string;
   roasterId: RoasterId;
@@ -43,7 +43,7 @@ export interface RoastResult {
   /** Flattened plain text (for share/copy/analytics). */
   plainText: string;
   /**
-   * How CALLIE should REACT to this roast — a core state name, by name.
+   * How CALLIE should REACT to this roast: a core state name, by name.
    * The app owns this mapping (see callieReactions.js); Callie's art is core.
    */
   reaction: CallieState;

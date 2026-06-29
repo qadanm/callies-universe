@@ -1,8 +1,8 @@
-// useRoastVoice — fetch the comedian's per-beat audio for the LIVE reel.
+// useRoastVoice: fetch the comedian's per-beat audio for the LIVE reel.
 //
 // Only active when a backend is configured (VITE_ROAST_API). Cached per
 // comedian+beats so revisits/replays don't re-synthesize. Returns
-// { clips, durationsMs } or null (no backend / not loaded / failed) — callers
+// { clips, durationsMs } or null (no backend / not loaded / failed). Callers
 // treat null as "silent, use the word-count timeline", exactly as before.
 import { useEffect, useState } from "react";
 import { hasRoastApi, fetchVoice } from "../services/roastApi.js";
@@ -34,7 +34,7 @@ export function useRoastVoice(comedianId, performerName, beats) {
       return undefined;
     }
     let alive = true;
-    // One retry on a transient failure before falling back to silent — keeps the
+    // One retry on a transient failure before falling back to silent, which keeps the
     // live preview in step with the export (which always synthesizes server-side).
     const attempt = (tries) =>
       fetchVoice({ comedianId, performerName, beats })

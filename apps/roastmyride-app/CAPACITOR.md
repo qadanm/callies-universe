@@ -1,7 +1,7 @@
 # RoastMyRide → iOS (Capacitor)
 
 The app ships to the App Store as a native shell around the existing web build.
-The web build and `pnpm verify` do NOT depend on Capacitor — the native layer
+The web build and `pnpm verify` do NOT depend on Capacitor. The native layer
 (`src/native.js`) detects `window.Capacitor` at runtime and loads plugins via
 dynamic import, so nothing here changes the web build.
 
@@ -40,7 +40,7 @@ VITE_ROAST_API=https://<your-api-host> pnpm build && npx cap sync ios
 
 ## App icon + splash
 
-Source art is in `assets/` — `icon-only.png` (1024×1024) + `splash.png` (a flame on
+Source art is in `assets/`: `icon-only.png` (1024×1024) + `splash.png` (a flame on
 the ember/cream brand) + `icon.svg` (editable source). Generate every iOS size:
 
 ```bash

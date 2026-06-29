@@ -1,13 +1,13 @@
-// services/brain — SUBJECT PACK: texts (Roast My Texts).
+// services/brain: SUBJECT PACK: texts (Roast My Texts).
 //
 // The car subject RESEARCHES the web (a car has a public reputation). A text
-// thread does not — its material is INSIDE the screenshot. So texts grounding is
+// thread does not; its material is INSIDE the screenshot. So texts grounding is
 // a single extraction pass over the conversation transcript (no web search),
 // producing the SAME research shape the writer/grader already consume
 // (summary / runningJokes / knownProblems / whatPeopleSay).
 //
 // The transcript reaches the brain as `input.conversation` (plain text), read
-// from the screenshot by a vision pass UPSTREAM (the app/API layer) — mirroring
+// from the screenshot by a vision pass UPSTREAM (the app/API layer), mirroring
 // how the car flow runs /identify before the brain. With no transcript (offline,
 // or before that wire lands) ground() degrades gracefully so the flow never breaks.
 
@@ -26,7 +26,7 @@ const EXTRACT_SCHEMA = {
   },
 };
 
-// Character-shaped offline sets — each roasts texting behavior in that comic's
+// Character-shaped offline sets: each roasts texting behavior in that comic's
 // FORM, so the no-key / CI path proves "app #2 actually roasts texts," not cars.
 const OFFLINE_SETS = {
   reginald: {
@@ -73,7 +73,7 @@ const OFFLINE_SETS = {
     title: "The 'Seen' That Killed Me",
     performanceNote: "Telenovela melodrama; the thread as a lover who betrayed him.",
     beats: [
-      { type: "opener", text: "The message — the message has broken my heart." },
+      { type: "opener", text: "The message… the message has broken my heart." },
       { type: "act-out", text: "I poured my SOUL into that text. EVERYTHING." },
       { type: "punchline", text: "And beneath it, one word: 'Seen.' Nothing more.", punch: "Seen" },
       { type: "closer", text: "I cannot look at the phone. …I will look at it tomorrow." },
@@ -95,7 +95,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Beta. Come. We need to talk about this chat." },
       { type: "setup", text: "Sharma-ji's son? He replies in two minutes. Full sentences." },
-      { type: "punchline", text: "But you — you are typing… and typing… and then nothing.", punch: "and then nothing" },
+      { type: "punchline", text: "But you, you are typing… and typing… and then nothing.", punch: "and then nothing" },
       { type: "closer", text: "It's fine. It's fine! …it's fine." },
     ],
   },
@@ -135,13 +135,13 @@ export const textsPack = {
   id: "texts",
   framing: TEXTS_FRAMING,
 
-  /** STEP 1 — extract the funny, true material from the conversation transcript. */
+  /** STEP 1: extract the funny, true material from the conversation transcript. */
   async ground(input, model /* , cache, config */) {
     const convo = String(input.conversation || "").trim();
     if (!convo) {
       // Live path reached with no transcript (the screenshot-read wire isn't in yet,
       // or the image had no legible conversation). THROW so the orchestrator falls
-      // back to the curated offline set with degraded=true — the user gets a real
+      // back to the curated offline set with degraded=true, so the user gets a real
       // text set and is NOT billed for an ungrounded roast (the degradation contract).
       throw new Error("texts: no conversation transcript to ground the roast");
     }
@@ -150,7 +150,7 @@ export const textsPack = {
         "You are a comedy writer's researcher analyzing a transcript of someone's text conversation. " +
         "Pull the SPECIFIC, funny-but-true material a stand-up could build a bit on: the dynamic between " +
         "the texters, the cringe patterns, and the dead giveaways (dry replies, left-on-read, double-texting, " +
-        "emoji overuse, the slow fade). Be specific to THIS thread — never generic. Aim every observation at " +
+        "emoji overuse, the slow fade). Be specific to THIS thread, never generic. Aim every observation at " +
         "the TEXTS and the dynamic, never at a person's worth or any group.",
       user:
         `The text conversation:\n${convo}\n\n` +
@@ -181,7 +181,7 @@ export const textsPack = {
     return {
       texts: { label: "your texts" },
       summary: meta.degraded
-        ? "Live analysis unavailable — running the offline set."
+        ? "Live analysis unavailable. Running the offline set."
         : "Offline mode: no live analysis; using the character's curated set.",
       runningJokes: [],
       knownProblems: [],

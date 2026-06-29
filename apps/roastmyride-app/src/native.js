@@ -1,8 +1,8 @@
-// Native (Capacitor) bridge — the WEB bundle never imports @capacitor/* (keeps it
+// Native (Capacitor) bridge. The WEB bundle never imports @capacitor/* (keeps it
 // clean). Capacitor's native runtime injects every installed plugin on the global
 // `window.Capacitor.Plugins` (the @capacitor/* npm packages are just thin proxies to
 // these), so we read that global directly. NOTE: do NOT `import("@capacitor/...")`
-// at runtime — a bare specifier can't be resolved inside the WKWebView (it isn't
+// at runtime, because a bare specifier can't be resolved inside the WKWebView (it isn't
 // bundled), so every plugin would silently no-op ON DEVICE (stuck splash, dead
 // camera/share). Reading window.Capacitor.Plugins is the pattern that actually works.
 

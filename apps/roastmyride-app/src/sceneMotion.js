@@ -1,7 +1,7 @@
-// RoastMyRide — deterministic scene motion [ROASTMYRIDE-NEW].
+// RoastMyRide: deterministic scene motion [ROASTMYRIDE-NEW].
 //
 // Pure, time-driven math for the StageScene's animation. Given a timeMs (and a
-// stable seed), these return the exact same values every call — so a frame-exact
+// stable seed), these return the exact same values every call, so a frame-exact
 // video render (Remotion: useCurrentFrame → timeMs) produces frames identical to
 // what plays live. The LIVE path uses CSS animation instead (cheaper, no per-
 // frame React); these functions are only engaged in the "driven" export mode.
@@ -14,7 +14,7 @@ export function ambientAt(timeMs) {
   const t = timeMs || 0;
   return {
     spotRotateDeg: Math.sin((TAU * t) / 7000) * 3, // sway ±3°
-    spotOpacity: 0.55 + 0.23 * (0.5 + 0.5 * Math.sin((TAU * t) / 4500)), // 0.55–0.78
+    spotOpacity: 0.55 + 0.23 * (0.5 + 0.5 * Math.sin((TAU * t) / 4500)), // 0.55 to 0.78
     comicBobY: -3 - 3 * Math.sin((TAU * t) / 3200), // -6..0 px
     comicTiltDeg: Math.sin((TAU * t) / 3200) * 1.2, // ±1.2°
   };
@@ -32,7 +32,7 @@ export function enterProgress(timeMs, startMs, durMs) {
   return clamp01(((timeMs || 0) - (startMs || 0)) / durMs);
 }
 
-/** A one-shot "pop" (scale up then settle) — peaks mid-way, ends neutral. */
+/** A one-shot "pop" (scale up then settle): peaks mid-way, ends neutral. */
 export function popPulse(timeMs, startMs, durMs) {
   const p = enterProgress(timeMs, startMs, durMs);
   return Math.sin(p * Math.PI); // 0 → 1 (at p=0.5) → 0

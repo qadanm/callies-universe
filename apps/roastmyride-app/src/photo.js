@@ -1,9 +1,9 @@
-// RoastMyRide — client-side photo capture + compression [ROASTMYRIDE-NEW].
+// RoastMyRide: client-side photo capture + compression [ROASTMYRIDE-NEW].
 //
 // Turns a picked File into a small, display-ready data URL we carry through the
 // flow and (next milestone) render on the stage + into the exported video.
 // Downscales to a max edge and re-encodes as JPEG so the blob stays small
-// (~100–300KB) — cheap to hold in state, cheap to upload later, and never sent
+// (~100 to 300KB): cheap to hold in state, cheap to upload later, and never sent
 // to the brain (FlowContext strips it from the model payload).
 
 const DEFAULTS = { maxDim: 1280, quality: 0.82, mime: "image/jpeg" };
@@ -42,7 +42,7 @@ async function decode(file) {
     try {
       return await createImageBitmap(file);
     } catch {
-      /* some formats (e.g. HEIC) fail here — fall through to <img> */
+      /* some formats (e.g. HEIC) fail here, so fall through to <img> */
     }
   }
   const url = URL.createObjectURL(file);
@@ -51,7 +51,7 @@ async function decode(file) {
       const el = new Image();
       el.onload = () => resolve(el);
       el.onerror = () =>
-        reject(new Error("Couldn't read that image — if it's a HEIC, try a JPG or PNG."));
+        reject(new Error("Couldn't read that image. If it's a HEIC, try a JPG or PNG."));
       el.src = url;
     });
   } finally {

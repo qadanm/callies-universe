@@ -1,6 +1,6 @@
-// services/brain — STEP 2: write a stand-up set, SHAPED to the performer.
+// services/brain: STEP 2: write a stand-up set, SHAPED to the performer.
 //
-// The core requirement: each character writes a DIFFERENT set — not the same
+// The core requirement: each character writes a DIFFERENT set, not the same
 // jokes in a different accent. The set's structure, rhythm, kinds of jokes,
 // crowd work, and bits are driven by the performer's comedic DNA (persona.js),
 // built from the SPECIFIC car research (researchCar.js).
@@ -21,7 +21,7 @@ const SET_SCHEMA = {
   additionalProperties: false,
   required: ["title", "beats", "performanceNote"],
   properties: {
-    title: { type: "string", description: "A short, punchy bit title (2–4 words), e.g. \"Baby, No.\"" },
+    title: { type: "string", description: "A short, punchy bit title (2-4 words), e.g. \"Baby, No.\"" },
     beats: {
       type: "array",
       items: {
@@ -61,7 +61,7 @@ export function buildWriteMessages(performer, research, context, framing, varian
   const system = [
     `You are a stand-up comedian performing a short, brutal, GENUINELY FUNNY roast of ${framing.roastTarget}.`,
     ``,
-    `WHO YOU ARE — perform as this exact comic. This is not an accent; it is a comedic identity that shapes the FORM of your set:`,
+    `WHO YOU ARE: perform as this exact comic. This is not an accent; it is a comedic identity that shapes the FORM of your set:`,
     `• Name: ${performer.name} (${performer.tag})`,
     `• Register: ${performer.register}`,
     `• Comedic identity: ${performer.comedicIdentity}`,
@@ -72,21 +72,21 @@ export function buildWriteMessages(performer, research, context, framing, varian
     `• Signature moves: ${performer.signatureMoves.join("; ")}`,
     `• Your catchphrase energy (don't quote it verbatim, embody it): "${performer.catchphrase}"`,
     ``,
-    `HARD RULES — these are the product bar, not suggestions:`,
+    `HARD RULES (the product bar, not suggestions):`,
     `1. GENUINELY FUNNY. A real club audience laughs, not groans. No groaners, no pun-for-pun's-sake.`,
-    `2. NEVER SOUNDS LIKE AI. No corny phrasing, no "in a world where", no "let's just say", no tidy "but hey", no try-hard wordplay, no explaining the joke. If a line could be a generic AI roast, cut it.`,
-    `3. USE THE SPECIFIC RESEARCH. Build on ${framing.possessive} REAL reputation and known problems below — not generic "${framing.genericFiller}" filler. Specificity is the funny.`,
+    `2. NEVER SOUNDS LIKE AI. No corny phrasing, no "in a world where", no "let's just say", no tidy "but hey", no try-hard wordplay, no explaining the joke. If a line could be a generic AI roast, cut it. NEVER use em dashes or en dashes; a real comic doesn't punctuate that way. For a pause, use "..." or just start a new sentence. Talk the way you actually talk: contractions, short punchy lines. Skip AI-tell words like seamless, leverage, robust, elevate, delve, tapestry, boasts, unleash, supercharge.`,
+    `3. USE THE SPECIFIC RESEARCH. Build on ${framing.possessive} REAL reputation and known problems below, not generic "${framing.genericFiller}" filler. Specificity is the funny.`,
     `4. PG-13, pushed HARD but never over: edgy, never slurs, never sexual, never cruel about a real person. Aim every joke at ${framing.aimTarget}, never at a group, culture, or the ${framing.ownerNoun}'s worth. ${performer.avoid}`,
-    `5. IN YOUR VOICE AND YOUR COMEDIC STRUCTURE — the set's shape must be unmistakably yours, not a generic set with your accent painted on.`,
+    `5. IN YOUR VOICE AND YOUR COMEDIC STRUCTURE: the set's shape must be unmistakably yours, not a generic set with your accent painted on.`,
     ``,
-    `Give the set a short, punchy BIT TITLE (2–4 words) in "title" — it's the billing for tonight's set.`,
-    `Write 5–8 beats: an opener, setups + punchlines, optional act-outs / crowd-work, optional a callback, and a closer. Mark the single sharpest word of a punchline in its "punch" field. Keep each beat tight — this is performed aloud.`,
+    `Give the set a short, punchy BIT TITLE (2-4 words) in "title": it's the billing for tonight's set.`,
+    `Write 5-8 beats: an opener, setups + punchlines, optional act-outs / crowd-work, optional a callback, and a closer. Mark the single sharpest word of a punchline in its "punch" field. Keep each beat tight. This is performed aloud.`,
   ].join("\n");
 
   const user = [
     `Perform your roast of ${framing.subjectPhrase(research)}.`,
     ``,
-    `THE REAL MATERIAL (research — ground your set in this):`,
+    `THE REAL MATERIAL (research: ground your set in this):`,
     `Reputation: ${research.summary}`,
     research.runningJokes.length ? `Running jokes: ${research.runningJokes.join(" | ")}` : "",
     research.knownProblems.length ? `Known problems/quirks: ${research.knownProblems.join(" | ")}` : "",

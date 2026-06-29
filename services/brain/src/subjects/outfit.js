@@ -1,6 +1,6 @@
-// services/brain — SUBJECT PACK: outfit (Roast My Outfit / Fit Check).
+// services/brain: SUBJECT PACK: outfit (Roast My Outfit / Fit Check).
 //
-// The outfit's material is INSIDE the photo — its fit, colors, choices, vibe.
+// The outfit's material is INSIDE the photo: its fit, colors, choices, vibe.
 // Grounding is a vision pass UPSTREAM (the app/API layer reads the photo) that
 // produces a structured description; ground() then extracts into the research
 // shape the writer/grader already consume. With no description (offline, or
@@ -27,7 +27,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Observe. The specimen has chosen seven layers." },
       { type: "setup", text: "In the wild, this much camouflage is reserved for prey." },
-      { type: "punchline", text: "Here, it is a cry for help — and the belt is answering.", punch: "a cry for help" },
+      { type: "punchline", text: "Here, it is a cry for help, and the belt is answering.", punch: "a cry for help" },
       { type: "closer", text: "Magnificent. And yet… the socks are visible." },
     ],
   },
@@ -43,7 +43,7 @@ const OFFLINE_SETS = {
   },
   abuomar: {
     title: "My Son, The Shoes",
-    performanceNote: "Warm uncle framing; love first, the dagger second — aimed at the outfit, not the person.",
+    performanceNote: "Warm uncle framing; love first, the dagger second. Aimed at the outfit, not the person.",
     beats: [
       { type: "opener", text: "My son. Come. Sit. The shoes, I do not love." },
       { type: "setup", text: "I say this because I love you, you understand." },
@@ -65,7 +65,7 @@ const OFFLINE_SETS = {
     title: "The Fit That Betrayed Me",
     performanceNote: "Telenovela melodrama; the outfit as a lover who wronged him.",
     beats: [
-      { type: "opener", text: "The fit — the fit has broken my heart." },
+      { type: "opener", text: "The fit… the fit has broken my heart." },
       { type: "act-out", text: "I gave it everything. EVERYTHING." },
       { type: "punchline", text: "And it broke my heart AND the color wheel.", punch: "AND the color wheel" },
       { type: "closer", text: "I cannot look at it. …I will look at it tomorrow." },
@@ -107,7 +107,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Well now… set still a minute. Lemme look at ya." },
       { type: "setup", text: "That thing's been worn so long the colors gave up." },
-      { type: "punchline", text: "Bless its little heart — it ain't a fit, it's a leftover.", punch: "a leftover" },
+      { type: "punchline", text: "Bless its little heart. It ain't a fit, it's a leftover.", punch: "a leftover" },
       { type: "closer", text: "I have known scarecrows with more coordination." },
     ],
   },
@@ -118,7 +118,7 @@ const OFFLINE_SETS = {
       { type: "opener", text: "Aw geez, sorry to say this aboot the fit, bud, but…" },
       { type: "crowd-work", text: "No offence, eh? You seein' this too?" },
       { type: "punchline", text: "Them shoes look like a beer-league playoff overtime. Sorry.", punch: "playoff overtime" },
-      { type: "closer", text: "But hey — it's got heart, eh? Give'er." },
+      { type: "closer", text: "But hey, it's got heart, eh? Give'er." },
     ],
   },
 };
@@ -136,7 +136,7 @@ export const outfitPack = {
       system:
         "You are a comedy writer's researcher analyzing a description of someone's outfit from a photo. " +
         "Pull the SPECIFIC, funny-but-true material a stand-up could build a bit on: the style choices, " +
-        "fit problems, color clashes, accessory crimes, and the overall vibe. Be specific to THIS outfit — " +
+        "fit problems, color clashes, accessory crimes, and the overall vibe. Be specific to THIS outfit, " +
         "never generic. Aim every observation at the OUTFIT and the choices, never at the person's body, " +
         "worth, or any group.",
       user:
@@ -166,7 +166,7 @@ export const outfitPack = {
     return {
       outfit: { label: "your outfit" },
       summary: meta.degraded
-        ? "Live analysis unavailable — running the offline set."
+        ? "Live analysis unavailable. Running the offline set."
         : "Offline mode: no live analysis; using the character's curated set.",
       runningJokes: [],
       knownProblems: [],

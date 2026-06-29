@@ -1,4 +1,4 @@
-// RoastMyRide — Remotion root: registers the "stage" composition.
+// RoastMyRide Remotion root: registers the "stage" composition.
 // Duration is derived from the set's own performance timeline (calculateMetadata),
 // so each roast's video is exactly as long as the show.
 import React from "react";

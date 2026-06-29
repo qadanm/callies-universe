@@ -1,4 +1,4 @@
-// Screen 1 — Onboarding (Callie introduces the app).
+// Screen 1: Onboarding (Callie introduces the app).
 // CORE-REUSED: CallieHost (context "onboarding"), Button, Confetti.
 // ROASTMYRIDE-NEW: copy + hero layout.
 import React from "react";
@@ -38,7 +38,7 @@ export function Onboarding() {
           <br />roast you.
         </H>
         <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: 0, maxWidth: 320 }}>
-          Her comedians handle that. Bring {cfg("brain.subjectNoun")}, they cook it, and Callie reacts from the corner — on your side the whole time. Clever, never cruel.
+          Her comedians handle that. Bring {cfg("brain.subjectNoun")}, they cook it, and Callie reacts from the corner, on your side the whole time. Clever, never cruel.
         </p>
       </div>
       <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>

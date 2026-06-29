@@ -1,4 +1,4 @@
-// Screen 3 — Context chips (the optional "how should we cook it?" picker).
+// Screen 3: Context chips (the optional "how should we cook it?" picker).
 // CORE-REUSED: Chip (multi-select), CallieHost, Button.
 // ROASTMYRIDE-NEW: the three chip buckets (heat / fair game / vibe), layout.
 // The toggled chips feed RoastInput.context, which the seam receives.
@@ -40,7 +40,7 @@ export function Chips() {
           </div>
         </div>
         <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: 0 }}>
-          Tap a few — or none. Chips and context are always free.
+          Tap a few, or none. Chips and context are always free.
         </p>
 
         {buckets.map((b) => (

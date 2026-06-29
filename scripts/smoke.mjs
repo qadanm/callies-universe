@@ -78,5 +78,5 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ smoke test passed — ${html.length} chars rendered.`);
+console.log(`✓ smoke test passed: ${html.length} chars rendered.`);
 console.log(`  · 9 Callie states, ${core.Roaster.roster.length} cast avatars, all components.`);

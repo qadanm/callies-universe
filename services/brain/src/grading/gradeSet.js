@@ -1,11 +1,11 @@
-// services/brain — STEP 3: GRADE the set (the anti-cringe guarantee).
+// services/brain: STEP 3: GRADE the set (the anti-cringe guarantee).
 //
-// The grader is the milestone's most important component — it's what makes
+// The grader is the milestone's most important component; it's what makes
 // "never corny" real. After writing, the brain judges each set against the
 // explicit rubric and only ships one that PASSES; otherwise it regenerates.
 //
 // The grader is prompted as a tough comedy-club booker actively HUNTING for AI
-// tells — its default is skepticism. `human` is a reject axis: anything that
+// tells; its default is skepticism. `human` is a reject axis: anything that
 // smells like AI fails, no matter how clever.
 
 import { AXES, GATES, WEIGHTS, composite, passes } from "./rubric.js";
@@ -21,10 +21,10 @@ const GRADE_SCHEMA = {
       additionalProperties: false,
       required: AXES,
       // NOTE: Anthropic structured outputs don't support numeric constraints
-      // (minimum/maximum/multipleOf) — they 400. The 0–10 range is stated in the
+      // (minimum/maximum/multipleOf): they 400. The 0 to 10 range is stated in the
       // grader prompt and clamped in code (clampScore) instead.
       properties: Object.fromEntries(
-        AXES.map((a) => [a, { type: "integer", description: "0–10" }])
+        AXES.map((a) => [a, { type: "integer", description: "0 to 10" }])
       ),
     },
     aiTells: {
@@ -73,7 +73,7 @@ function clampScore(n) {
  * @param {object} performer  the single performer (or A, for a panel)
  * @param {object} research
  * @param {import("../subjects/framing.js").SubjectFraming} framing
- * @param {object[]} [performers]  for a panel: both performers [A, B] — the grader
+ * @param {object[]} [performers]  for a panel: both performers [A, B]; the grader
  *   then judges that BOTH voices land and are distinct. Omitted → single (unchanged).
  * @returns {{ system: string, user: string }}
  */
@@ -82,38 +82,38 @@ export function buildGradeMessages(set, performer, research, framing, performers
   const system = [
     `You are a ruthless comedy-club booker grading a roast set before it goes on stage.`,
     `The bar is brutal: "genuinely funny, never sounds like AI, never corny, never cringe."`,
-    `Default to skepticism. You are actively HUNTING for AI tells and corniness — list every one you find.`,
+    `Default to skepticism. You are actively HUNTING for AI tells and corniness; list every one you find.`,
     ``,
-    `Score each axis 0–10:`,
+    `Score each axis 0 to 10:`,
     ...AXES.map((a) => `• ${a} (gate ${GATES[a]}): ${axisDescriptions[a]}`),
     ``,
     `AI-TELLS to catch (these tank the "human" score and belong in aiTells): over-explaining a joke,`,
     `tidy bows like "but hey, at least…", "let's just say", "in a world where", "talk about…",`,
     `groaner puns played straight, listy "not only… but also", generic roast filler that fits any ${framing.fillerNoun},`,
-    `try-hard alliteration, fake crowd reactions written in, or anything that reads as written-by-committee.`,
+    `try-hard alliteration, fake crowd reactions written in, any em dash or en dash (a real comic never types one), or anything that reads as written-by-committee.`,
     ``,
     `For EACH tell, mark its severity honestly:`,
-    `• "major" = genuinely corny / try-hard / sounds-like-AI — a real problem that should sink the set.`,
+    `• "major" = genuinely corny / try-hard / sounds-like-AI: a real problem that should sink the set.`,
     `• "minor" = a small nit that mostly lands and a real comic might still say.`,
     `Don't inflate severity to seem tough, and don't downplay a genuinely corny line. A set with only a`,
     `minor nit or two is shippable; a single major tell is not.`,
     ``,
-    `Be specific in reasoning. If it's genuinely funny and human, say so and score high — don't be stingy`,
+    `Be specific in reasoning. If it's genuinely funny and human, say so and score high; don't be stingy`,
     `with a set that actually lands. But if it smells like AI, the "human" score must be low.`,
   ].join("\n");
 
   const isPanel = Array.isArray(performers) && performers.length === 2;
   const performerBlock = isPanel
     ? [
-        `This is two PODCAST HOSTS reacting to a listener-submitted photo — a real conversation, NOT a performed bit. Each line is labeled by speaker [A]/[B].`,
+        `This is two PODCAST HOSTS reacting to a listener-submitted photo, a real conversation, NOT a performed bit. Each line is labeled by speaker [A]/[B].`,
         `It should sound like two people actually talking, where the funny is sparse and FOUND in the truth, not a stream of written jokes.`,
         `Score "human" LOW (it sounds like AI) for: the "it doesn't X, it Y's" / "that's not a Z, that's a W" antithesis-quip construction (the #1 tell); back-to-back zingers / every line a punchline; puns or tidy buttons; and forced verbal tics or written-out sounds ("mm-mm-MM", "ok ok ok", "ohh", "no no no", repeated stammers). Reward natural, specific, conversational lines in real words.`,
-        `Judge that BOTH voices land AND are DISTINCT — A reads as A, B as B, never interchangeable:`,
-        `  A — ${performers[0].name}: ${performers[0].comedicIdentity} (form: ${performers[0].form})`,
-        `  B — ${performers[1].name}: ${performers[1].comedicIdentity} (form: ${performers[1].form})`,
+        `Judge that BOTH voices land AND are DISTINCT, so A reads as A, B as B, never interchangeable:`,
+        `  A is ${performers[0].name}: ${performers[0].comedicIdentity} (form: ${performers[0].form})`,
+        `  B is ${performers[1].name}: ${performers[1].comedicIdentity} (form: ${performers[1].form})`,
       ]
     : [
-        `Performer: ${performer.name} — ${performer.comedicIdentity}`,
+        `Performer: ${performer.name}, ${performer.comedicIdentity}`,
         `Their comedic structure should be: ${performer.form}`,
       ];
   const user = [
@@ -150,7 +150,7 @@ export async function gradeSet(set, performer, research, model, opts = {}) {
     maxTokens: 1536,
   });
 
-  // Clamp to a 0–10 integer per axis (the range is no longer schema-enforced).
+  // Clamp to a 0 to 10 integer per axis (the range is no longer schema-enforced).
   const scores = {};
   for (const a of AXES) scores[a] = clampScore(judged.scores ? judged.scores[a] : 0);
   const aiTells = judged.aiTells || [];

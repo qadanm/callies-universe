@@ -1,11 +1,11 @@
-# apps/ — product layer (reserved, empty)
+# apps/: product layer (reserved, empty)
 
 The outer layer of Callie's Universe. Each product (RoastMyRide first, then the
 "call from a character" app, and beyond) lives here as its own package.
 
-**Status: empty.** This milestone builds `core/` only — no app is created yet.
+**Status: empty.** This milestone builds `core/` only. No app is created yet.
 
-An app is **the core plus a thin, controlled skin**: it adds only
+An app is **the core plus a thin, controlled skin**. It adds only
 
 1. its **accent color** (one `theme.css` filling the core's `--accent-*` slot),
 2. its **hero-mechanic screens**, and

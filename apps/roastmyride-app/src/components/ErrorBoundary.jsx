@@ -1,4 +1,4 @@
-// Catches a screen render crash so the whole app never white-screens — shows a
+// Catches a screen render crash so the whole app never white-screens. Shows a
 // friendly Callie "error" recovery instead of a blank page.
 import React from "react";
 import { Button, Callie } from "@callies-universe/core";
@@ -26,7 +26,7 @@ export class ErrorBoundary extends React.Component {
         <div>
           <h2 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: 0 }}>That one landed too hard.</h2>
           <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "8px 0 0", maxWidth: 280 }}>
-            Something broke on this screen. Let's start fresh — your credits are safe.
+            Something broke on this screen. Let's start fresh. Your credits are safe.
           </p>
         </div>
         <Button variant="primary" size="lg" onClick={this.reset}>Start over</Button>

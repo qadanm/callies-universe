@@ -1,19 +1,19 @@
 import React, { useState, useImperativeHandle, forwardRef } from "react";
 
 /**
- * Callie — the mascot of CALLIE'S UNIVERSE and the face of every app in it.
- * A kawaii, squishy CALICO cat (cream + ginger + charcoal coat — the same coat
+ * Callie: the mascot of CALLIE'S UNIVERSE and the face of every app in it.
+ * A kawaii, squishy CALICO cat (cream + ginger + charcoal coat, the same coat
  * the brand palette is derived from). One character, reused everywhere via a
  * named STATE SYSTEM. PURELY PRESENTATIONAL.
  *
- * Callie REACTS, she never narrates — she's the wordless emotional surrogate
+ * Callie REACTS, she never narrates. She's the wordless emotional surrogate
  * (no localization, ever). The character CAST does the talking.
  *
  * Nine canonical states: idle, curious, cooking, delighted, savage, comfort,
  * celebrating, empty, error. Swappable PLACEHOLDER art keyed to those names.
  *
  * Exported as `Callie`/`CallieHost` (preferred) and `Mascot`/`MascotHost`
- * (legacy aliases — same art).
+ * (legacy aliases, same art).
  */
 
 const EMOTES = {
@@ -59,7 +59,7 @@ export function Mascot({
 export function Callie(props) { return <Mascot {...props} />; }
 
 /**
- * CallieStage — the trivial IMPERATIVE wrapper the handoff describes.
+ * CallieStage: the trivial IMPERATIVE wrapper the handoff describes.
  * Keeps <Callie> purely presentational while exposing `callie.setState('savage')`
  * over the same nine state names. Drive it via a ref:
  *
@@ -78,7 +78,7 @@ export const CallieStage = forwardRef(function CallieStage(
   return <Callie state={state} {...props} />;
 });
 
-/* ---- calico coat colors (FIXED — Callie is the same in every app) ---- */
+/* ---- calico coat colors (FIXED, Callie is the same in every app) ---- */
 const CREAM = "#FFF3E6", GINGER = "#E8843C", CHAR = "#3A332E", OUT = "#3A2208", PINK = "#FF8FA8", FACE = "#3A2420";
 const BODY = "M100 46 C150 46 166 86 164 122 C162 168 134 192 100 192 C66 192 38 168 36 122 C34 86 50 46 100 46 Z";
 const BLINK_EYES = ["dot", "look", "wide", "side"];
@@ -90,7 +90,7 @@ function Cat({ cfg, accessory, reduceMotion }) {
       <defs><clipPath id="callie-clip"><path d={BODY} /></clipPath></defs>
       <ellipse cx="100" cy="194" rx="54" ry="9" fill="rgba(34,20,3,0.13)" />
       <g transform={`rotate(${cfg.tilt||0} 100 120)`} style={{ transformOrigin:"100px 120px" }}>
-        {/* tail — ginger w/ charcoal tip */}
+        {/* tail: ginger w/ charcoal tip */}
         <path d="M158 162 C190 160 198 118 178 108 C170 104 161 112 169 122 C178 132 170 148 152 148 Z" fill={GINGER} stroke={OUT} strokeWidth="4.5" strokeLinejoin="round" />
         <path d="M178 108 C190 112 192 126 184 132 C176 126 172 114 178 108 Z" fill={CHAR} />
         <Ears kind={cfg.ears} />
@@ -171,15 +171,15 @@ function Extra({ kind, reduceMotion }) {
 }
 
 /* ============================================================
-   Callie's BRAIN — script DATA + <CallieHost>/<MascotHost> behavior layer.
+   Callie's BRAIN: script DATA + <CallieHost>/<MascotHost> behavior layer.
    Edit CALLIE_SCRIPT to tune her personality per app/screen.
    ============================================================ */
 const RARE_IDLE = ["curious", "comfort"];
 const GLOBAL_IDLE = ["idle", "curious", "comfort"];
 const CALLIE_SCRIPT = {
-  onboarding: { enter: "delighted", idle: ["idle", "curious", "delighted"], tips: ["Hi! I'm Callie. I don't roast you — I just watch and react 😺", "Tap the button and let's go."] },
+  onboarding: { enter: "delighted", idle: ["idle", "curious", "delighted"], tips: ["Hi! I'm Callie. I don't roast you, I just watch and react 😺", "Tap the button and let's go."] },
   home: { enter: "delighted", idle: ["idle", "curious", "comfort"], react: { upload: "celebrating" }, tips: ["Drop a pic of your ride and I'll do the rest 🐾", "Front three-quarter angle hits hardest, just sayin'."] },
-  seasoning: { enter: "curious", idle: ["curious", "comfort", "idle"], react: { added: "delighted" }, tips: ["A selfie makes it personal — totally optional.", "Pinky promise it's just you."] },
+  seasoning: { enter: "curious", idle: ["curious", "comfort", "idle"], react: { added: "delighted" }, tips: ["A selfie makes it personal. Totally optional.", "Pinky promise it's just you."] },
   cast: { enter: "delighted", idle: ["delighted", "curious", "idle"], tips: ["Tap a roaster to hear them warm up.", "They all aim at the car, never at you."] },
   roaster: { enter: "delighted", idle: ["delighted", "curious", "idle"], tips: ["Tap a roaster to hear them warm up."] },
   cooking: { enter: "cooking", idle: ["cooking", "curious", "delighted"], tips: ["Ooh, this one's gonna be good…", "Almost plated 👨‍🍳"] },
@@ -188,7 +188,7 @@ const CALLIE_SCRIPT = {
   paywall: { enter: "comfort", idle: ["comfort", "curious", "idle"], react: { buy: "celebrating" }, tips: ["The 5-pack is the move, honestly.", "No subscription. One-time. Promise. 🙏"] },
   settings: { enter: "comfort", idle: ["idle", "comfort"], tips: ["Turn on reduce-motion if I'm too hyper."] },
   call: { enter: "curious", idle: ["curious", "comfort", "idle"], react: { answer: "delighted", decline: "comfort" }, tips: ["Someone's calling… wanna pick up?", "It's always a friendly voice."] },
-  empty: { enter: "empty", idle: ["empty", "comfort"], tips: ["Nothing here yet — let's fix that."] },
+  empty: { enter: "empty", idle: ["empty", "comfort"], tips: ["Nothing here yet. Let's fix that."] },
   error: { enter: "error", idle: ["error", "comfort"], tips: ["My bad. Give it another go?"] },
 };
 function hostPick(pool, prevRef) {

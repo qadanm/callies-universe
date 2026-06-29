@@ -1,6 +1,6 @@
-// services/brain — SUBJECT PACK: room (Roast My Room).
+// services/brain: SUBJECT PACK: room (Roast My Room).
 //
-// The room's material is INSIDE the photo — decor, layout, mess, furniture choices,
+// The room's material is INSIDE the photo: decor, layout, mess, furniture choices,
 // vibe. Grounding is a vision pass UPSTREAM that produces a structured description;
 // ground() then extracts into the research shape the writer/grader consume.
 
@@ -25,7 +25,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Observe. The male has nested among seventeen objects." },
       { type: "setup", text: "In the wild, this density is reserved for hoarders." },
-      { type: "punchline", text: "Here, it is merely a Tuesday — and the laundry is breeding.", punch: "the laundry is breeding" },
+      { type: "punchline", text: "Here, it is merely a Tuesday, and the laundry is breeding.", punch: "the laundry is breeding" },
       { type: "closer", text: "Magnificent. And yet… the chair is buried." },
     ],
   },
@@ -41,7 +41,7 @@ const OFFLINE_SETS = {
   },
   abuomar: {
     title: "My Son, The Decor",
-    performanceNote: "Warm uncle framing; love first, the dagger second — aimed at the room, not the person.",
+    performanceNote: "Warm uncle framing; love first, the dagger second. Aimed at the room, not the person.",
     beats: [
       { type: "opener", text: "My son. Come. Sit. The room, I do not love." },
       { type: "setup", text: "I say this because I love you, you understand." },
@@ -63,7 +63,7 @@ const OFFLINE_SETS = {
     title: "The Room That Killed Me",
     performanceNote: "Telenovela melodrama; the room as a lover who wronged him.",
     beats: [
-      { type: "opener", text: "The room — the room has broken my heart." },
+      { type: "opener", text: "The room… the room has broken my heart." },
       { type: "act-out", text: "I gave it everything. EVERYTHING." },
       { type: "punchline", text: "And it broke my heart AND the Feng Shui.", punch: "AND the Feng Shui" },
       { type: "closer", text: "I cannot look at it. …I will look at it tomorrow." },
@@ -105,7 +105,7 @@ const OFFLINE_SETS = {
     beats: [
       { type: "opener", text: "Well now… set still a minute. Lemme look at this one." },
       { type: "setup", text: "That thing's been lived in so long the dust has dust." },
-      { type: "punchline", text: "Bless its little heart — it ain't a room, it's a leftover.", punch: "a leftover" },
+      { type: "punchline", text: "Bless its little heart. It ain't a room, it's a leftover.", punch: "a leftover" },
       { type: "closer", text: "I have known tool sheds with more order." },
     ],
   },
@@ -116,7 +116,7 @@ const OFFLINE_SETS = {
       { type: "opener", text: "Aw geez, sorry to say this aboot the room, bud, but…" },
       { type: "crowd-work", text: "No offence, eh? You seein' this too?" },
       { type: "punchline", text: "Them curtains look like a beer-league playoff overtime. Sorry.", punch: "playoff overtime" },
-      { type: "closer", text: "But hey — it's got heart, eh? Give'er." },
+      { type: "closer", text: "But hey, it's got heart, eh? Give'er." },
     ],
   },
 };
@@ -134,7 +134,7 @@ export const roomPack = {
       system:
         "You are a comedy writer's researcher analyzing a description of someone's room from a photo. " +
         "Pull the SPECIFIC, funny-but-true material a stand-up could build a bit on: the decor choices, " +
-        "layout crimes, furniture, mess patterns, and overall vibe. Be specific to THIS room — never generic. " +
+        "layout crimes, furniture, mess patterns, and overall vibe. Be specific to THIS room, never generic. " +
         "Aim every observation at the ROOM and the choices, never at the person's worth or any group.",
       user:
         `The room description:\n${room.description}\n\n` +
@@ -163,7 +163,7 @@ export const roomPack = {
     return {
       room: { label: "your room" },
       summary: meta.degraded
-        ? "Live analysis unavailable — running the offline set."
+        ? "Live analysis unavailable. Running the offline set."
         : "Offline mode: no live analysis; using the character's curated set.",
       runningJokes: [],
       knownProblems: [],

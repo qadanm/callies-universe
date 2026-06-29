@@ -1,11 +1,11 @@
-// services/brain — SUBJECT-DISPATCH check (no network).
+// services/brain: SUBJECT-DISPATCH check (no network).
 //
 // Guards the Sprint B.5 seam:
-//   1. CAR PARITY — the car-framed writer/grader prompts are BYTE-IDENTICAL to the
+//   1. CAR PARITY: the car-framed writer/grader prompts are BYTE-IDENTICAL to the
 //      original inline templates (reproduced independently below), so the live car
 //      path is provably unchanged. Persona fields cancel (both sides use the same
 //      performer), so this isolates the framing substitution.
-//   2. TEXTS WORKS — text-shaped offline sets (not car jokes), text-worded framing,
+//   2. TEXTS WORKS: text-shaped offline sets (not car jokes), text-worded framing,
 //      the app-facing keyed research identity, and correct subject dispatch.
 //
 // Run: node scripts/subjects-check.mjs
@@ -23,13 +23,13 @@ const has = (hay, needle, label) => assert(hay.includes(needle), `${label}: miss
 const hasNot = (hay, needle, label) => assert(!hay.includes(needle), `${label}: should NOT contain ${JSON.stringify(needle)}`);
 
 // ---------------------------------------------------------------------------
-// LEGACY CAR TEMPLATES — an independent copy of the original (pre-refactor)
+// LEGACY CAR TEMPLATES: an independent copy of the original (pre-refactor)
 // prompt strings. If the car-framed builders ever drift from these, parity fails.
 // ---------------------------------------------------------------------------
 const LEGACY_ANGLES = [
   "Lead with the car's single most-roasted real flaw and build the set around it.",
   "Open with crowd work / a direct address, then pivot into the car's reputation.",
-  "Structure it as an escalating run — each beat worse than the last, ending on the hardest line.",
+  "Structure it as an escalating run: each beat worse than the last, ending on the hardest line.",
   "Build around one specific, true, surprising detail from the research most people don't know.",
   "Frame the whole set through this character's signature device, start to finish.",
 ];
@@ -43,7 +43,7 @@ function legacyCarWrite(performer, research, context, variant) {
   const system = [
     `You are a stand-up comedian performing a short, brutal, GENUINELY FUNNY roast of a specific car.`,
     ``,
-    `WHO YOU ARE — perform as this exact comic. This is not an accent; it is a comedic identity that shapes the FORM of your set:`,
+    `WHO YOU ARE: perform as this exact comic. This is not an accent; it is a comedic identity that shapes the FORM of your set:`,
     `• Name: ${performer.name} (${performer.tag})`,
     `• Register: ${performer.register}`,
     `• Comedic identity: ${performer.comedicIdentity}`,
@@ -54,20 +54,20 @@ function legacyCarWrite(performer, research, context, variant) {
     `• Signature moves: ${performer.signatureMoves.join("; ")}`,
     `• Your catchphrase energy (don't quote it verbatim, embody it): "${performer.catchphrase}"`,
     ``,
-    `HARD RULES — these are the product bar, not suggestions:`,
+    `HARD RULES (the product bar, not suggestions):`,
     `1. GENUINELY FUNNY. A real club audience laughs, not groans. No groaners, no pun-for-pun's-sake.`,
-    `2. NEVER SOUNDS LIKE AI. No corny phrasing, no "in a world where", no "let's just say", no tidy "but hey", no try-hard wordplay, no explaining the joke. If a line could be a generic AI roast, cut it.`,
-    `3. USE THE SPECIFIC RESEARCH. Build on this car's REAL reputation and known problems below — not generic "your car is old" filler. Specificity is the funny.`,
+    `2. NEVER SOUNDS LIKE AI. No corny phrasing, no "in a world where", no "let's just say", no tidy "but hey", no try-hard wordplay, no explaining the joke. If a line could be a generic AI roast, cut it. NEVER use em dashes or en dashes; a real comic doesn't punctuate that way. For a pause, use "..." or just start a new sentence. Talk the way you actually talk: contractions, short punchy lines. Skip AI-tell words like seamless, leverage, robust, elevate, delve, tapestry, boasts, unleash, supercharge.`,
+    `3. USE THE SPECIFIC RESEARCH. Build on this car's REAL reputation and known problems below, not generic "your car is old" filler. Specificity is the funny.`,
     `4. PG-13, pushed HARD but never over: edgy, never slurs, never sexual, never cruel about a real person. Aim every joke at the CAR, never at a group, culture, or the owner's worth. ${performer.avoid}`,
-    `5. IN YOUR VOICE AND YOUR COMEDIC STRUCTURE — the set's shape must be unmistakably yours, not a generic set with your accent painted on.`,
+    `5. IN YOUR VOICE AND YOUR COMEDIC STRUCTURE: the set's shape must be unmistakably yours, not a generic set with your accent painted on.`,
     ``,
-    `Give the set a short, punchy BIT TITLE (2–4 words) in "title" — it's the billing for tonight's set.`,
-    `Write 5–8 beats: an opener, setups + punchlines, optional act-outs / crowd-work, optional a callback, and a closer. Mark the single sharpest word of a punchline in its "punch" field. Keep each beat tight — this is performed aloud.`,
+    `Give the set a short, punchy BIT TITLE (2-4 words) in "title": it's the billing for tonight's set.`,
+    `Write 5-8 beats: an opener, setups + punchlines, optional act-outs / crowd-work, optional a callback, and a closer. Mark the single sharpest word of a punchline in its "punch" field. Keep each beat tight. This is performed aloud.`,
   ].join("\n");
   const user = [
     `Perform your roast of the ${legacyCarLabel(research)}.`,
     ``,
-    `THE REAL MATERIAL (research — ground your set in this):`,
+    `THE REAL MATERIAL (research: ground your set in this):`,
     `Reputation: ${research.summary}`,
     research.runningJokes.length ? `Running jokes: ${research.runningJokes.join(" | ")}` : "",
     research.knownProblems.length ? `Known problems/quirks: ${research.knownProblems.join(" | ")}` : "",
@@ -83,27 +83,27 @@ function legacyCarGrade(set, performer, research) {
   const system = [
     `You are a ruthless comedy-club booker grading a roast set before it goes on stage.`,
     `The bar is brutal: "genuinely funny, never sounds like AI, never corny, never cringe."`,
-    `Default to skepticism. You are actively HUNTING for AI tells and corniness — list every one you find.`,
+    `Default to skepticism. You are actively HUNTING for AI tells and corniness; list every one you find.`,
     ``,
-    `Score each axis 0–10:`,
+    `Score each axis 0 to 10:`,
     ...AXES.map((a) => `• ${a} (gate ${GATES[a]}): ${AXIS_DESCRIPTIONS[a]}`),
     ``,
     `AI-TELLS to catch (these tank the "human" score and belong in aiTells): over-explaining a joke,`,
     `tidy bows like "but hey, at least…", "let's just say", "in a world where", "talk about…",`,
     `groaner puns played straight, listy "not only… but also", generic roast filler that fits any car,`,
-    `try-hard alliteration, fake crowd reactions written in, or anything that reads as written-by-committee.`,
+    `try-hard alliteration, fake crowd reactions written in, any em dash or en dash (a real comic never types one), or anything that reads as written-by-committee.`,
     ``,
     `For EACH tell, mark its severity honestly:`,
-    `• "major" = genuinely corny / try-hard / sounds-like-AI — a real problem that should sink the set.`,
+    `• "major" = genuinely corny / try-hard / sounds-like-AI: a real problem that should sink the set.`,
     `• "minor" = a small nit that mostly lands and a real comic might still say.`,
     `Don't inflate severity to seem tough, and don't downplay a genuinely corny line. A set with only a`,
     `minor nit or two is shippable; a single major tell is not.`,
     ``,
-    `Be specific in reasoning. If it's genuinely funny and human, say so and score high — don't be stingy`,
+    `Be specific in reasoning. If it's genuinely funny and human, say so and score high; don't be stingy`,
     `with a set that actually lands. But if it smells like AI, the "human" score must be low.`,
   ].join("\n");
   const user = [
-    `Performer: ${performer.name} — ${performer.comedicIdentity}`,
+    `Performer: ${performer.name}, ${performer.comedicIdentity}`,
     `Their comedic structure should be: ${performer.form}`,
     `Car being roasted: ${legacyCarLabel(research)}`,
     `Real material the set was supposed to use: ${research.summary}`,
@@ -132,7 +132,7 @@ assert((await analyzeConversation({})) === null, "analyzeConversation: no image 
 assert((await analyzeConversation({ imageDataUrl: "data:image/png;base64,iVBORw0KGgo=" })) === null, "analyzeConversation: no key → null");
 
 // ---------------------------------------------------------------------------
-// 2. CAR PROMPT PARITY — byte-identical to the original templates, across every
+// 2. CAR PROMPT PARITY: byte-identical to the original templates, across every
 //    angle variant and with/without chips.
 // ---------------------------------------------------------------------------
 const perf = resolvePerformer("mama");
@@ -162,7 +162,7 @@ for (let v = 0; v < LEGACY_ANGLES.length + 1; v++) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. TEXTS FRAMING — text-worded, free of car wording.
+// 3. TEXTS FRAMING: text-worded, free of car wording.
 // ---------------------------------------------------------------------------
 const textsResearch = { texts: { label: "a text conversation" }, summary: "dry thread", runningJokes: [], knownProblems: [], whatPeopleSay: [], sources: [] };
 {
@@ -180,7 +180,7 @@ const textsResearch = { texts: { label: "a text conversation" }, summary: "dry t
 }
 
 // ---------------------------------------------------------------------------
-// 4. TEXTS OFFLINE SETS — text-shaped, distinct, passing; DIFFERENT from car;
+// 4. TEXTS OFFLINE SETS: text-shaped, distinct, passing; DIFFERENT from car;
 //    and exposing the app-facing keyed research identity.
 // ---------------------------------------------------------------------------
 const textsResults = [];
@@ -212,7 +212,7 @@ const carWords = corpus.match(/\b(axle|bumper|rims|rust|paint job|pt cruiser|eng
 assert(!carWords, `texts corpus leaked car wording: ${carWords && carWords[0]}`);
 
 // ---------------------------------------------------------------------------
-// 5. BILLING CONTRACT — a LIVE texts attempt with no transcript must degrade to
+// 5. BILLING CONTRACT: a LIVE texts attempt with no transcript must degrade to
 //    the free curated offline set (degraded=true), never bill an ungrounded roast.
 //    (_model is truthy so the live path is taken; ground() throws before using it.)
 // ---------------------------------------------------------------------------
@@ -237,7 +237,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ brain subject-dispatch check passed — ${Roaster.roster.length} performers per subject.`);
+console.log(`✓ brain subject-dispatch check passed: ${Roaster.roster.length} performers per subject.`);
 console.log("  · car writer/grader prompts BYTE-IDENTICAL to the original templates (all angles ± chips)");
 console.log("  · texts framing is text-worded; car wording absent");
 console.log("  · texts offline sets are text-shaped, distinct, passing, differ from car, and keyed for the app");

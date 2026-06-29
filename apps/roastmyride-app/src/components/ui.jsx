@@ -1,4 +1,4 @@
-// RoastMyRide — tiny shared presentational helpers [ROASTMYRIDE-NEW].
+// RoastMyRide: tiny shared presentational helpers [ROASTMYRIDE-NEW].
 // Screen chrome only (eyebrows, headlines, the wordmark, the scroll frame).
 // All real UI affordances come from CORE components; these just lay out text.
 import React from "react";

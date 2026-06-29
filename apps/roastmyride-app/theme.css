@@ -1,5 +1,5 @@
-/* RoastMyRide — app accent layer. Inherits the full Callie's Universe core;
-   overrides ONLY the accent (ember / flame — on-theme for "roast"). */
+/* RoastMyRide: app accent layer. Inherits the full Callie's Universe core;
+   overrides ONLY the accent (ember / flame, on-theme for "roast"). */
 :root {
   --accent-700:    #9E2709;
   --accent-600:    #C7340F;  /* white text 5.35:1 AA ✓ */

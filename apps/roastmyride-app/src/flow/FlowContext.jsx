@@ -1,11 +1,11 @@
-// RoastMyRide — flow state [ROASTMYRIDE-NEW].
+// RoastMyRide flow state [ROASTMYRIDE-NEW].
 //
 // Holds what the user assembles across the screens (the real car photo, chosen
 // roaster, context chips) and exposes generate(), which calls the roast SEAM
 // (services/roast.js). The roast result is stored here and read by the Reveal screen.
 //
 // Photos: the compressed car image (dataUrl) lives HERE for the stage + video to
-// render, but is STRIPPED before the brain call (sanitizeForBrain) — the model
+// render, but is STRIPPED before the brain call (sanitizeForBrain): the model
 // only needs presence + identity, never megabytes of base64.
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -49,7 +49,7 @@ const PREVIEW_RESULT = offlineBrain({
 
 const FlowCtx = createContext(null);
 
-// Credits persist across reloads (the monetization unit). localStorage only —
+// Credits persist across reloads (the monetization unit). localStorage only,
 // no account yet. Guarded so a missing/blocked store just falls back to default.
 const CREDITS_KEY = "rmr.credits";
 const DEFAULT_CREDITS = 3;
@@ -82,7 +82,7 @@ export function FlowProvider({ children }) {
     });
   }, []);
 
-  // When a backend is present, the SERVER ledger is the source of truth — sync the
+  // When a backend is present, the SERVER ledger is the source of truth, so sync the
   // balance on mount (seeds free credits for a new identity). No backend → the
   // localStorage credits above stay authoritative.
   useEffect(() => {
@@ -93,7 +93,7 @@ export function FlowProvider({ children }) {
   const update = useCallback((patch) => setInput((prev) => ({ ...prev, ...patch })), []);
 
   // The one call into the roast pipeline. The brain gets a sanitized input
-  // (presence + subject identity only — no image blobs); the full input (with photos)
+  // (presence + subject identity only, no image blobs); the full input (with photos)
   // stays in context for the stage + video to render. A successful roast costs a
   // credit (the funnel is gated to >=1 credit before we get here).
   // Guarded by generatingRef so StrictMode double-mounts don't deduct twice.
@@ -153,7 +153,7 @@ export function FlowProvider({ children }) {
       }
       const r = await generateRoast(sanitizeForBrain(active));
       setResult(r);
-      // Charge for a delivered roast — but NOT when a live attempt degraded to the
+      // Charge for a delivered roast, but NOT when a live attempt degraded to the
       // offline fallback (our failure shouldn't cost the user). Backend present →
       // consume from the server ledger (authoritative); else decrement locally.
       if (!r.degraded) {
@@ -191,7 +191,7 @@ export function useFlow() {
   return ctx;
 }
 
-/** Strip image blobs before handing the input to the brain — it only needs
+/** Strip image blobs before handing the input to the brain: it only needs
  *  presence + subject identity, not the base64 photos. Also stamps the subject id
  *  so the brain dispatches to the right grounding strategy + offline sets. */
 function sanitizeForBrain(input) {

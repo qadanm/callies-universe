@@ -1,5 +1,5 @@
 /**
- * @callies-universe/core — public type contracts.
+ * @callies-universe/core: public type contracts.
  *
  * Hand-authored to mirror the component `.d.ts` files in the design handoff.
  * The runtime is plain JSX; these declarations are the typed surface apps build
@@ -59,7 +59,7 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   hint?: string;
-  /** Error message — also flips border to danger and sets aria-invalid. */
+  /** Error message; also flips border to danger and sets aria-invalid. */
   error?: string;
   iconLeft?: React.ReactNode;
 }
@@ -67,7 +67,7 @@ export function Input(props: InputProps): JSX.Element;
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: "ember" | "flame" | "success" | "info" | "cool" | "pink" | "ink";
-  /** Hand-ink the badge edge (off by default — keeps tiny pills crisp). */
+  /** Hand-ink the badge edge (off by default, keeps tiny pills crisp). */
   ink?: boolean;
   children?: React.ReactNode;
 }
@@ -106,7 +106,7 @@ export interface ConfettiProps {
 export function Confetti(props: ConfettiProps): JSX.Element | null;
 
 /* ============================================================
-   Callie — the 9-state mascot system
+   Callie: the 9-state mascot system
    ============================================================ */
 
 export type CallieState =
@@ -141,7 +141,7 @@ export function Callie(props: MascotProps): JSX.Element;
 
 /** Imperative handle exposed by <CallieStage> via ref. */
 export interface CallieController {
-  /** Set Callie's expression by name — any of the nine states. */
+  /** Set Callie's expression by name, any of the nine states. */
   setState: (next: CallieState) => void;
   getState: () => CallieState;
 }
@@ -245,7 +245,7 @@ export interface CastPickerProps {
 export function CastPicker(props: CastPickerProps): JSX.Element;
 
 /* ============================================================
-   Decoration — the facelift's shared ink filter + comic accents
+   Decoration: the facelift's shared ink filter + comic accents
    ============================================================ */
 
 /**
@@ -283,7 +283,7 @@ export interface TapeProps extends React.HTMLAttributes<HTMLSpanElement> {
 export function Tape(props: TapeProps): JSX.Element;
 
 export interface HalftoneBandProps extends React.HTMLAttributes<HTMLElement> {
-  /** Band background — defaults to the page accent so each site keeps identity. */
+  /** Band background; defaults to the page accent so each site keeps identity. */
   bg?: string;
   dotColor?: string;
   dotOpacity?: number;

@@ -9,17 +9,17 @@ const media = site.mediaNoun || "upload";
 
 const faqs = isApp
   ? [
-      { q: "Is it mean?", a: `No. The comedy is aimed at the ${subj} — never you, your body, or anyone else. Clever, never cruel.` },
-      { q: "Do you keep my " + media + "?", a: `Only briefly, to make and support your roast — then it's deleted. We don't sell your data. See the Privacy Policy.` },
-      { q: "Are the comedians real people?", a: `No — every comedian (and Callie) is an original fictional character we created. Not impersonations of anyone real.` },
+      { q: "Is it mean?", a: `No. The comedy is aimed at the ${subj}, never you, your body, or anyone else. Clever, never cruel.` },
+      { q: "Do you keep my " + media + "?", a: `Only briefly, to make and support your roast, then it's deleted. We don't sell your data. See the Privacy Policy.` },
+      { q: "Are the comedians real people?", a: `No. Every comedian (and Callie) is an original fictional character we created. Not impersonations of anyone real.` },
       { q: "How do credits work?", a: `Each roast uses a credit. You get a few free, and can buy more in the app. Credits are consumed when a roast is delivered.` },
-      { q: "Something went wrong / I want a refund.", a: `Email us below. Purchases run through the app store — refunds follow their policy, and we'll help where we can.` },
+      { q: "Something went wrong / I want a refund.", a: `Email us below. Purchases run through the app store, so refunds follow their policy, and we'll help where we can.` },
     ]
   : [
-      { q: "What is Callie's Universe?", a: `A comedy studio behind a lineup of “Roast My ___” apps — one cast of original characters roasting whatever you submit.` },
-      { q: "Are the characters real people?", a: `No — Callie and every comedian are original fictional characters we created and own.` },
+      { q: "What is Callie's Universe?", a: `A comedy studio behind a lineup of “Roast My ___” apps: one cast of original characters roasting whatever you submit.` },
+      { q: "Are the characters real people?", a: `No. Callie and every comedian are original fictional characters we created and own.` },
       { q: "How do I get help with a specific app?", a: `Each app has its own support page, or email us below and we'll route it.` },
-      { q: "Press, licensing, or partnerships?", a: `We'd love to hear from you — email below.` },
+      { q: "Press, licensing, or partnerships?", a: `We'd love to hear from you. Email below.` },
     ];
 ---
 <Base title="Support" description={`Help & contact for ${site.name}.`}>
@@ -27,7 +27,7 @@ const faqs = isApp
     <div class="container">
       <p class="eyebrow">Help</p>
       <h1>Support</h1>
-      <p class="lede">Questions about {site.name}? Start here — or email us, a human answers.</p>
+      <p class="lede">Questions about {site.name}? Start here, or email us. A human answers.</p>
       <div class="hero__cta"><a class="btn" href={`mailto:${SUPPORT}`}>Email support</a></div>
     </div>
   </section>

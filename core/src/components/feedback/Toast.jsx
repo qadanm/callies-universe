@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Toast — compact, bouncy status message. Functional layer: AA contrast,
+ * Toast: compact, bouncy status message. Functional layer: AA contrast,
  * readable companion font, sticker shadow for personality.
  */
 export function Toast({ tone = "ink", icon = null, children, style, ...rest }) {
