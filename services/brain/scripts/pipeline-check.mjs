@@ -12,6 +12,11 @@
 import { generateRoast } from "../index.js";
 import { clearCache } from "../src/cache.js";
 
+// Web search is now OPT-IN (model-knowledge grounding is the default — see
+// researchCar.js). These cases exercise the search-orchestration path (sources
+// flowing through), so enable it explicitly for the test.
+process.env.BRAIN_WEB_SEARCH = "1";
+
 const failures = [];
 const assert = (cond, msg) => { if (!cond) failures.push(msg); };
 

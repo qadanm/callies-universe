@@ -41,12 +41,19 @@ export function carLabel(car) {
  */
 export async function researchCar(car, model, cache) {
   const label = carLabel(car);
-  const noSearch =
-    typeof process !== "undefined" && process.env && process.env.BRAIN_NO_SEARCH;
+  const env = (typeof process !== "undefined" && process.env) || {};
+  const truthy = (v) => /^(1|true|yes)$/i.test(String(v || ""));
+  // DEFAULT: ground from the model's own (deep) car knowledge — NO web search.
+  // It's the dominant cost + latency saving (~$0.11 and ~65s/roast; see
+  // docs/voice-accents-troubleshooting.md sibling cost notes), and the owner now
+  // confirms the exact car on upload, so model knowledge is reliable. Opt INTO live
+  // search with BRAIN_WEB_SEARCH=1 (worth it for obscure / brand-new models);
+  // BRAIN_NO_SEARCH=1 still force-disables it.
+  const noSearch = !truthy(env.BRAIN_WEB_SEARCH) || truthy(env.BRAIN_NO_SEARCH);
   return cache.memo(cacheKey(car), async () => {
-    // Escape hatch (BRAIN_NO_SEARCH=1): skip the web entirely and ground from
-    // the model's own knowledge. Guaranteed memory-bounded — one small json call,
-    // no server tools, no page content. Less current than live search, but safe.
+    // Grounding from the model's own knowledge: one small json call, memory-bounded,
+    // no server tools, no page content. Less current than live search, but cheap,
+    // fast, and accurate for the cars people actually own.
     if (noSearch) {
       const known = await model.json({
         system:
