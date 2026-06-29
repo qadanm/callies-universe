@@ -5,7 +5,7 @@
 // This screen calls the roast SEAM via flow.generate() → services/roast.js (the
 // real brain: research → write → grade). When the set resolves, it advances to
 // the reveal. Swapping behind the seam changed nothing here.
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { resolvePerformer } from "@callies-universe/brain";
 import { CookingProgress } from "../components/CookingProgress.jsx";
@@ -25,7 +25,6 @@ export function Cooking() {
   const [step, setStep] = useState(0);
   const firstName = resolvePerformer(input.roasterId).name.replace(/[“"].*$/, "").split(" ")[0];
   const steps = STEPS(firstName);
-  const startedRef = useRef(false); // generate exactly once (StrictMode double-mounts effects)
 
   useEffect(() => {
     // Defensive credit gate — a roast costs a credit (generate() deducts on success).
@@ -36,17 +35,15 @@ export function Cooking() {
     let alive = true;
     const ticker = setInterval(() => setStep((s) => s + 1), 900);
 
-    // The single call into the roast pipeline — guarded so StrictMode's double
-    // mount (and any re-run) can't fire it (or the credit deduction) twice.
-    if (!startedRef.current) {
-      startedRef.current = true;
-      generate()
-        .then(() => { if (alive) go("/reveal"); })
-        .catch((e) => {
-          console.error(`[cooking] generation failed: ${(e && e.message) || e}`);
-          if (alive) go("/reveal"); // brain never throws, but never strand the user here
-        });
-    }
+    // In StrictMode this effect runs twice; FlowContext.generate() is already
+    // guarded so credits are only deducted once. The promise always resolves
+    // (the brain never throws), so we always navigate — never strand the user.
+    generate()
+      .then(() => { if (alive) go("/reveal"); })
+      .catch((e) => {
+        console.error(`[cooking] generation failed: ${(e && e.message) || e}`);
+        if (alive) go("/reveal");
+      });
 
     return () => {
       alive = false;

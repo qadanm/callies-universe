@@ -163,8 +163,9 @@ export function mmss(totalMs) {
  */
 export function buildRenderSpec(result, input) {
   const su = toStandupSet(result);
-  const car = (result.research && result.research.car) || {};
-  const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || cfg("brain.subjectNoun");
+  const research = (result.research && result.research[cfg("research.key")]) || {};
+  const labelFields = cfg("research.labelFields", []);
+  const subjectLabel = research.label || labelFields.map((f) => research[f]).filter(Boolean).join(" ") || cfg("brain.subjectNoun");
   // The gameplay backdrop is chosen deterministically from the roast, so the saved
   // video uses the exact same backdrop the live reel shows.
   const bg = pickBackground(result);
@@ -173,10 +174,10 @@ export function buildRenderSpec(result, input) {
     performerName: result.roasterName || "the comic",
     bit: su.bit,
     reaction: result.reaction,
-    carLabel,
+    subjectLabel,
     engineLabel: result.engine === "offline" ? "offline" : undefined,
     beats: su.beats,
-    carPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
+    subjectPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
     backgroundUrl: bg.backgroundUrl,
     fauxStyle: bg.fauxStyle,
     musicUrl: pickMusic(result),

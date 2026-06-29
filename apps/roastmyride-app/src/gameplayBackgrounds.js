@@ -23,6 +23,8 @@ function hash(str) {
   return h >>> 0;
 }
 
+import { cfg } from "./subjects/index.js";
+
 /**
  * Deterministically pick a backdrop for a roast.
  * @returns {{ backgroundUrl: string|null, fauxStyle: "blocks"|"runner"|"parkour" }}
@@ -31,8 +33,9 @@ function hash(str) {
  */
 export function pickBackground(result) {
   if (!GAMEPLAY_BACKGROUNDS.length) return { backgroundUrl: null, fauxStyle: "blocks" };
-  const car = result && result.research && result.research.car;
-  const seed = `${(result && result.roasterId) || ""}|${(car && car.label) || (result && result.roasterName) || ""}`;
+  const key = cfg("research.key");
+  const research = (result && result.research && result.research[key]) || {};
+  const seed = `${(result && result.roasterId) || ""}|${research.label || (result && result.roasterName) || ""}`;
   const bg = GAMEPLAY_BACKGROUNDS[hash(seed) % GAMEPLAY_BACKGROUNDS.length];
   return { backgroundUrl: bg.src || null, fauxStyle: bg.style || "blocks" };
 }

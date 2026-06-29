@@ -75,10 +75,10 @@ export const StageScene = React.memo(function StageScene({
         </span>
       </div>
 
-      {/* the car — ALWAYS on screen, as a tilted polaroid sticker (crossfades in
+      {/* the subject — ALWAYS on screen, as a tilted polaroid sticker (crossfades in
           after the big showcase during the hook) */}
       <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)", opacity: cornerReveal }} tag={cfg("theme.stickerTag")} tone="var(--sticker-yellow)">
-        {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
+        {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={imgFill} /> : <PlaceholderSubject label={carLabel} />}
       </Sticker>
 
       {/* center stage: opening hook → captions → closing CTA */}
@@ -192,8 +192,8 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, hi = "var(-
 const centerStage = { position: "absolute", left: "8%", right: "8%", top: "50%", transform: "translateY(-50%)", zIndex: 6, textAlign: "center" };
 const bigText = { fontFamily: "var(--font-display, inherit)", fontWeight: 900, textTransform: "uppercase", lineHeight: 1.02, WebkitTextStroke: "2px #1a1008", textShadow: "0 4px 0 rgba(0,0,0,0.5)" };
 
-// Opening hook = the SHOWCASE: the car (always) presented BIG, the owner too if
-// submitted, then it crossfades to the corner stickers as the set starts.
+// Opening hook = the SHOWCASE: the subject (always) presented BIG, then it
+// crossfades to the corner stickers as the set starts.
 function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
   const inP = reduceMotion ? 1 : clamp01(timeMs / Math.max(1, leadMs * 0.4)); // entrance over first 40%
   const op = reduceMotion ? 1 : Math.min(inP, clamp01((leadMs - timeMs) / 250)); // fade out last 250ms
@@ -202,7 +202,7 @@ function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
       <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's victim</div>
       <div style={{ display: "flex", gap: "4%", alignItems: "center", justifyContent: "center", width: "100%", transform: `scale(${0.82 + 0.18 * inP})` }}>
         <ShowcaseFrame w="64%" rotate={-3}>
-          {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
+          {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={imgFill} /> : <PlaceholderSubject label={carLabel} />}
         </ShowcaseFrame>
       </div>
       <div style={{ ...bigText, color: "#fff", fontSize: "clamp(26px, 9vw, 52px)", padding: "0 6%" }}>
@@ -301,10 +301,10 @@ function Sticker({ style, tag, tone, children }) {
 
 const imgFill = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
 
-function PlaceholderCar({ label }) {
+function PlaceholderSubject({ label }) {
   return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, color: "rgba(255,255,255,0.7)" }}>
-      <span style={{ fontSize: 30 }}>🚗</span>
+      <span style={{ fontSize: 30 }}>{cfg("theme.emoji")}</span>
       <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || cfg("brain.subjectNoun")}</span>
     </div>
   );

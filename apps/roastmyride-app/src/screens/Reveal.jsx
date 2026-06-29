@@ -120,7 +120,7 @@ export function Reveal() {
   const set = toStandupSet(roast);
   const act = roast.performer?.comedicIdentity || comicStyle(roast.roasterId);
   const renderSteps = ["Rolling the tape…", `${firstNameOf(roast.roasterName)} is performing…`, "Mixing the audio…", "Rendering your reel…"];
-  const carPhoto = input?.carPhoto?.dataUrl || null;
+  const subjectPhoto = input?.carPhoto?.dataUrl || null;
   const closer = set.beats.find((b) => b.type === "closer");
   const clipSegments = closer
     ? [
@@ -135,7 +135,7 @@ export function Reveal() {
       <ScreenScroll style={{ paddingBottom: "var(--space-4)" }}>
         {/* the stage scene — the show plays here (and is what the video will be) */}
         <div style={{ animation: "rmr-pop-in var(--dur-4) var(--ease-spring) both" }}>
-          <StagePlayer result={roast} carPhoto={carPhoto} />
+          <StagePlayer result={roast} subjectPhoto={subjectPhoto} />
         </div>
 
         {/* grader verdict — the anti-cringe guarantee, made visible */}

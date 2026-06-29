@@ -29,7 +29,7 @@ export function Home() {
   const { input, update, credits } = useFlow();
   const fileRef = useRef(null);
   const [err, setErr] = useState(null);
-  const car = input.carPhoto || {};
+  const photo = input.carPhoto || {};
 
   const onPick = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -75,17 +75,17 @@ export function Home() {
         </p>
         <input
           ref={fileRef}
-          data-testid="car-file"
+          data-testid="photo-file"
           type="file"
           accept="image/*"
           onChange={onPick}
           style={{ display: "none" }}
         />
         <button onClick={addPhoto} style={uploadTarget} aria-label={cfg("upload.alt")}>
-          {car.dataUrl ? (
+          {photo.dataUrl ? (
             <>
               <img
-                src={car.dataUrl}
+                src={photo.dataUrl}
                 alt={cfg("upload.alt")}
                 style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: "var(--radius-md)" }}
               />

@@ -8,7 +8,7 @@
 // render, but is STRIPPED before the brain call (sanitizeForBrain) — the model
 // only needs presence + identity, never megabytes of base64.
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generateRoast } from "../services/roast.js";
 import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
 import { hasCreditsApi, fetchCredits, consumeCredit } from "../services/credits.js";
@@ -62,6 +62,7 @@ export function FlowProvider({ children }) {
   const [input, setInput] = useState(DEFAULT_INPUT);
   const [result, setResult] = useState(null);
   const [credits, setCreditsState] = useState(readCredits);
+  const generatingRef = useRef(false); // guard against StrictMode double-fire
 
   // setCredits accepts a value or updater (like useState) and persists the result.
   const setCredits = useCallback((updater) => {
@@ -83,36 +84,50 @@ export function FlowProvider({ children }) {
   const update = useCallback((patch) => setInput((prev) => ({ ...prev, ...patch })), []);
 
   // The one call into the roast pipeline. The brain gets a sanitized input
-  // (presence + identity only — no image blobs); the full input (with photos)
+  // (presence + subject identity only — no image blobs); the full input (with photos)
   // stays in context for the stage + video to render. A successful roast costs a
   // credit (the funnel is gated to >=1 credit before we get here).
+  // Guarded by generatingRef so StrictMode double-mounts don't deduct twice.
   const generate = useCallback(async () => {
-    // Photo car-ID (server vision) when a backend is present and we have a photo
-    // but no explicit car — so the brain researches the user's ACTUAL ride. The
-    // photo goes ONLY to /identify, never to the text brain (sanitizeForBrain).
-    let active = input;
-    if (hasRoastApi() && input.carPhoto?.dataUrl && !input.car) {
-      try {
-        const car = await identifyCarViaApi(input.carPhoto.dataUrl);
-        if (car) active = { ...input, car };
-      } catch (e) {
-        console.warn(`[flow] car identification failed (${(e && e.message) || e}); using default`);
+    if (generatingRef.current) {
+      // Another generation is already in progress; wait for it.
+      while (generatingRef.current) {
+        await new Promise((r) => setTimeout(r, 50));
       }
+      return result;
     }
-    const r = await generateRoast(sanitizeForBrain(active));
-    setResult(r);
-    // Charge for a delivered roast — but NOT when a live attempt degraded to the
-    // offline fallback (our failure shouldn't cost the user). Backend present →
-    // consume from the server ledger (authoritative); else decrement locally.
-    if (!r.degraded) {
-      if (hasCreditsApi()) {
-        try { const c = await consumeCredit(); if (c.ok) setCredits(c.credits); } catch { /* keep local */ }
-      } else {
-        setCredits((c) => c - 1);
+    generatingRef.current = true;
+    try {
+      // Photo subject-ID (server vision) when a backend is present and we have a photo
+      // but no explicit subject — so the brain researches the user's ACTUAL item. The
+      // photo goes ONLY to /identify, never to the text brain (sanitizeForBrain).
+      // Only the car subject uses vision identification; others skip this step.
+      let active = input;
+      if (cfg("id") === "car" && hasRoastApi() && input.carPhoto?.dataUrl && !input.car) {
+        try {
+          const car = await identifyCarViaApi(input.carPhoto.dataUrl);
+          if (car) active = { ...input, car };
+        } catch (e) {
+          console.warn(`[flow] car identification failed (${(e && e.message) || e}); using default`);
+        }
       }
+      const r = await generateRoast(sanitizeForBrain(active));
+      setResult(r);
+      // Charge for a delivered roast — but NOT when a live attempt degraded to the
+      // offline fallback (our failure shouldn't cost the user). Backend present →
+      // consume from the server ledger (authoritative); else decrement locally.
+      if (!r.degraded) {
+        if (hasCreditsApi()) {
+          try { const c = await consumeCredit(); if (c.ok) setCredits(c.credits); } catch { /* keep local */ }
+        } else {
+          setCredits((c) => c - 1);
+        }
+      }
+      return r;
+    } finally {
+      generatingRef.current = false;
     }
-    return r;
-  }, [input, setCredits]);
+  }, [input, setCredits, result]);
 
   const value = useMemo(
     () => ({

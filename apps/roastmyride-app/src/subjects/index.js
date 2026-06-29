@@ -2,8 +2,9 @@
 // Add new subjects here; the shell mounts whichever one is built.
 
 import car from "./car.js";
+import texts from "./texts.js";
 
-const REGISTRY = { car };
+const REGISTRY = { car, texts };
 
 /** The active subject config, resolved at build time from VITE_SUBJECT. */
 export const subject = REGISTRY[import.meta.env.VITE_SUBJECT] || REGISTRY.car;

@@ -16,7 +16,7 @@ import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
 import { cfg } from "../subjects/index.js";
 
-export function StagePlayer({ result, carPhoto, backgroundUrl }) {
+export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
 
   // Same deterministic backdrop the saved video uses (buildRenderSpec). A real
@@ -137,7 +137,7 @@ export function StagePlayer({ result, carPhoto, backgroundUrl }) {
           comedianId={standup.comedianId}
           performerName={result.roasterName || "the comic"}
           carLabel={carLabelOf(result)}
-          carPhoto={carPhoto || null}
+          carPhoto={subjectPhoto || null}
           segments={segments}
           timeMs={timeMs}
           reaction={result.reaction || "savage"}
@@ -179,8 +179,9 @@ export function StagePlayer({ result, carPhoto, backgroundUrl }) {
 }
 
 function carLabelOf(result) {
-  const c = (result.research && result.research.car) || {};
-  return c.label || [c.year, c.make, c.model].filter(Boolean).join(" ") || cfg("brain.subjectNoun");
+  const c = (result.research && result.research[cfg("research.key")]) || {};
+  const labelFields = cfg("research.labelFields", []);
+  return c.label || labelFields.map((f) => c[f]).filter(Boolean).join(" ") || cfg("brain.subjectNoun");
 }
 
 // Live playback honors the OS "reduce motion" setting (the exported video always

@@ -45,10 +45,13 @@ export function H({ children, style }) {
   );
 }
 
+import { cfg } from "../subjects/index.js";
+
 export function Wordmark() {
+  const name = cfg("appName");
   return (
     <span style={{ font: "var(--type-d3)", fontSize: 24, letterSpacing: "-0.02em", color: "var(--ink)" }}>
-      Roast<span style={{ color: "var(--ember-600)" }}>My</span>Ride
+      {name}
     </span>
   );
 }

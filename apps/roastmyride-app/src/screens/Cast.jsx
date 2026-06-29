@@ -9,6 +9,7 @@ import { ScreenScroll, stickyBar } from "../components/ui.jsx";
 import { Marquee } from "../components/Marquee.jsx";
 import { comicStyle } from "../standup.js";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { cfg } from "../subjects/index.js";
 
 export function Cast() {
   const go = useNavigate();
@@ -21,7 +22,7 @@ export function Cast() {
   };
 
   const firstName = sel ? sel.name.replace(/[“"].*$/, "").split(" ")[0] : "them";
-  const style = sel ? comicStyle(sel.id) : "Eight comics. Same car. Eight completely different shows.";
+  const style = sel ? comicStyle(sel.id) : `Eight comics. Same ${cfg("brain.subjectNoun")}. Eight completely different shows.`;
 
   return (
     <div

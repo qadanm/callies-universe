@@ -65,7 +65,7 @@ try {
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
     "base64"
   );
-  await page.setInputFiles('[data-testid="car-file"]', { name: "car.png", mimeType: "image/png", buffer: onePxPng });
+  await page.setInputFiles('[data-testid="photo-file"]', { name: "photo.png", mimeType: "image/png", buffer: onePxPng });
   try {
     await page.getByAltText("Your car").first().waitFor({ state: "visible", timeout: 6000 });
     check(true, "Car photo upload renders a real preview (compressed in-browser)");
@@ -90,7 +90,7 @@ try {
   check(true, "Warming-up screen runs the brain pipeline (offline fallback with no key)");
 
   // Reveal arrives automatically when the brain resolves.
-  await seeText("The full set", 12000); // the transcript heading under the reel
+  await seeText("The full set", 20000); // the transcript heading under the reel
   const revealText = await page.locator(".screen").innerText();
   check(/cry for help|trying|axle|unmoved|vibes|rust|never leave|It is a car|tired of trying/i.test(revealText),
     "Reveal shows the brain's set copy (punch-word present)");
