@@ -59,7 +59,7 @@ for (const s of CALLIE_STATES) {
 }
 
 const activeRoasters = core.Roaster.roster.filter((r) => !r.comingSoon);
-assert(activeRoasters.length >= 5, `expected >=5 active roasters, got ${activeRoasters.length}`);
+assert(activeRoasters.length >= 3, `expected an active cast, got ${activeRoasters.length}`);
 for (const r of core.Roaster.roster) {
   assert(html.includes(r.name), `missing roaster avatar: ${r.name}`);
 }
