@@ -57,6 +57,33 @@ function bell(b, freq, t0, dur, gain = 0.3) {
 
 function chord(b, notes, t0, dur, o) { notes.forEach((n) => add(b, N(n), t0, dur, o)); }
 
+// deterministic noise (LCG) → a filtered "air" burst, for whooshes
+let _seed = 99173;
+const rnd = () => { _seed = (_seed * 1103515245 + 12345) & 0x7fffffff; return (_seed / 0x7fffffff) * 2 - 1; };
+function noise(b, t0, dur, gain, a = 0.06, r = 0.22) {
+  const i0 = Math.floor(t0 * SR), len = Math.floor(dur * SR);
+  let lp = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / SR;
+    const env = t < a ? t / a : t < dur - r ? 1 : Math.max(0, (dur - t) / r);
+    lp = lp * 0.65 + rnd() * 0.35; // 1-pole lowpass → softer "air"
+    const idx = i0 + i;
+    if (idx < b.length) b[idx] += lp * gain * env;
+  }
+}
+// a pitch-gliding sine (the tonal part of a whoosh)
+function sweep(b, f0, f1, t0, dur, gain) {
+  const i0 = Math.floor(t0 * SR), len = Math.floor(dur * SR);
+  let ph = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / SR, f = f0 + (f1 - f0) * (t / dur);
+    ph += f / SR;
+    const env = Math.sin(Math.PI * (t / dur)); // gentle in/out
+    const idx = i0 + i;
+    if (idx < b.length) b[idx] += Math.sin(2 * Math.PI * ph) * gain * env;
+  }
+}
+
 // soft-limit + 16-bit WAV
 function toWav(b) {
   const peak = b.reduce((m, x) => Math.max(m, Math.abs(x)), 0) || 1;
@@ -108,4 +135,35 @@ function toWav(b) {
   add(b, N("C5"), 1.7, 0.3, { type: "tri", gain: 0.2, a: 0.005, d: 0.1, s: 0.3, r: 0.15 });
   writeFileSync(`${OUT}/sting-outro.wav`, toWav(b));
   console.log("wrote sting-outro.wav (~2.3s)");
+}
+
+/* ===== VERDICT DING: a bright, satisfying score-reveal chime ===== */
+{
+  const b = buf(1.4);
+  bell(b, N("C6"), 0.0, 1.1, 0.42);
+  bell(b, N("E6"), 0.07, 1.0, 0.34);
+  bell(b, N("G6"), 0.14, 0.9, 0.22);
+  [N("C6"), 1760, 2349].forEach((f, i) => bell(b, f, 0.2 + i * 0.06, 0.5, 0.08)); // shimmer
+  chord(b, ["C4", "G4"], 0.02, 0.9, { type: "sine", gain: 0.14, a: 0.005, d: 0.2, s: 0.5, r: 0.4 }); // warmth
+  writeFileSync(`${OUT}/sting-verdict.wav`, toWav(b));
+  console.log("wrote sting-verdict.wav (~1.4s)");
+}
+
+/* ===== WHOOSH: short transition swish ===== */
+{
+  const b = buf(0.5);
+  noise(b, 0.0, 0.45, 0.5, 0.08, 0.28);
+  sweep(b, 240, 1500, 0.0, 0.42, 0.16);
+  writeFileSync(`${OUT}/whoosh.wav`, toWav(b));
+  console.log("wrote whoosh.wav (~0.5s)");
+}
+
+/* ===== BED: a soft, warm, loopable pad under the panel (played very low) ===== */
+{
+  const b = buf(4.0);
+  const prog = [["C3", "E4", "G4"], ["A3", "C4", "E4"], ["F3", "A4", "C5"], ["G3", "B4", "D5"]];
+  prog.forEach((ch, i) => chord(b, ch, i * 1.0, 1.25, { type: "tri", gain: 0.12, a: 0.25, d: 0.2, s: 0.85, r: 0.35 }));
+  for (let i = 0; i < 8; i++) add(b, N("C3"), i * 0.5, 0.18, { type: "sine", gain: 0.05, a: 0.01, d: 0.06, s: 0.2, r: 0.08 });
+  writeFileSync(`${OUT}/bed-loop.wav`, toWav(b));
+  console.log("wrote bed-loop.wav (~4s loop)");
 }

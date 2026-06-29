@@ -41,13 +41,22 @@ export function StageVideo(props) {
       {/* optional music bed (none committed) — ducked under the VO */}
       {props.musicUrl && <Audio src={props.musicUrl} loop volume={MUSIC_VOL} />}
 
-      {/* Callie's Universe brand stings: the ident chime over the intro, the button
-          over the endcard. They sit in the gaps before/after the VO, so nothing clashes. */}
+      {/* Callie's Universe sound design — a soft bed under it all, the ident chime
+          over the open, whooshes on the intro transitions, a ding on the verdict, and
+          the button on the endcard. Timed into the gaps so nothing fights the VO. */}
+      {props.bedUrl && <Audio src={props.bedUrl} loop volume={0.05} />}
       {props.introStingUrl && <Audio src={props.introStingUrl} volume={0.55} />}
+      {props.format === "panel" && props.whooshUrl && (
+        <>
+          <Sequence from={msToFrames(leadMs * 0.40)} durationInFrames={msToFrames(600)}><Audio src={props.whooshUrl} volume={0.45} /></Sequence>
+          <Sequence from={msToFrames(leadMs * 0.62)} durationInFrames={msToFrames(600)}><Audio src={props.whooshUrl} volume={0.45} /></Sequence>
+        </>
+      )}
+      {props.verdictStingUrl && (
+        <Sequence from={msToFrames(totalMs - tailMs)} durationInFrames={msToFrames(1500)}><Audio src={props.verdictStingUrl} volume={0.6} /></Sequence>
+      )}
       {props.outroStingUrl && (
-        <Sequence from={msToFrames(totalMs - tailMs)} durationInFrames={msToFrames(tailMs)}>
-          <Audio src={props.outroStingUrl} volume={0.6} />
-        </Sequence>
+        <Sequence from={msToFrames(totalMs - tailMs + tailMs * 0.45)} durationInFrames={msToFrames(tailMs * 0.6)}><Audio src={props.outroStingUrl} volume={0.6} /></Sequence>
       )}
 
       {/* the comedian's voice — one clip per beat, started at the beat's time (full volume) */}

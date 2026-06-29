@@ -22,6 +22,9 @@ const photoDataUrl = `data:image/jpeg;base64,${readFileSync(PHOTO).toString("bas
 const stingUrl = (p) => { try { return `data:audio/wav;base64,${readFileSync(p).toString("base64")}`; } catch { return undefined; } };
 const introStingUrl = stingUrl("apps/roastmyride-app/remotion/assets/sting-intro.wav");
 const outroStingUrl = stingUrl("apps/roastmyride-app/remotion/assets/sting-outro.wav");
+const verdictStingUrl = stingUrl("apps/roastmyride-app/remotion/assets/sting-verdict.wav");
+const whooshUrl = stingUrl("apps/roastmyride-app/remotion/assets/whoosh.wav");
+const bedUrl = stingUrl("apps/roastmyride-app/remotion/assets/bed-loop.wav");
 
 const BEAT_TYPE = { opener: "setup", setup: "setup", punchline: "punch", "act-out": "punch", callback: "punch", tag: "punch", "crowd-work": "crowd", closer: "closer" };
 const splitPunch = (text, punch) => {
@@ -83,6 +86,9 @@ const inputProps = {
   audio,
   introStingUrl,
   outroStingUrl,
+  verdictStingUrl,
+  whooshUrl,
+  bedUrl,
 };
 
 console.log(`rendering MP4 @ scale ${SCALE} (Chromium)…`);
