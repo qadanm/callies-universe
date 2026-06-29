@@ -147,3 +147,8 @@ brain-demo-*.md
 
 # keep app store source assets (the *.mp4/*.png ignore is for local render artifacts)
 !apps/roastmyride-app/assets/*.png
+
+# Generated audio from try-live-panel.mjs (local only)
+live-panel-out/
+
+.DS_Store
