@@ -63,6 +63,16 @@ export default {
   theme: {
     emoji: "💬",
     stickerTag: "💬 the thread",
+    accent: {
+      "accent-700": "#2C4A70",
+      "accent-600": "#3A5A8A",
+      "accent-500": "#4E7BB8",
+      "accent-bright": "#6A9ED8",
+      "accent-bright-2": "#8AB8E0",
+      "accent-warm": "#A8CEEA",
+      "accent-warm-2": "#C8E0F0",
+      "accent-soft": "#EBF5FB",
+    },
   },
   // --- Monetization ---
   monetization: {

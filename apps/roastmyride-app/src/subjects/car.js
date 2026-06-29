@@ -72,6 +72,16 @@ export default {
   theme: {
     emoji: "🚗",
     stickerTag: "🚗 the ride",
+    accent: {
+      "accent-700": "#9E2709",
+      "accent-600": "#C7340F",
+      "accent-500": "#E5481B",
+      "accent-bright": "#FF6A1A",
+      "accent-bright-2": "#FF8330",
+      "accent-warm": "#FF9D4D",
+      "accent-warm-2": "#FFB877",
+      "accent-soft": "#FFF3E2",
+    },
   },
   // --- Submission media display ---
   // Most submissions are phone photos in PORTRAIT. The scene frames them portrait;

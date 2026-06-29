@@ -10,7 +10,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generateRoast } from "../services/roast.js";
-import { hasRoastApi, identifyCarViaApi, transcribeViaApi } from "../services/roastApi.js";
+import { hasRoastApi, identifyCarViaApi, transcribeViaApi, analyzeOutfitViaApi, analyzeRoomViaApi, analyzeProfileViaApi } from "../services/roastApi.js";
 import { hasCreditsApi, fetchCredits, consumeCredit } from "../services/credits.js";
 import { offlineBrain } from "@callies-universe/brain";
 import { cfg } from "../subjects/index.js";
@@ -108,10 +108,10 @@ export function FlowProvider({ children }) {
     generatingRef.current = true;
     try {
       // Server vision when a backend is present and we have an upload: read the
-      // photo into what the (text-only) brain needs to ground the roast — the car's
-      // identity, or the conversation transcript. The image goes ONLY to the vision
-      // endpoint, never to the brain itself (sanitizeForBrain strips it). Each subject
-      // uses its own read; subjects without a vision step just skip this.
+      // photo into what the (text-only) brain needs to ground the roast. The image
+      // goes ONLY to the vision endpoint, never to the brain itself (sanitizeForBrain
+      // strips it). Each subject uses its own read; subjects without a vision step
+      // just skip this.
       let active = input;
       if (hasRoastApi() && input.carPhoto?.dataUrl) {
         if (cfg("id") === "car" && !input.car) {
@@ -127,6 +127,27 @@ export function FlowProvider({ children }) {
             if (conversation) active = { ...input, conversation };
           } catch (e) {
             console.warn(`[flow] transcription failed (${(e && e.message) || e}); using offline`);
+          }
+        } else if (cfg("id") === "outfit" && !input.outfit) {
+          try {
+            const outfit = await analyzeOutfitViaApi(input.carPhoto.dataUrl);
+            if (outfit) active = { ...input, outfit };
+          } catch (e) {
+            console.warn(`[flow] outfit analysis failed (${(e && e.message) || e}); using offline`);
+          }
+        } else if (cfg("id") === "room" && !input.room) {
+          try {
+            const room = await analyzeRoomViaApi(input.carPhoto.dataUrl);
+            if (room) active = { ...input, room };
+          } catch (e) {
+            console.warn(`[flow] room analysis failed (${(e && e.message) || e}); using offline`);
+          }
+        } else if (cfg("id") === "profile" && !input.profile) {
+          try {
+            const profile = await analyzeProfileViaApi(input.carPhoto.dataUrl);
+            if (profile) active = { ...input, profile };
+          } catch (e) {
+            console.warn(`[flow] profile analysis failed (${(e && e.message) || e}); using offline`);
           }
         }
       }

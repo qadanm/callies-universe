@@ -1,10 +1,10 @@
-// Subject registry — resolves VITE_SUBJECT to a config object.
-// Add new subjects here; the shell mounts whichever one is built.
-
 import car from "./car.js";
 import texts from "./texts.js";
+import outfit from "./outfit.js";
+import room from "./room.js";
+import profile from "./profile.js";
 
-const REGISTRY = { car, texts };
+const REGISTRY = { car, texts, outfit, room, profile };
 
 /** The active subject config, resolved at build time from VITE_SUBJECT. */
 export const subject = REGISTRY[import.meta.env.VITE_SUBJECT] || REGISTRY.car;

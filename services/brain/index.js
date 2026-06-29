@@ -18,6 +18,15 @@ export { identifyCar } from "./src/identify.js";
 // transcript so the texts subject can ground on the real conversation.
 export { analyzeConversation } from "./src/analyzeConversation.js";
 
+// Outfit analysis (vision) — reads an outfit photo into a structured description.
+export { analyzeOutfit } from "./src/analyzeOutfit.js";
+
+// Room analysis (vision) — reads a room photo into a structured description.
+export { analyzeRoom } from "./src/analyzeRoom.js";
+
+// Profile analysis (vision) — reads a profile screenshot into a structured description.
+export { analyzeProfile } from "./src/analyzeProfile.js";
+
 // Offline path (used by the app's fallback story, the CI smoke, and demos).
 export { offlineBrain } from "./src/fallback/offlineBrain.js";
 

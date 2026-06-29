@@ -42,6 +42,42 @@ export async function transcribeViaApi(imageDataUrl) {
   return j.conversation || null;
 }
 
+/** POST an outfit photo → a structured description or null (vision). */
+export async function analyzeOutfitViaApi(imageDataUrl) {
+  const res = await fetchT(`${BASE}/analyze-outfit`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
+  }, 25000);
+  if (!res.ok) throw new Error(`analyze-outfit ${res.status}`);
+  const j = await res.json();
+  return j.outfit || null;
+}
+
+/** POST a room photo → a structured description or null (vision). */
+export async function analyzeRoomViaApi(imageDataUrl) {
+  const res = await fetchT(`${BASE}/analyze-room`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
+  }, 25000);
+  if (!res.ok) throw new Error(`analyze-room ${res.status}`);
+  const j = await res.json();
+  return j.room || null;
+}
+
+/** POST a profile screenshot → a structured description or null (vision). */
+export async function analyzeProfileViaApi(imageDataUrl) {
+  const res = await fetchT(`${BASE}/analyze-profile`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
+  }, 25000);
+  if (!res.ok) throw new Error(`analyze-profile ${res.status}`);
+  const j = await res.json();
+  return j.profile || null;
+}
+
 /** POST the sanitized RoastInput → the RoastResult (live brain runs server-side). */
 export async function roastViaApi(input) {
   const res = await fetchT(`${BASE}/roast`, {

@@ -23,7 +23,7 @@ import { readFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateRoast as defaultGenerateRoast, identifyCar as defaultIdentify, analyzeConversation as defaultTranscribe } from "@callies-universe/brain";
+import { generateRoast as defaultGenerateRoast, identifyCar as defaultIdentify, analyzeConversation as defaultTranscribe, analyzeOutfit as defaultAnalyzeOutfit, analyzeRoom as defaultAnalyzeRoom, analyzeProfile as defaultAnalyzeProfile } from "@callies-universe/brain";
 import { createLedger } from "./ledger.js";
 import { createLimiter } from "./limiter.js";
 import { logRequest, captureError } from "./observability.js";
@@ -53,6 +53,9 @@ export function createApiServer(opts = {}) {
   const generateRoast = opts.generateRoast || defaultGenerateRoast;
   const identify = opts.identify || defaultIdentify;
   const transcribe = opts.transcribe || defaultTranscribe;
+  const analyzeOutfitFn = opts.analyzeOutfit || defaultAnalyzeOutfit;
+  const analyzeRoomFn = opts.analyzeRoom || defaultAnalyzeRoom;
+  const analyzeProfileFn = opts.analyzeProfile || defaultAnalyzeProfile;
   const synthesize = opts.synthesize || defaultSynthesize;
   const render = opts.render || defaultRender;
   const poster = opts.poster || defaultPoster;
@@ -156,7 +159,7 @@ export function createApiServer(opts = {}) {
       }
 
       // Rate limit + cost guardrail on the work endpoints (keyed by identity/IP).
-      if (req.method === "POST" && ["/roast", "/identify", "/transcribe", "/voice", "/render", "/poster"].includes(path)) {
+      if (req.method === "POST" && ["/roast", "/identify", "/transcribe", "/analyze-outfit", "/analyze-room", "/analyze-profile", "/voice", "/render", "/poster"].includes(path)) {
         const k = keyOf(req);
         const r = rate.hit(k);
         if (!r.ok) return tooMany(res, r, "per-minute");
@@ -281,13 +284,38 @@ export function createApiServer(opts = {}) {
 
       if (req.method === "POST" && path === "/transcribe") {
         const body = await readJson(req);
-        // Same as /identify: a vision model call (offline → null), so only honor the
-        // explicit dryRun query flag, not the server default.
         if (url.searchParams.get("dryRun") === "1") {
           return json(res, 200, { dryRun: true, hasImage: !!body.imageDataUrl });
         }
-        const conversation = await transcribe({ imageDataUrl: body.imageDataUrl }); // null without a key
+        const conversation = await transcribe({ imageDataUrl: body.imageDataUrl });
         return json(res, 200, { conversation });
+      }
+
+      if (req.method === "POST" && path === "/analyze-outfit") {
+        const body = await readJson(req);
+        if (url.searchParams.get("dryRun") === "1") {
+          return json(res, 200, { dryRun: true, hasImage: !!body.imageDataUrl });
+        }
+        const outfit = await analyzeOutfitFn({ imageDataUrl: body.imageDataUrl });
+        return json(res, 200, { outfit });
+      }
+
+      if (req.method === "POST" && path === "/analyze-room") {
+        const body = await readJson(req);
+        if (url.searchParams.get("dryRun") === "1") {
+          return json(res, 200, { dryRun: true, hasImage: !!body.imageDataUrl });
+        }
+        const room = await analyzeRoomFn({ imageDataUrl: body.imageDataUrl });
+        return json(res, 200, { room });
+      }
+
+      if (req.method === "POST" && path === "/analyze-profile") {
+        const body = await readJson(req);
+        if (url.searchParams.get("dryRun") === "1") {
+          return json(res, 200, { dryRun: true, hasImage: !!body.imageDataUrl });
+        }
+        const profile = await analyzeProfileFn({ imageDataUrl: body.imageDataUrl });
+        return json(res, 200, { profile });
       }
 
       if (req.method === "POST" && path === "/voice") {

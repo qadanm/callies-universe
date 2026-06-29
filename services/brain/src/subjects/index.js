@@ -10,10 +10,16 @@
 
 import { carPack } from "./car.js";
 import { textsPack } from "./texts.js";
+import { outfitPack } from "./outfit.js";
+import { roomPack } from "./room.js";
+import { profilePack } from "./profile.js";
 
 const PACKS = {
   car: carPack,
   texts: textsPack,
+  outfit: outfitPack,
+  room: roomPack,
+  profile: profilePack,
 };
 
 /** Resolve a subject id to its pack. Defaults to car. */
