@@ -2,7 +2,7 @@
 //
 // The viral "gameplay + voiceover + big subtitles" format: the comedian's roast
 // plays as a VO over looping gameplay, with the comic as a static sticker, the
-// car (and profile, if given) as stickers, and BIG word-by-word captions in the
+// car as a sticker, and BIG word-by-word captions in the social-video style.
 // social-video style. One declarative, PROP-DRIVEN scene = the single source of
 // truth: deterministic from `timeMs`, so the same scene the app plays live drives
 // the exported video frame-identically (live = StagePlayer's rAF clock; video =
@@ -13,9 +13,8 @@
 // which then goes transparent). With no asset, a deterministic faux-gameplay
 // backdrop renders so it always works. We do NOT ship copyrighted footage.
 //
-// Product rules kept structural: the CAR is ALWAYS shown (sticker); the PROFILE
-// shows only if submitted (blurred per the toggle). Two-performer rule: the comic
-// performs (VO); Callie only reacts (sticker).
+// Product rules kept structural: the CAR is ALWAYS shown (sticker). Two-performer
+// rule: the comic performs (VO); Callie only reacts (sticker).
 //
 // CORE-REUSED: Roaster (comic sticker), Callie (reaction sticker).
 import React, { useMemo } from "react";
@@ -30,7 +29,6 @@ export const StageScene = React.memo(function StageScene({
   performerName,
   carLabel,
   carPhoto,
-  profile,
   segments = [],
   timeMs = 0,
   reaction = "savage",
@@ -46,7 +44,6 @@ export const StageScene = React.memo(function StageScene({
   const seg = idx >= 0 && idx < segments.length ? segments[idx] : null;
   const beat = seg ? seg.beat : null;
   const type = beat ? beat.type : "setup";
-  const hasProfile = !!(profile && profile.dataUrl);
   const reacts = type === "punch" || type === "closer" || type === "crowd";
   const callieState = callieStateForBeat(type, reaction);
   const calliePop = reacts && !reduceMotion ? popPulse(timeMs, seg ? seg.startMs : 0, 700) : 0;
@@ -60,8 +57,8 @@ export const StageScene = React.memo(function StageScene({
   // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
   const inLead = leadMs > 0 && timeMs < leadMs;
   const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
-  // The car (and owner) are showcased BIG during the hook, then crossfade to their
-  // corner stickers as the set starts. cornerReveal: 0 during the showcase → 1 after.
+  // The car photo is showcased BIG during the hook, then crossfades to the corner
+  // sticker as the set starts. cornerReveal: 0 during the showcase → 1 after.
   const cornerReveal = leadMs > 0 && !reduceMotion ? clamp01((timeMs - (leadMs - 220)) / 300) : 1;
 
   return (
@@ -83,16 +80,9 @@ export const StageScene = React.memo(function StageScene({
         {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
       </Sticker>
 
-      {/* the owner — only if a profile was submitted */}
-      {hasProfile && (
-        <Sticker style={{ top: "8%", right: "4%", transform: "rotate(5deg)", opacity: cornerReveal }} tag="the owner" tone="#8FC2FF">
-          <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
-        </Sticker>
-      )}
-
       {/* center stage: opening hook → captions → closing CTA */}
       {inLead ? (
-        <Hook carPhoto={carPhoto} carLabel={carLabel} profile={profile} timeMs={timeMs} leadMs={leadMs} reduceMotion={reduceMotion} />
+        <Hook carPhoto={carPhoto} carLabel={carLabel} timeMs={timeMs} leadMs={leadMs} reduceMotion={reduceMotion} />
       ) : inTail ? (
         <Outro performerName={performerName} timeMs={timeMs} startMs={totalMs - tailMs} reduceMotion={reduceMotion} />
       ) : (
@@ -203,22 +193,16 @@ const bigText = { fontFamily: "var(--font-display, inherit)", fontWeight: 900, t
 
 // Opening hook = the SHOWCASE: the car (always) presented BIG, the owner too if
 // submitted, then it crossfades to the corner stickers as the set starts.
-function Hook({ carPhoto, carLabel, profile, timeMs, leadMs, reduceMotion }) {
+function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
   const inP = reduceMotion ? 1 : clamp01(timeMs / Math.max(1, leadMs * 0.4)); // entrance over first 40%
   const op = reduceMotion ? 1 : Math.min(inP, clamp01((leadMs - timeMs) / 250)); // fade out last 250ms
-  const hasProfile = !!(profile && profile.dataUrl);
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 6, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
       <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's victim</div>
       <div style={{ display: "flex", gap: "4%", alignItems: "center", justifyContent: "center", width: "100%", transform: `scale(${0.82 + 0.18 * inP})` }}>
-        <ShowcaseFrame w={hasProfile ? "46%" : "64%"} rotate={-3}>
+        <ShowcaseFrame w="64%" rotate={-3}>
           {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
         </ShowcaseFrame>
-        {hasProfile && (
-          <ShowcaseFrame w="30%" rotate={4} tag="the owner">
-            <img src={profile.dataUrl} alt="The owner" style={{ ...imgFill, filter: profile.blur ? "blur(8px)" : "none" }} />
-          </ShowcaseFrame>
-        )}
       </div>
       <div style={{ ...bigText, color: "#fff", fontSize: "clamp(26px, 9vw, 52px)", padding: "0 6%" }}>
         {carLabel || "your ride"} <span aria-hidden="true">💀</span>

@@ -1,8 +1,8 @@
 // Screen 6 — Reveal: the SET (the hero moment), the comedy special.
 // CORE-REUSED: Callie, Button.
 // ROASTMYRIDE-NEW (app-layer): StagePlayer (the animated stage scene — car on a
-// screen, profile if present, comic performing, Callie in the crowd), the
-// grader verdict, the standup ShareCard clip, and the full set transcript below.
+// screen, comic performing, Callie in the crowd), the grader verdict, the standup
+// ShareCard clip, and the full set transcript below.
 //
 // The set, performer, research and grade come from the brain's RoastResult
 // (flow.result); the photos come from flow.input (carried, never sent to the
@@ -120,7 +120,6 @@ export function Reveal() {
   const act = roast.performer?.comedicIdentity || comicStyle(roast.roasterId);
   const renderSteps = ["Rolling the tape…", `${firstNameOf(roast.roasterName)} is performing…`, "Mixing the audio…", "Rendering your reel…"];
   const carPhoto = input?.carPhoto?.dataUrl || null;
-  const profile = input?.personal?.present && input?.personal?.dataUrl ? input.personal : null;
   const closer = set.beats.find((b) => b.type === "closer");
   const clipSegments = closer
     ? [
@@ -135,7 +134,7 @@ export function Reveal() {
       <ScreenScroll style={{ paddingBottom: "var(--space-4)" }}>
         {/* the stage scene — the show plays here (and is what the video will be) */}
         <div style={{ animation: "rmr-pop-in var(--dur-4) var(--ease-spring) both" }}>
-          <StagePlayer result={roast} carPhoto={carPhoto} profile={profile} />
+          <StagePlayer result={roast} carPhoto={carPhoto} />
         </div>
 
         {/* grader verdict — the anti-cringe guarantee, made visible */}

@@ -18,7 +18,7 @@ export const ROAST_REACTION = {
 
 /** Transient flow events → Callie's reaction. */
 export const EVENT_REACTION = {
-  photoAdded: "delighted", // a selfie/profile was attached
+  photoAdded: "delighted", // a photo was attached
   shared: "celebrating", // the roast was posted
   bought: "celebrating", // credits purchased
 };
@@ -31,7 +31,6 @@ export const EVENT_REACTION = {
 export const SCREEN_CONTEXT = {
   onboarding: "onboarding",
   home: "home",
-  profile: "seasoning",
   chips: "cast",
   cast: "cast",
   cooking: "cooking",

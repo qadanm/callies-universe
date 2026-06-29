@@ -15,7 +15,7 @@ import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js"
 import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
 
-export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
+export function StagePlayer({ result, carPhoto, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
 
   // Same deterministic backdrop the saved video uses (buildRenderSpec). A real
@@ -137,7 +137,6 @@ export function StagePlayer({ result, carPhoto, profile, backgroundUrl }) {
           performerName={result.roasterName || "the comic"}
           carLabel={carLabelOf(result)}
           carPhoto={carPhoto || null}
-          profile={profile || null}
           segments={segments}
           timeMs={timeMs}
           reaction={result.reaction || "savage"}

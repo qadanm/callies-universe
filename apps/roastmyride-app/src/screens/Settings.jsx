@@ -42,7 +42,7 @@ export function Settings() {
     { g: "Roasting", items: [
       { label: "Default roaster", val: roasterName },
       { label: "Spice ceiling", val: "Medium" },
-      { label: "Profile roast consent", val: "On" },
+      { label: "Spice ceiling", val: "Medium" },
     ] },
     { g: "Accessibility", items: [
       { label: "Reduce motion", val: reduceMotionLabel() },

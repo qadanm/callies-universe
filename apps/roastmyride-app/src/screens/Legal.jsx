@@ -8,7 +8,6 @@ const DOCS = {
   privacy: {
     title: "Privacy & data",
     body: [
-      "Your selfie / profile photo never leaves your device — it's only drawn into the reel locally (and into the video file if you choose to save one).",
       "Your car photo is sent to our server only to identify the car (make/model), and only when a live backend is configured. We don't store it.",
       "We don't research or roast people — only the car. Comedy is aimed at the vehicle, never a person or group.",
       "Credits are tied to an anonymous device id by default — no account, no email — unless you choose to sign in.",
@@ -20,7 +19,7 @@ const DOCS = {
     title: "Terms",
     body: [
       "RoastMyRide is for entertainment. The roasts are jokes about a car, kept PG-13 — clever, never cruel.",
-      "Don't upload photos of people who haven't consented. You're responsible for the photos you add.",
+      "Don't upload photos of other people's cars without their consent. You're responsible for the photos you add.",
       "Credits are digital goods for generating + rendering reels; they're consumed when a roast is delivered.",
       "The service is provided as-is, without warranty. We may rate-limit or decline abusive use.",
       "Bring your own car. Leave your ego at the door.",

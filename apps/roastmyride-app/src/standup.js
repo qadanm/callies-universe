@@ -156,16 +156,14 @@ export function mmss(totalMs) {
 
 /**
  * Build the render spec = the EXACT inputProps the Remotion "stage" composition
- * consumes (services/render). Carries the real photos as dataUrls so the video
- * shows the actual car + profile. This is the one shape the app hands to the
- * render service (locally via the CLI now; via an endpoint once hosted).
+ * consumes (services/render). Carries the real car photo as a dataUrl so the video
+ * shows the actual car. This is the one shape the app hands to the render service
+ * (locally via the CLI now; via an endpoint once hosted).
  */
 export function buildRenderSpec(result, input) {
   const su = toStandupSet(result);
   const car = (result.research && result.research.car) || {};
   const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || "your ride";
-  const p = input && input.personal;
-  const profile = p && p.present && p.dataUrl ? { dataUrl: p.dataUrl, blur: !!p.blur, kind: p.kind || null } : null;
   // The gameplay backdrop is chosen deterministically from the roast, so the saved
   // video uses the exact same backdrop the live reel shows.
   const bg = pickBackground(result);
@@ -178,7 +176,6 @@ export function buildRenderSpec(result, input) {
     engineLabel: result.engine === "offline" ? "offline" : undefined,
     beats: su.beats,
     carPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
-    profile,
     backgroundUrl: bg.backgroundUrl,
     fauxStyle: bg.fauxStyle,
     musicUrl: pickMusic(result),

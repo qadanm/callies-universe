@@ -24,7 +24,6 @@ const spec = {
   engineLabel: result.engine === "offline" ? "offline" : undefined,
   beats: su.beats,
   carPhoto: null, // a dataUrl at runtime; placeholder slot when null
-  profile: null,
 };
 
 writeFileSync(outFile, JSON.stringify(spec, null, 2));

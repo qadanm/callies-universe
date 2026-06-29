@@ -18,7 +18,7 @@ const SPEC = {
     { type: "setup", text: "Mm-mm-MM. Baby. Come here." },
     { type: "punch", text: "This paint job is ", punch: "a cry for help", tail: "." },
   ],
-  carPhoto: null, profile: null,
+  carPhoto: null,
 };
 
 const srv = createApiServer({ offline: true }); // silent voice, REAL render

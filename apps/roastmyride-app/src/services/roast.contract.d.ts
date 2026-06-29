@@ -16,8 +16,6 @@ import type { CallieState, RoasterId } from "@callies-universe/core";
 export interface RoastInput {
   /** The car photo (mocked — we only track presence this milestone). */
   carPhoto: { present: boolean };
-  /** Optional selfie / profile screenshot from the "profile-roast" step. */
-  personal: { present: boolean; kind: "selfie" | "profile" | null };
   /** Which cast member voices the roast. */
   roasterId: RoasterId;
   /** Free-form context chips the user toggled (heat / angle / vibe). */

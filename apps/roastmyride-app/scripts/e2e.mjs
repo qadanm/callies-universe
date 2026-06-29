@@ -73,13 +73,8 @@ try {
     check(false, "Car photo upload renders a real preview (compressed in-browser)");
   }
 
-  // --- Profile-roast (consent) ---
-  await clickName(/Roast my car/); // the Card CTA advances to /profile
-  await seeText("Make it personal");
-  check(true, "Profile-roast / consent screen reachable");
-
   // --- Context chips (core Chip) ---
-  await clickName(/Next/);
+  await clickName(/Roast my car/); // the Card CTA advances to /chips
   await seeText("How should we cook it");
   await page.getByRole("button", { name: /Brutal/ }).first().click(); // toggle a core Chip
   check(true, "Context chips screen reachable; a Chip toggled");
@@ -122,7 +117,7 @@ try {
   // --- Legal (privacy) reachable ---
   await page.goto(`${BASE}/#/legal/privacy`, { waitUntil: "networkidle" });
   await seeText("Privacy & data");
-  check((await page.getByText("never leaves your device", { exact: false }).count()) >= 1, "Privacy page renders");
+  check((await page.getByText("We don't store it", { exact: false }).count()) >= 1, "Privacy page renders");
 
   // --- monetization: deduct · persist · buy · gate ---
   const creditsNow = async () => {

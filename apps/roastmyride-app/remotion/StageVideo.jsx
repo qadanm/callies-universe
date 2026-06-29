@@ -7,7 +7,7 @@
 //
 // inputProps (the "scene spec", built app-side at save time, serialisable):
 //   { comedianId, performerName, bit, reaction, carLabel, engineLabel,
-//     beats: StandupBeat[], carPhoto: dataUrl|null, profile: {dataUrl,blur,kind}|null }
+//     beats: StandupBeat[], carPhoto: dataUrl|null }
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
@@ -67,7 +67,6 @@ export function StageVideo(props) {
         performerName={props.performerName}
         carLabel={props.carLabel}
         carPhoto={props.carPhoto || null}
-        profile={props.profile || null}
         segments={segments}
         timeMs={timeMs}
         reaction={props.reaction || "savage"}

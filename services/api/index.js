@@ -34,7 +34,7 @@ import { renderStageVideo as defaultRender, renderStagePoster as defaultPoster }
 // from any cwd. Override with ROAST_REMOTION_ENTRY (a path string).
 const DEFAULT_ENTRY = fileURLToPath(new URL("../../apps/roastmyride-app/remotion/index.jsx", import.meta.url));
 
-const MAX_BODY = 96 * 1024 * 1024; // car/profile dataUrls ride in the spec; be generous
+const MAX_BODY = 96 * 1024 * 1024; // car dataUrls ride in the spec; be generous
 let tmpCounter = 0;
 
 /**

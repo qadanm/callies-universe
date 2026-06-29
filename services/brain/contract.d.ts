@@ -24,7 +24,7 @@
  *  RoastInput:
  *    + car            : the make/model/year/trim to research (NEW)
  *    ~ carPhoto       : may now carry a photo-derived `identified` car (NEW field)
- *    = personal, roasterId, context  (unchanged)
+ *    = roasterId, context  (unchanged)
  *  RoastResult:
  *    + set            : the structured stand-up set (beats) (NEW)
  *    + performer      : the performing character + their comedic identity (NEW)
@@ -57,8 +57,6 @@ export interface RoastInput {
   /** The car to research. Optional: the brain defaults to a representative car
    *  when neither this nor a photo-derived id is present (until photo-ID ships). */
   car?: CarIdentity | null;
-  /** Optional selfie / profile screenshot from the "profile-roast" step. */
-  personal?: { present: boolean; kind: "selfie" | "profile" | null };
   /** Which cast member performs the roast. */
   roasterId: RoasterId;
   /** Free-form context chips the user toggled (heat / angle / vibe). */

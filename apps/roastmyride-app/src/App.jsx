@@ -19,7 +19,6 @@ import { OfflineBanner } from "./components/OfflineBanner.jsx";
 import { isNative } from "./native.js";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
-import { ProfileRoast } from "./screens/ProfileRoast.jsx";
 import { Chips } from "./screens/Chips.jsx";
 import { Cast } from "./screens/Cast.jsx";
 import { Cooking } from "./screens/Cooking.jsx";
@@ -33,7 +32,6 @@ import { Legal } from "./screens/Legal.jsx";
 const SCREENS = [
   ["/", "Onboard"],
   ["/home", "Home"],
-  ["/profile", "Profile"],
   ["/chips", "Chips"],
   ["/cast", "Cast"],
   ["/cooking", "Cooking"],
@@ -127,7 +125,6 @@ const router = createHashRouter([
     children: [
       { index: true, element: <Onboarding /> },
       { path: "home", element: <Home /> },
-      { path: "profile", element: <ProfileRoast /> },
       { path: "chips", element: <Chips /> },
       { path: "cast", element: <Cast /> },
       { path: "cooking", element: <Cooking /> },

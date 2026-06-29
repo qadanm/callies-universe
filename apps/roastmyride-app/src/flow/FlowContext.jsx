@@ -1,13 +1,12 @@
 // RoastMyRide — flow state [ROASTMYRIDE-NEW].
 //
-// Holds what the user assembles across the screens (the real car photo, an
-// optional selfie/profile, chosen roaster, context chips) and exposes
-// generate(), which calls the roast SEAM (services/roast.js). The roast result
-// is stored here and read by the Reveal screen.
+// Holds what the user assembles across the screens (the real car photo, chosen
+// roaster, context chips) and exposes generate(), which calls the roast SEAM
+// (services/roast.js). The roast result is stored here and read by the Reveal screen.
 //
-// Photos: the compressed image blobs (dataUrl) live HERE for the stage + video
-// to render, but are STRIPPED before the brain call (sanitizeForBrain) — the
-// model only needs presence + identity, never megabytes of base64.
+// Photos: the compressed car image (dataUrl) lives HERE for the stage + video to
+// render, but is STRIPPED before the brain call (sanitizeForBrain) — the model
+// only needs presence + identity, never megabytes of base64.
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { generateRoast } from "../services/roast.js";
@@ -21,7 +20,6 @@ const DEFAULT_INPUT = {
   // representative car for the live path; set this to a real {year,make,model}
   // (or carPhoto.identified) once identification ships. null → brain default.
   car: null,
-  personal: { present: false, kind: null },
   roasterId: "mama",
   context: [],
 };
@@ -141,10 +139,8 @@ export function useFlow() {
  *  presence + car identity, not the base64 photos. */
 function sanitizeForBrain(input) {
   const carPhoto = input.carPhoto || {};
-  const personal = input.personal || {};
   return {
     ...input,
     carPhoto: { present: !!carPhoto.present, identified: carPhoto.identified ?? null },
-    personal: { present: !!personal.present, kind: personal.kind ?? null },
   };
 }

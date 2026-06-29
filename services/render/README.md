@@ -34,8 +34,8 @@ pnpm --filter @callies-universe/render render -- \
 ```
 
 Output: an H.264 MP4 (plays everywhere, incl. iOS). The app builds the spec via
-`buildRenderSpec(result, input)` (standup.js) — carrying the real car/profile
-photos as dataUrls — so the video shows the actual ride and owner.
+`buildRenderSpec(result, input)` (standup.js) — carrying the real car photo as a dataUrl
+— so the video shows the actual ride.
 
 ## API
 

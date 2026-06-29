@@ -19,7 +19,6 @@ const DEFAULT_PROPS = {
   carLabel: "your ride",
   engineLabel: "offline",
   carPhoto: null,
-  profile: null,
   beats: [
     { type: "setup", text: "Mm-mm-MM. Baby. Come here." },
     { type: "crowd", text: "You see this paint? You SEE it?" },

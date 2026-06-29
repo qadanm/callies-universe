@@ -70,7 +70,7 @@ export function Home() {
         </div>
         <h2 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "4px 0 4px" }}>Drop a pic of your ride</h2>
         <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-4)" }}>
-          Photo 1 of 2 — the more I can see, the harder I cook.
+          The more of your ride I can see, the harder I cook.
         </p>
         <input
           ref={fileRef}
@@ -101,7 +101,7 @@ export function Home() {
         {err && (
           <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
         )}
-        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => { haptic(); go(credits < 1 ? "/credits" : "/profile"); }}>
+        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => { haptic(); go(credits < 1 ? "/credits" : "/chips"); }}>
           Roast my car
         </Button>
       </Card>
