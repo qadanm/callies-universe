@@ -56,11 +56,11 @@ console.log("voicing per speaker (ElevenLabs)…");
 const voice = await synthesizeSet(displayBeats, resolvePerformer(perfs[0].id), {});
 console.log(`voice engine=${voice.engine} voiced=${voice.voiced} clips=${voice.clips.length}`);
 
-// Trim to a social length budget: lead(2.7s) + content + tail(3.4s) ≤ TARGET_MS.
+// Trim to a social length budget: lead(2.5s) + content + tail(5.0s) ≤ TARGET_MS.
 // Keep whole turns from the top until the budget is hit (min 4); the branded
 // endcard cushions the cut so it never feels abrupt.
 const TARGET_MS = Number(env.TARGET_MS) || 52000;
-const BRANDING_MS = 2700 + 3400;
+const BRANDING_MS = 2500 + 5000;
 let acc = 0, keep = 0;
 for (let i = 0; i < voice.clips.length; i++) {
   acc += (voice.clips[i].durationMs || 0) + 320; // + breath gap between turns
