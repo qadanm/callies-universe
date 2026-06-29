@@ -144,3 +144,6 @@ brain-demo-*.md
 
 # gstack local QA artifacts
 .gstack/qa-reports/
+
+# keep app store source assets (the *.mp4/*.png ignore is for local render artifacts)
+!apps/roastmyride-app/assets/*.png
