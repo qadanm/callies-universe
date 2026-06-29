@@ -8,7 +8,8 @@
 // tells — its default is skepticism. `human` is a reject axis: anything that
 // smells like AI fails, no matter how clever.
 
-import { AXES, AXIS_DESCRIPTIONS, GATES, WEIGHTS, composite, passes } from "./rubric.js";
+import { AXES, GATES, WEIGHTS, composite, passes } from "./rubric.js";
+import { CAR_FRAMING } from "../subjects/framing.js";
 
 const GRADE_SCHEMA = {
   type: "object",
@@ -59,21 +60,29 @@ function clampScore(n) {
 }
 
 /**
- * Grade one set against the rubric.
- * @returns {Promise<import("../../contract").Grade>}
+ * Build the {system, user} grading messages. Pure (no model call) so it can be
+ * asserted byte-for-byte in tests. With CAR_FRAMING this reproduces the original
+ * car grading prompt exactly (see scripts/subjects-check.mjs).
+ *
+ * @param {object} set
+ * @param {object} performer
+ * @param {object} research
+ * @param {import("../subjects/framing.js").SubjectFraming} framing
+ * @returns {{ system: string, user: string }}
  */
-export async function gradeSet(set, performer, research, model) {
+export function buildGradeMessages(set, performer, research, framing) {
+  const axisDescriptions = framing.axisDescriptions;
   const system = [
     `You are a ruthless comedy-club booker grading a roast set before it goes on stage.`,
     `The bar is brutal: "genuinely funny, never sounds like AI, never corny, never cringe."`,
     `Default to skepticism. You are actively HUNTING for AI tells and corniness — list every one you find.`,
     ``,
     `Score each axis 0–10:`,
-    ...AXES.map((a) => `• ${a} (gate ${GATES[a]}): ${AXIS_DESCRIPTIONS[a]}`),
+    ...AXES.map((a) => `• ${a} (gate ${GATES[a]}): ${axisDescriptions[a]}`),
     ``,
     `AI-TELLS to catch (these tank the "human" score and belong in aiTells): over-explaining a joke,`,
     `tidy bows like "but hey, at least…", "let's just say", "in a world where", "talk about…",`,
-    `groaner puns played straight, listy "not only… but also", generic roast filler that fits any car,`,
+    `groaner puns played straight, listy "not only… but also", generic roast filler that fits any ${framing.fillerNoun},`,
     `try-hard alliteration, fake crowd reactions written in, or anything that reads as written-by-committee.`,
     ``,
     `For EACH tell, mark its severity honestly:`,
@@ -89,7 +98,7 @@ export async function gradeSet(set, performer, research, model) {
   const user = [
     `Performer: ${performer.name} — ${performer.comedicIdentity}`,
     `Their comedic structure should be: ${performer.form}`,
-    `Car being roasted: ${labelOf(research)}`,
+    `${framing.gradeSubjectWord} being roasted: ${framing.gradeLabel(research)}`,
     `Real material the set was supposed to use: ${research.summary}`,
     `  running jokes: ${research.runningJokes.join(" | ") || "(none)"}`,
     `  known problems: ${research.knownProblems.join(" | ") || "(none)"}`,
@@ -100,6 +109,18 @@ export async function gradeSet(set, performer, research, model) {
     ``,
     `Grade it. Catch every AI tell. Score honestly.`,
   ].join("\n");
+
+  return { system, user };
+}
+
+/**
+ * Grade one set against the rubric.
+ * @param {{ framing?: object }} [opts]
+ * @returns {Promise<import("../../contract").Grade>}
+ */
+export async function gradeSet(set, performer, research, model, opts = {}) {
+  const framing = opts.framing || CAR_FRAMING;
+  const { system, user } = buildGradeMessages(set, performer, research, framing);
 
   const judged = await model.json({
     system,
@@ -135,8 +156,3 @@ export function pickBest(candidates) {
 }
 
 export { WEIGHTS };
-
-function labelOf(research) {
-  const c = research.car || {};
-  return c.label || [c.year, c.make, c.model, c.trim].filter(Boolean).join(" ") || "car";
-}

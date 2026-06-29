@@ -12,7 +12,7 @@
   },
   "types": "./contract.d.ts",
   "scripts": {
-    "smoke": "node scripts/offline-check.mjs && node scripts/pipeline-check.mjs && node scripts/cache-check.mjs",
+    "smoke": "node scripts/offline-check.mjs && node scripts/pipeline-check.mjs && node scripts/cache-check.mjs && node scripts/subjects-check.mjs",
     "demo": "node scripts/demo.mjs"
   },
   "dependencies": {

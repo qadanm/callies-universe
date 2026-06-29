@@ -35,6 +35,9 @@ function fakeModel(plan) {
       };
     },
     async json({ schema }) {
+      // Stages are told apart by their schema's shape: runningJokes → research,
+      // beats → set-writing, scores → grading. runningJokes is the canonical
+      // research-detection field shared by every subject's grounding schema.
       const props = schema.properties || {};
       if (props.runningJokes) {
         // research-structuring call

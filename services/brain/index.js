@@ -23,6 +23,8 @@ export { researchCar } from "./src/research/researchCar.js";
 export { writeSet } from "./src/writing/writeSet.js";
 export { gradeSet, pickBest } from "./src/grading/gradeSet.js";
 export { resolvePerformer, allPerformers, COMEDIC_PROFILES } from "./src/persona.js";
+// Subject packs — the per-subject grounding + offline sets + prompt framing.
+export { resolveSubjectPack } from "./src/subjects/index.js";
 export { GATES, WEIGHTS, AXES, composite, passes } from "./src/grading/rubric.js";
 export { buildResult } from "./src/assemble.js";
 // Research cache — clearCache busts the default; createResearchCache lets you

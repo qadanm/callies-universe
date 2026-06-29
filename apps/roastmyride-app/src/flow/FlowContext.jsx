@@ -21,6 +21,10 @@ const DEFAULT_INPUT = {
   // representative car for the live path; set this to a real {year,make,model}
   // (or carPhoto.identified) once identification ships. null → brain default.
   car: null,
+  // For text-style subjects: the conversation transcript, populated by an upstream
+  // vision read of the screenshot (the texts analog of car /identify). Until that
+  // wire lands it stays null and the brain falls back to the curated offline set.
+  conversation: null,
   roasterId: "mama",
   context: [],
 };
@@ -31,6 +35,7 @@ const DEFAULT_INPUT = {
  * (structured set + research + grade), not a hand-maintained flat stub.
  */
 const PREVIEW_RESULT = offlineBrain({
+  subject: cfg("id"),
   carPhoto: { present: true },
   car: { label: cfg("brain.subjectNoun") },
   roasterId: "mama",
@@ -152,11 +157,13 @@ export function useFlow() {
 }
 
 /** Strip image blobs before handing the input to the brain — it only needs
- *  presence + car identity, not the base64 photos. */
+ *  presence + subject identity, not the base64 photos. Also stamps the subject id
+ *  so the brain dispatches to the right grounding strategy + offline sets. */
 function sanitizeForBrain(input) {
   const carPhoto = input.carPhoto || {};
   return {
     ...input,
+    subject: cfg("id"),
     carPhoto: { present: !!carPhoto.present, identified: carPhoto.identified ?? null },
   };
 }

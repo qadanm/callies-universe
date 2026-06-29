@@ -7,6 +7,9 @@
 /** The five axes the grader scores, 0–10. */
 export const AXES = ["funny", "human", "specific", "edge", "voice"];
 
+// The DEFAULT (car) axis guidance. Subjects override the subject-specific axes
+// (specific, edge) via their pack's framing.axisDescriptions (see src/subjects/
+// framing.js); the axis NAMES, gates, and weights are shared across all subjects.
 export const AXIS_DESCRIPTIONS = {
   funny: "Would a real club audience laugh out loud, not groan? Is there a genuine, earned laugh?",
   human:

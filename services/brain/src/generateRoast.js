@@ -12,20 +12,12 @@
 
 import { createClaudeModel } from "./model/claude.js";
 import { resolvePerformer } from "./persona.js";
-import { researchCar } from "./research/researchCar.js";
+import { resolveSubjectPack } from "./subjects/index.js";
 import { defaultResearchCache, createResearchCache } from "./cache.js";
 import { writeSet } from "./writing/writeSet.js";
 import { gradeSet, pickBest } from "./grading/gradeSet.js";
 import { buildResult } from "./assemble.js";
 import { offlineBrain } from "./fallback/offlineBrain.js";
-
-// A representative, very-roastable default until photo-ID lands. Heavily memed,
-// so the live path has real material to ground against even in the app.
-const DEFAULT_CAR = { year: 2006, make: "Chrysler", model: "PT Cruiser", _defaulted: true };
-
-function normalizeCar(input) {
-  return input.car || input.carPhoto?.identified || { ...DEFAULT_CAR };
-}
 
 /**
  * @param {import("../contract").RoastInput} input
@@ -57,13 +49,18 @@ export async function generateRoast(input) {
     ? createResearchCache({ cacheMode: "memory" })
     : defaultResearchCache(config);
 
+  // The subject pack owns everything subject-specific: how to ground the roast,
+  // the offline sets, and the prompt framing. Unknown/missing subject → car.
+  const pack = resolveSubjectPack(input.subject);
+
   const started = Date.now();
   try {
     const performer = resolvePerformer(input.roasterId);
-    const car = normalizeCar(input);
-    // Research + grading run on the cheap utility model; writing on the writer.
-    // Research is cached per car, so the whole cast roasts one car off one pass.
-    const research = await researchCar(car, models.utility, cache);
+    // STEP 1 — ground the roast in the subject (car → live web research; texts →
+    // extract the conversation). Research + grading run on the cheap utility model;
+    // writing on the writer. Car research is cached so the whole cast roasts one
+    // car off one pass.
+    const research = await pack.ground(input, models.utility, cache, config);
 
     const N = clamp(config.candidates ?? 2, 1, 6);
     const maxRounds = clamp(config.maxRounds ?? 2, 1, 4);
@@ -77,11 +74,11 @@ export async function generateRoast(input) {
       // Generate N candidates in parallel, then grade them in parallel.
       const sets = await Promise.all(
         Array.from({ length: N }, (_, i) =>
-          writeSet(performer, research, input.context, models.write, { variant: round * N + i })
+          writeSet(performer, research, input.context, models.write, { variant: round * N + i, framing: pack.framing })
         )
       );
       const graded = await Promise.all(
-        sets.map(async (set) => ({ set, grade: await gradeSet(set, performer, research, models.utility) }))
+        sets.map(async (set) => ({ set, grade: await gradeSet(set, performer, research, models.utility, { framing: pack.framing }) }))
       );
       allCandidates = allCandidates.concat(graded);
 

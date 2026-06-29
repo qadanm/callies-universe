@@ -9,6 +9,12 @@
 // hers in her rhythm; Kenji's is devastating minimalism. The persona's `form`,
 // `rhythm`, `jokeKinds`, `crowdWork`, and `signatureMoves` drive the SHAPE; the
 // car research supplies the material.
+//
+// Subject-specific wording (what's being roasted, the per-take angles) comes from
+// the pack's `framing` (see ../subjects/framing.js); everything else is shared.
+// `framing` defaults to CAR_FRAMING so direct callers stay unchanged.
+
+import { CAR_FRAMING } from "../subjects/framing.js";
 
 const SET_SCHEMA = {
   type: "object",
@@ -36,31 +42,24 @@ const SET_SCHEMA = {
   },
 };
 
-// Per-candidate angle nudges → genuine variety across best-of-N candidates
-// (without changing who the character is).
-const ANGLES = [
-  "Lead with the car's single most-roasted real flaw and build the set around it.",
-  "Open with crowd work / a direct address, then pivot into the car's reputation.",
-  "Structure it as an escalating run — each beat worse than the last, ending on the hardest line.",
-  "Build around one specific, true, surprising detail from the research most people don't know.",
-  "Frame the whole set through this character's signature device, start to finish.",
-];
-
 /**
+ * Build the {system, user} messages for one set-writing call. Pure (no model
+ * call) so it can be asserted byte-for-byte in tests. With CAR_FRAMING this
+ * reproduces the original car prompt exactly (see scripts/subjects-check.mjs).
+ *
  * @param {object} performer  resolved performer (persona seed + comedic DNA)
- * @param {import("../../contract").CarResearch} research
+ * @param {object} research   the grounding material (subject-neutral shape)
  * @param {string[]} context  user heat/angle/vibe chips
- * @param {object} model
- * @param {{ variant?: number }} [opts]
- * @returns {Promise<import("../../contract").StandUpSet>}
+ * @param {import("../subjects/framing.js").SubjectFraming} framing
+ * @param {number} variant    best-of-N take index (selects the angle)
+ * @returns {{ system: string, user: string }}
  */
-export async function writeSet(performer, research, context, model, opts = {}) {
-  const variant = opts.variant ?? 0;
-  const angle = ANGLES[variant % ANGLES.length];
+export function buildWriteMessages(performer, research, context, framing, variant = 0) {
+  const angle = framing.angles[variant % framing.angles.length];
   const chips = (context || []).filter(Boolean);
 
   const system = [
-    `You are a stand-up comedian performing a short, brutal, GENUINELY FUNNY roast of a specific car.`,
+    `You are a stand-up comedian performing a short, brutal, GENUINELY FUNNY roast of ${framing.roastTarget}.`,
     ``,
     `WHO YOU ARE — perform as this exact comic. This is not an accent; it is a comedic identity that shapes the FORM of your set:`,
     `• Name: ${performer.name} (${performer.tag})`,
@@ -76,8 +75,8 @@ export async function writeSet(performer, research, context, model, opts = {}) {
     `HARD RULES — these are the product bar, not suggestions:`,
     `1. GENUINELY FUNNY. A real club audience laughs, not groans. No groaners, no pun-for-pun's-sake.`,
     `2. NEVER SOUNDS LIKE AI. No corny phrasing, no "in a world where", no "let's just say", no tidy "but hey", no try-hard wordplay, no explaining the joke. If a line could be a generic AI roast, cut it.`,
-    `3. USE THE SPECIFIC RESEARCH. Build on this car's REAL reputation and known problems below — not generic "your car is old" filler. Specificity is the funny.`,
-    `4. PG-13, pushed HARD but never over: edgy, never slurs, never sexual, never cruel about a real person. Aim every joke at the CAR, never at a group, culture, or the owner's worth. ${performer.avoid}`,
+    `3. USE THE SPECIFIC RESEARCH. Build on ${framing.possessive} REAL reputation and known problems below — not generic "${framing.genericFiller}" filler. Specificity is the funny.`,
+    `4. PG-13, pushed HARD but never over: edgy, never slurs, never sexual, never cruel about a real person. Aim every joke at ${framing.aimTarget}, never at a group, culture, or the ${framing.ownerNoun}'s worth. ${performer.avoid}`,
     `5. IN YOUR VOICE AND YOUR COMEDIC STRUCTURE — the set's shape must be unmistakably yours, not a generic set with your accent painted on.`,
     ``,
     `Give the set a short, punchy BIT TITLE (2–4 words) in "title" — it's the billing for tonight's set.`,
@@ -85,7 +84,7 @@ export async function writeSet(performer, research, context, model, opts = {}) {
   ].join("\n");
 
   const user = [
-    `Perform your roast of the ${labelOf(research)}.`,
+    `Perform your roast of ${framing.subjectPhrase(research)}.`,
     ``,
     `THE REAL MATERIAL (research — ground your set in this):`,
     `Reputation: ${research.summary}`,
@@ -98,6 +97,21 @@ export async function writeSet(performer, research, context, model, opts = {}) {
   ]
     .filter(Boolean)
     .join("\n");
+
+  return { system, user };
+}
+
+/**
+ * @param {object} performer  resolved performer (persona seed + comedic DNA)
+ * @param {object} research   the grounding material (subject-neutral shape)
+ * @param {string[]} context  user heat/angle/vibe chips
+ * @param {object} model
+ * @param {{ variant?: number, framing?: object }} [opts]
+ * @returns {Promise<import("../../contract").StandUpSet>}
+ */
+export async function writeSet(performer, research, context, model, opts = {}) {
+  const framing = opts.framing || CAR_FRAMING;
+  const { system, user } = buildWriteMessages(performer, research, context, framing, opts.variant ?? 0);
 
   const set = await model.json({
     system,
@@ -114,9 +128,4 @@ export async function writeSet(performer, research, context, model, opts = {}) {
     beats: set.beats || [],
     performanceNote: set.performanceNote || "",
   };
-}
-
-function labelOf(research) {
-  const c = research.car || {};
-  return c.label || [c.year, c.make, c.model, c.trim].filter(Boolean).join(" ") || "car";
 }

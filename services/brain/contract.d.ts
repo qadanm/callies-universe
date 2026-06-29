@@ -52,11 +52,18 @@ export interface CarIdentity {
 
 /** What the app collects across the flow and hands to the brain. */
 export interface RoastInput {
+  /** Which subject is being roasted (selects the grounding strategy, offline sets,
+   *  and prompt framing). Defaults to "car". Threaded by the app from its subject
+   *  config; unknown/missing → the car reference subject. */
+  subject?: string;
   /** The car photo. Presence is tracked; `identified` carries any photo-derived ID. */
   carPhoto?: { present: boolean; identified?: CarIdentity | null };
   /** The car to research. Optional: the brain defaults to a representative car
    *  when neither this nor a photo-derived id is present (until photo-ID ships). */
   car?: CarIdentity | null;
+  /** For text-style subjects: the conversation transcript (read from the screenshot
+   *  by an upstream vision pass), which the subject's grounding extracts material from. */
+  conversation?: string;
   /** Which cast member performs the roast. */
   roasterId: RoasterId;
   /** Free-form context chips the user toggled (heat / angle / vibe). */
@@ -119,6 +126,29 @@ export interface CarResearch {
   offline?: boolean;
 }
 
+/** Structured material for a text-message subject (Roast My Texts). */
+export interface TextsResearch {
+  /** Keyed identity (mirrors CarResearch.car) so the app's
+   *  result.research[subject.research.key] lookup resolves for texts too. */
+  texts: { label: string };
+  summary: string;
+  runningJokes: string[];
+  knownProblems: string[];
+  whatPeopleSay: string[];
+  sources: ResearchSource[];
+  defaulted?: boolean;
+  offline?: boolean;
+}
+
+/**
+ * The grounding material a roast was built on. Its exact shape varies by subject
+ * (each pack returns its own), but all variants share the common fields the writer
+ * and grader read: summary / runningJokes / knownProblems / whatPeopleSay / sources.
+ * Each variant also carries a keyed identity under its subject id (research.car,
+ * research.texts, …) for the app's display lookup.
+ */
+export type SubjectResearch = CarResearch | TextsResearch;
+
 /* ============================ THE SET ============================ */
 
 export type BeatType =
@@ -150,15 +180,17 @@ export interface StandUpSet {
 
 /* ============================ GRADE ============================ */
 
-/** The anti-cringe rubric, scored 0–10 per axis. */
+/** The anti-cringe rubric, scored 0–10 per axis. The axis NAMES are subject-agnostic;
+ *  the per-axis guidance the grader reads is subject-specific and lives in each pack's
+ *  framing (SubjectFraming.axisDescriptions in src/subjects/framing.js). */
 export interface RubricScores {
   /** Would a real audience laugh, not groan? */
   funny: number;
   /** Sounds human, not AI. The reject axis — low here fails outright. */
   human: number;
-  /** Grounded in THIS car's real, specific reputation (not generic filler). */
+  /** Grounded in THIS subject's real, specific material (not generic filler). */
   specific: number;
-  /** Pushes PG-13 hard without crossing; aimed at the car, never a group/culture. */
+  /** Pushes PG-13 hard without crossing; aimed at the subject, never a group/culture. */
   edge: number;
   /** In THIS character's voice and comedic structure. */
   voice: number;
@@ -228,8 +260,8 @@ export interface RoastResult {
   set: StandUpSet;
   /** Who performed it + their comedic identity. */
   performer: PerformerSummary;
-  /** The live research that grounded the set. */
-  research: CarResearch;
+  /** The live research that grounded the set (shape varies by subject). */
+  research: SubjectResearch;
   /** The grader's scores + verdict. */
   grade: Grade;
   /** Ordered Callie states to fire across the reveal (by core-state name). */
