@@ -140,3 +140,7 @@ brain-demo-*.md
 
 # Local render artifacts
 *.mp4
+.gstack/
+
+# gstack local QA artifacts
+.gstack/qa-reports/
