@@ -259,8 +259,10 @@ export function createApiServer(opts = {}) {
 
       if (req.method === "POST" && path === "/roast") {
         const input = await readJson(req); // sanitized RoastInput (no photo blobs)
-        if (!input || !input.roasterId) {
-          return json(res, 400, { error: "roasterId is required" });
+        // Single needs roasterId; the panel ("Green Room") needs roasterIds[]. Accept either.
+        const hasDuo = Array.isArray(input?.roasterIds) && input.roasterIds.length >= 2;
+        if (!input || (!input.roasterId && !hasDuo)) {
+          return json(res, 400, { error: "roasterId (single) or roasterIds[2] (panel) is required" });
         }
         const result = await generateRoast(input); // LIVE with ANTHROPIC_API_KEY, else offline
         return json(res, 200, result);
