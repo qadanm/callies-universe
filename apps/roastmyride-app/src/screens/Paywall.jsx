@@ -9,11 +9,12 @@ import { ScreenScroll, Eyebrow, H } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { buyBundle, restore } from "../services/purchases.js";
 
+// productId must match the App Store Connect IAP product + the RevenueCat product.
 const BUNDLES = [
-  { credits: 1, price: "$0.99", perRoast: "$0.99" },
-  { credits: 5, price: "$3.99", perRoast: "$0.80", best: true },
-  { credits: 15, price: "$8.99", perRoast: "$0.60" },
-  { credits: 40, price: "$19.99", perRoast: "$0.50" },
+  { credits: 1, price: "$0.99", perRoast: "$0.99", productId: "rmr_credits_1" },
+  { credits: 5, price: "$3.99", perRoast: "$0.80", best: true, productId: "rmr_credits_5" },
+  { credits: 15, price: "$8.99", perRoast: "$0.60", productId: "rmr_credits_15" },
+  { credits: 40, price: "$19.99", perRoast: "$0.50", productId: "rmr_credits_40" },
 ];
 
 export function Paywall() {
@@ -27,10 +28,21 @@ export function Paywall() {
     setBusy(true);
     try {
       const r = await buyBundle(BUNDLES[sel]);
-      if (r.granted) setCredits((c) => c + r.granted);
-      if (!r.redirected) go("/home"); // real provider redirects to checkout
+      if (r.granted) setCredits((c) => c + r.granted); // mock: instant local grant
+      if (r.viaWebhook) {
+        // Native IAP: credits are granted server-side (provider webhook → ledger);
+        // pull the new balance (brief retry for webhook latency).
+        setMsg("Unlocking your credits…");
+        for (let i = 0; i < 5; i++) {
+          const e = await restore().catch(() => null);
+          if (e && typeof e.credits === "number" && e.credits > credits) { setCredits(e.credits); break; }
+          await new Promise((res) => setTimeout(res, 1200));
+        }
+      }
+      if (!r.redirected) go("/home"); // web Stripe redirects to checkout instead
     } catch (e) {
       console.warn(`[paywall] purchase failed (${e && e.message})`);
+      setMsg("Purchase didn't go through — try again");
     } finally {
       setBusy(false);
     }

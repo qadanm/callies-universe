@@ -83,6 +83,12 @@ export function createApiServer(opts = {}) {
   // way, a completed payment grants credits to the ledger.
   const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
   const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+  const REVENUECAT_WEBHOOK_AUTH = process.env.REVENUECAT_WEBHOOK_AUTH; // shared bearer set in the RC dashboard
+  // product id → credits granted (consumables). Override with ROAST_PRODUCT_CREDITS (JSON).
+  const PRODUCT_CREDITS = (() => {
+    try { return JSON.parse(process.env.ROAST_PRODUCT_CREDITS); } catch { /* default below */ }
+    return { rmr_credits_1: 1, rmr_credits_5: 5, rmr_credits_15: 15, rmr_credits_40: 40 };
+  })();
   const PUBLIC_URL = process.env.ROAST_PUBLIC_URL || "http://localhost:5180";
   const pendingSessions = new Map(); // sessionId → { identity, credits }
   const centsOf = (price) => Math.round((parseFloat(String(price).replace(/[^0-9.]/g, "")) || 0) * 100);
@@ -211,14 +217,31 @@ export function createApiServer(opts = {}) {
       }
       if (req.method === "POST" && path === "/webhook") {
         const raw = await readRaw(req);
+        const parsed = JSON.parse(raw || "{}");
+
+        // RevenueCat (Apple/Play IAP, consumables) — shape: { event: { type, app_user_id, product_id } }.
+        if (parsed && parsed.event && parsed.event.type) {
+          if (REVENUECAT_WEBHOOK_AUTH && req.headers.authorization !== `Bearer ${REVENUECAT_WEBHOOK_AUTH}`) {
+            return json(res, 401, { error: "bad auth" });
+          }
+          const e = parsed.event;
+          const credits = PRODUCT_CREDITS[e.product_id];
+          if ((e.type === "NON_RENEWING_PURCHASE" || e.type === "INITIAL_PURCHASE") && credits && e.app_user_id) {
+            const bal = ledger.grant(e.app_user_id, credits);
+            return json(res, 200, { ok: true, credits: bal });
+          }
+          return json(res, 200, { ok: true, ignored: true });
+        }
+
+        // Stripe (web checkout)
         let event;
         if (STRIPE_WEBHOOK_SECRET) {
           if (!verifyStripeSig(raw, req.headers["stripe-signature"], STRIPE_WEBHOOK_SECRET)) {
             return json(res, 400, { error: "bad signature" });
           }
-          event = JSON.parse(raw);
+          event = parsed;
         } else {
-          event = JSON.parse(raw || "{}"); // TEST mode: accept { sessionId } (or a stripe-shaped event)
+          event = parsed; // TEST mode: accept { sessionId } (or a stripe-shaped event)
         }
         const sessionId = event?.data?.object?.id || event.sessionId;
         const meta = event?.data?.object?.metadata;
