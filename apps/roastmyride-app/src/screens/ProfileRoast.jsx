@@ -9,6 +9,7 @@ import { Button, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Eyebrow, H, stickyBar } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { loadCompressedImage } from "../photo.js";
+import { isNative, pickPhoto, haptic } from "../native.js";
 
 export function ProfileRoast() {
   const go = useNavigate();
@@ -36,6 +37,20 @@ export function ProfileRoast() {
     } catch (ex) {
       setErr(ex.message || "Couldn't read that photo.");
     }
+  };
+
+  // Native: camera/library sheet; web: file input.
+  const addPhoto = async () => {
+    haptic();
+    if (isNative()) {
+      const p = await pickPhoto();
+      if (p && p.dataUrl) {
+        update({ personal: { present: true, kind: mode, blur, dataUrl: p.dataUrl } });
+        setErr(null);
+        return;
+      }
+    }
+    if (fileRef.current) fileRef.current.click();
   };
 
   const toggleBlur = () => {

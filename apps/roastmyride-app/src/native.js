@@ -24,6 +24,52 @@ export async function haptic(style = "light") {
   try { await m?.Haptics?.impact?.({ style: Style }); } catch { /* ignore */ }
 }
 
+/** Native photo pick (camera or library sheet) → { dataUrl } or null. Web → null
+ *  (callers fall back to the <input type=file>). */
+export async function pickPhoto() {
+  const m = await plugin("@capacitor/camera");
+  if (!m || !m.Camera) return null;
+  try {
+    const photo = await m.Camera.getPhoto({
+      source: (m.CameraSource && m.CameraSource.Prompt) || "PROMPT",
+      resultType: (m.CameraResultType && m.CameraResultType.DataUrl) || "dataUrl",
+      quality: 82,
+      width: 1280,
+      correctOrientation: true,
+    });
+    return photo && photo.dataUrl ? { dataUrl: photo.dataUrl } : null;
+  } catch {
+    return null; // user cancelled / unavailable
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onloadend = () => resolve(String(r.result).split(",")[1] || "");
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+
+/** Share a Blob via the native share sheet (writes to cache first). @returns true
+ *  if shared natively; false on web / failure (callers fall back to download). */
+export async function shareFile(blob, filename, _mime) {
+  if (!isNative()) return false;
+  const fs = await plugin("@capacitor/filesystem");
+  const sh = await plugin("@capacitor/share");
+  if (!fs || !fs.Filesystem || !sh || !sh.Share) return false;
+  try {
+    const directory = (fs.Directory && fs.Directory.Cache) || "CACHE";
+    await fs.Filesystem.writeFile({ path: filename, data: await blobToBase64(blob), directory });
+    const { uri } = await fs.Filesystem.getUri({ path: filename, directory });
+    await sh.Share.share({ title: "RoastMyRide", files: [uri] });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** One-time native chrome setup: mark the document, set the status bar, hide splash. */
 export async function initNativeChrome() {
   if (!isNative()) return;

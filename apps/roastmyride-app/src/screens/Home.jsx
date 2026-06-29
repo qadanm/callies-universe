@@ -7,6 +7,7 @@ import { Button, Card, Badge, Callie, CallieHost } from "@callies-universe/core"
 import { ScreenScroll, Wordmark } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { loadCompressedImage } from "../photo.js";
+import { isNative, pickPhoto, haptic } from "../native.js";
 
 const uploadTarget = {
   width: "100%",
@@ -42,6 +43,20 @@ export function Home() {
     }
   };
 
+  // Native: the camera/library sheet; web: the file input.
+  const addPhoto = async () => {
+    haptic();
+    if (isNative()) {
+      const p = await pickPhoto();
+      if (p && p.dataUrl) {
+        update({ carPhoto: { present: true, dataUrl: p.dataUrl } });
+        setErr(null);
+        return;
+      }
+    }
+    if (fileRef.current) fileRef.current.click();
+  };
+
   return (
     <ScreenScroll>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -65,7 +80,7 @@ export function Home() {
           onChange={onPick}
           style={{ display: "none" }}
         />
-        <button onClick={() => fileRef.current && fileRef.current.click()} style={uploadTarget} aria-label="Add a car photo">
+        <button onClick={addPhoto} style={uploadTarget} aria-label="Add a car photo">
           {car.dataUrl ? (
             <>
               <img
@@ -86,7 +101,7 @@ export function Home() {
         {err && (
           <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
         )}
-        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => go(credits < 1 ? "/credits" : "/profile")}>
+        <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => { haptic(); go(credits < 1 ? "/credits" : "/profile"); }}>
           Roast my car
         </Button>
       </Card>

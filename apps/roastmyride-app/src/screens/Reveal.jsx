@@ -18,6 +18,7 @@ import { CookingProgress } from "../components/CookingProgress.jsx";
 import { ScreenScroll, Eyebrow, stickyBar } from "../components/ui.jsx";
 import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
 import { hasRoastApi, renderVideo, renderVideoAsync, renderPoster } from "../services/roastApi.js";
+import { shareFile, haptic } from "../native.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 
 const slugOf = (spec) => String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase();
@@ -33,7 +34,9 @@ export function Reveal() {
   const [renderStep, setRenderStep] = useState(0);
   const [renderPct, setRenderPct] = useState(null); // real % from the async job
 
-  const shareOrDownload = (blob, filename, mime) => {
+  const shareOrDownload = async (blob, filename, mime) => {
+    // Native share sheet first; then Web Share; then download.
+    if (await shareFile(blob, filename, mime)) return;
     const file = new File([blob], filename, { type: mime });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       return navigator.share({ files: [file], title: "RoastMyRide" }).catch(() => {});
@@ -66,6 +69,7 @@ export function Reveal() {
   };
 
   const saveVideo = async () => {
+    haptic();
     const spec = buildRenderSpec(roast, input);
     if (!hasRoastApi()) return downloadSpec(spec);
     setSaving(true);
@@ -91,6 +95,7 @@ export function Reveal() {
   // Save a shareable still (poster). Backend-only (renders a real PNG frame);
   // hidden when there's no backend.
   const saveImage = async () => {
+    haptic();
     const spec = buildRenderSpec(roast, input);
     setSavingImage(true);
     try {
