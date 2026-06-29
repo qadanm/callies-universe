@@ -31,22 +31,22 @@ export function Onboarding() {
           textAlign: "center",
         }}
       >
-        <CallieHost context="onboarding" size={180} bubble />
-        <Eyebrow>Meet your hype-cat</Eyebrow>
+        <CallieHost context="onboarding" size={180} />
+        <Eyebrow>Welcome to the show</Eyebrow>
         <H style={{ fontSize: 44 }}>
-          Hi, I'm Callie.
-          <br />I just react.
+          Callie won't
+          <br />roast you.
         </H>
-        <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: 0, maxWidth: 300 }}>
-          {cfg("onboarding.body")}
+        <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: 0, maxWidth: 320 }}>
+          Her comedians handle that. Bring {cfg("brain.subjectNoun")}, they cook it, and Callie reacts from the corner — on your side the whole time. Clever, never cruel.
         </p>
       </div>
       <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
         <Button variant="primary" size="lg" block onClick={() => go("/home")}>
           {cfg("onboarding.cta")}
         </Button>
-        <Button variant="ghost" block onClick={() => go("/home")}>
-          I'll look around first
+        <Button variant="ghost" block onClick={() => go("/cast")}>
+          Meet the cast first
         </Button>
       </div>
     </div>

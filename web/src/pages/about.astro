@@ -1,27 +1,65 @@
 ---
 import Base from "../layouts/Base.astro";
-import { Callie } from "@callies-universe/core";
+import { Callie, Roaster } from "@callies-universe/core";
 import { SHOWS } from "../config/sites.js";
 const live = SHOWS.filter((s) => s.status === "live").length;
 const total = SHOWS.length;
+// Callie's whole vocabulary — she only reacts. A few of her expressive states.
+const reactions = ["delighted", "savage", "celebrating", "cooking", "comfort", "curious"];
+const STAR = "polygon(50% 0,59% 18%,78% 8%,75% 30%,97% 28%,82% 46%,100% 60%,78% 64%,86% 88%,63% 78%,55% 100%,44% 79%,22% 90%,28% 66%,4% 64%,22% 48%,2% 32%,24% 30%,20% 8%,40% 18%)";
 ---
-<Base title="About" description="What Callie's Universe is, and why it exists.">
-  <section class="hero" style="padding-bottom:24px;">
+<Base title="About Callie" description="Who Callie is — the cat who runs the studio, but never roasts you.">
+  <section class="hero" style="padding-bottom:18px;">
     <div class="container">
-      <p class="eyebrow">About the studio</p>
-      <h1>A comedy studio<br/>with one cat in charge.</h1>
+      <div style="position:relative;display:inline-grid;place-items:center;margin:0 auto 4px;">
+        <span class="ink" aria-hidden="true" style={`position:absolute;inset:-20px;background:var(--accent-bright);clip-path:${STAR};`}></span>
+        <div style="position:relative;"><Callie state="celebrating" size={150} ink /></div>
+      </div>
+      <p class="eyebrow">Meet the host</p>
+      <h1 class="title-stroke">Meet <span class="hl"><span class="hl__mark"></span><span class="hl__tx">Callie</span></span>.</h1>
+      <p class="lede">Callie loves you way too much to roast you — so she hired comedians who don't.</p>
     </div>
   </section>
-  <section class="section" style="padding-top:24px;">
+
+  <section class="section" style="padding-top:14px;padding-bottom:24px;">
     <div class="container prose">
-      <p style="font-size:19px;">Callie's Universe is a comedy studio that makes one thing really well: short, sharable roasts. You submit something — your car, your texts, your outfit — and an original cast of AI comedians turns it into a tiny podcast you'll actually want to post.</p>
-      <h2>One cast, many shows</h2>
-      <p>Every “Roast My ___” app shares the same universe: the same comedians, the same mascot (Callie), the same craft. We build one engine and one set of characters, then point them at new things to roast. {live} of {total} shows are live today; more are in the green room.</p>
-      <h2>Original characters, on purpose</h2>
-      <p>Callie and every comedian are original creations — designed, written, and voiced as fictional characters we own. They're not impersonations of real people. That's both a creative choice and how we keep the universe ours.</p>
+      <h2>Why there's a cat</h2>
+      <p>Callie runs the studio — it's literally her universe. The catch: she's a calico with a heart three sizes too big. She'd start a roast and apologize halfway through. So she did the next best thing — she hired a cast of comedians who <em>won't</em> apologize, gave them a stage, and pulled up a chair in the corner to watch. The comedians bring the heat. Callie's just there, losing it, on your side the whole time.</p>
+
+      <h2>She never says a word</h2>
+      <p>Callie has never spoken. Nobody's sure she can. She doesn't need to — her whole job is to feel it <em>with</em> you, and her face says everything.</p>
+    </div>
+  </section>
+
+  <section class="section band" style="background:var(--accent-700);padding:46px 0;">
+    <span class="band__dots halftone"></span>
+    <div class="container" style="text-align:center;">
+      <p class="eyebrow" style="color:rgba(255,255,255,0.82);">Her whole vocabulary</p>
+      <h2 style="color:#fff;font-size:30px;margin:6px 0 26px;text-shadow:3px 3px 0 rgba(0,0,0,0.22);">No words. Just reactions.</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
+        {reactions.map((s) => (
+          <div style="background:#fff;border:var(--ink-outline);border-radius:var(--radius-lg);corner-shape:var(--corner-card);box-shadow:var(--shadow-sticker-md);padding:6px;">
+            <Callie state={s} size={86} ink />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>One studio, many shows</h2>
+      <p>Every “Roast My ___” show shares the same universe: the same host, the same cast of comedians, the same craft. {live} of {total} shows are live; the rest are warming up in the green room. Find a comic you love in one show and you'll find them in the next.</p>
+
       <h2>Clever, never cruel</h2>
-      <p>The comedy always aims at the thing, never the person. It's a roast of your car — not of you.</p>
-      <div style="display:flex;justify-content:center;margin-top:32px;"><Callie state="celebrating" size={140} /></div>
+      <p>The comedy always aims at the <em>thing</em> — the car, the texts, the fit — never at you. Callie is the proof: she'd never let it get mean. It's a roast of your stuff, with a cat who's firmly on your team.</p>
+
+      <p style="margin-top:6px;color:color-mix(in srgb,var(--ink) 55%,transparent);font-size:15px;">Callie and every comedian are original fictional characters we created and own — not impersonations of anyone real. Deep cut: her full name is Calliope. Yes, like the muse. No, she won't talk about it.</p>
+
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px;">
+        <a class="btn" href="/characters">Meet the cast →</a>
+        <a class="btn btn--ghost" href="/#shows">See the shows</a>
+      </div>
     </div>
   </section>
 </Base>

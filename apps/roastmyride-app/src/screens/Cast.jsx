@@ -97,9 +97,12 @@ export function Cast() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-3)" }}>
-          <CallieHost context="cast" size={48} />
+          <div style={{ position: "relative", flexShrink: 0, lineHeight: 0 }}>
+            <CallieHost context="cast" size={48} />
+            <span aria-hidden="true" style={{ position: "absolute", bottom: -6, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 9, letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--ink)", color: "var(--canvas)", padding: "1px 6px", borderRadius: "var(--radius-pill)", cornerShape: "var(--corner-chip)" }}>★ host</span>
+          </div>
           <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>
-            {mode === "panel" ? "Pick two — they'll roast you back and forth." : "Callie hosts the show — the comic does the roasting."}
+            {mode === "panel" ? "Pick two — they'll roast you back and forth." : "Callie hosts — she never roasts you. The 🎤 comics do."}
           </span>
         </div>
 
