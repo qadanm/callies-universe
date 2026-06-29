@@ -1,8 +1,10 @@
-// Native (Capacitor) bridge — ZERO static imports of @capacitor/* so the web build
-// never depends on those packages. Detection is a runtime check of the global
-// `window.Capacitor` the native runtime injects; plugins load via variable-specifier
-// dynamic import + @vite-ignore (the same trick the brain uses for the Anthropic SDK),
-// so Vite leaves them alone and the web bundle stays clean. Everything no-ops on web.
+// Native (Capacitor) bridge — the WEB bundle never imports @capacitor/* (keeps it
+// clean). Capacitor's native runtime injects every installed plugin on the global
+// `window.Capacitor.Plugins` (the @capacitor/* npm packages are just thin proxies to
+// these), so we read that global directly. NOTE: do NOT `import("@capacitor/...")`
+// at runtime — a bare specifier can't be resolved inside the WKWebView (it isn't
+// bundled), so every plugin would silently no-op ON DEVICE (stuck splash, dead
+// camera/share). Reading window.Capacitor.Plugins is the pattern that actually works.
 
 import { cfg } from "./subjects/index.js";
 
@@ -10,31 +12,28 @@ export function isNative() {
   return typeof window !== "undefined" && !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
 
-async function plugin(spec) {
-  if (!isNative()) return null;
-  try {
-    return await import(/* @vite-ignore */ spec);
-  } catch {
-    return null; // plugin not installed / unavailable
-  }
+/** A registered native plugin from the runtime-injected registry (null on web). */
+function plugin(name) {
+  const P = (typeof window !== "undefined" && window.Capacitor && window.Capacitor.Plugins) || {};
+  return P[name] || null;
 }
 
 /** A light haptic tap on a primary action (no-op on web). */
 export async function haptic(style = "light") {
-  const m = await plugin("@capacitor/haptics");
+  const Haptics = plugin("Haptics");
   const Style = style === "heavy" ? "HEAVY" : style === "medium" ? "MEDIUM" : "LIGHT";
-  try { await m?.Haptics?.impact?.({ style: Style }); } catch { /* ignore */ }
+  try { await Haptics?.impact?.({ style: Style }); } catch { /* ignore */ }
 }
 
 /** Native photo pick (camera or library sheet) → { dataUrl } or null. Web → null
  *  (callers fall back to the <input type=file>). */
 export async function pickPhoto() {
-  const m = await plugin("@capacitor/camera");
-  if (!m || !m.Camera) return null;
+  const Camera = plugin("Camera");
+  if (!Camera || !Camera.getPhoto) return null;
   try {
-    const photo = await m.Camera.getPhoto({
-      source: (m.CameraSource && m.CameraSource.Prompt) || "PROMPT",
-      resultType: (m.CameraResultType && m.CameraResultType.DataUrl) || "dataUrl",
+    const photo = await Camera.getPhoto({
+      source: "PROMPT",        // CameraSource.Prompt
+      resultType: "dataUrl",   // CameraResultType.DataUrl
       quality: 82,
       width: 1280,
       correctOrientation: true,
@@ -58,14 +57,13 @@ function blobToBase64(blob) {
  *  if shared natively; false on web / failure (callers fall back to download). */
 export async function shareFile(blob, filename, _mime) {
   if (!isNative()) return false;
-  const fs = await plugin("@capacitor/filesystem");
-  const sh = await plugin("@capacitor/share");
-  if (!fs || !fs.Filesystem || !sh || !sh.Share) return false;
+  const Filesystem = plugin("Filesystem");
+  const Share = plugin("Share");
+  if (!Filesystem || !Share) return false;
   try {
-    const directory = (fs.Directory && fs.Directory.Cache) || "CACHE";
-    await fs.Filesystem.writeFile({ path: filename, data: await blobToBase64(blob), directory });
-    const { uri } = await fs.Filesystem.getUri({ path: filename, directory });
-    await sh.Share.share({ title: cfg("appName"), files: [uri] });
+    await Filesystem.writeFile({ path: filename, data: await blobToBase64(blob), directory: "CACHE" });
+    const { uri } = await Filesystem.getUri({ path: filename, directory: "CACHE" });
+    await Share.share({ title: cfg("appName"), files: [uri] });
     return true;
   } catch {
     return false;
@@ -76,11 +74,11 @@ export async function shareFile(blob, filename, _mime) {
 export async function initNativeChrome() {
   if (!isNative()) return;
   document.documentElement.classList.add("native");
-  const sb = await plugin("@capacitor/status-bar");
+  const StatusBar = plugin("StatusBar");
   try {
-    await sb?.StatusBar?.setStyle?.({ style: "DARK" }); // dark text on the light app bg
-    await sb?.StatusBar?.setOverlaysWebView?.({ overlay: false });
+    await StatusBar?.setStyle?.({ style: "DARK" }); // dark text on the light app bg
+    await StatusBar?.setOverlaysWebView?.({ overlay: false });
   } catch { /* ignore */ }
-  const ss = await plugin("@capacitor/splash-screen");
-  try { await ss?.SplashScreen?.hide?.(); } catch { /* ignore */ }
+  const SplashScreen = plugin("SplashScreen");
+  try { await SplashScreen?.hide?.(); } catch { /* ignore */ }
 }

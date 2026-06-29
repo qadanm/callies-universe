@@ -1,0 +1,51 @@
+{
+  "originHash" : "1d426fc2dd7f9b775f8a7ea4c6b1155b5ba9e270d4e99cb33c44345572864559",
+  "pins" : [
+    {
+      "identity" : "capacitor-swift-pm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/capacitor-swift-pm.git",
+      "state" : {
+        "revision" : "2231987d85b8b0b289320b1d0947b4ae8345cde4",
+        "version" : "8.4.1"
+      }
+    },
+    {
+      "identity" : "ion-ios-camera",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/ion-ios-camera.git",
+      "state" : {
+        "revision" : "2cd4f06b0ece21b6458e23357280c51f94bfceb8",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "ion-ios-filesystem",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/ion-ios-filesystem.git",
+      "state" : {
+        "revision" : "0d81e26e828ff9582807e2339112cedf2e0fab85",
+        "version" : "1.1.2"
+      }
+    },
+    {
+      "identity" : "purchases-hybrid-common",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-hybrid-common.git",
+      "state" : {
+        "revision" : "c2eb50e2de900a226473e41188d51519b171853d",
+        "version" : "18.15.1"
+      }
+    },
+    {
+      "identity" : "purchases-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios-spm",
+      "state" : {
+        "revision" : "629a56ecef190469914b8f0914bf0446363eb09f",
+        "version" : "5.78.0"
+      }
+    }
+  ],
+  "version" : 3
+}
