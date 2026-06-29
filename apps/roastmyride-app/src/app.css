@@ -130,3 +130,21 @@ body {
    video export), so it needs no keyframes. Just the scrubber-fill base width
    (owned by the rAF loop via a ref — never set in JSX, or a re-render resets it). */
 .rmr-scrub-fill { width: 0; }
+
+/* ── Native (Capacitor) shell ──────────────────────────────────────────────── */
+/* On a real device we fill the screen (no simulated bezel), pad for the notch +
+   home indicator via safe-area insets, and strip the web-isms (overscroll bounce,
+   tap highlight, text selection, pinch zoom) so it reads as a native app. */
+html.native, html.native body { margin: 0; height: 100%; background: var(--canvas); overscroll-behavior: none; }
+html.native body { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; touch-action: manipulation; }
+html.native :not(input):not(textarea):not([contenteditable]) { -webkit-user-select: none; user-select: none; }
+.native-app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow: hidden;
+}
+.native-app > .stage { flex: 1; min-height: 0; }

@@ -1,0 +1,15 @@
+{
+  "appId": "com.callies.roastmyride",
+  "appName": "RoastMyRide",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#FFF6EC"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#FFF6EC"
+    }
+  }
+}

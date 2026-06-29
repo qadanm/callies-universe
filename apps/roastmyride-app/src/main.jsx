@@ -13,9 +13,13 @@ import "../theme.css";                       // [ROASTMYRIDE-NEW] accent slot
 import "./app.css";                          // [ROASTMYRIDE-NEW] decoration layer
 
 import { App } from "./App.jsx";
+import { initNativeChrome } from "./native.js";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
+
+// Native-only chrome (status bar, hide splash, mark <html class="native">). No-op on web.
+initNativeChrome();

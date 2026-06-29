@@ -16,6 +16,7 @@ import {
 import { FlowProvider } from "./flow/FlowContext.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { OfflineBanner } from "./components/OfflineBanner.jsx";
+import { isNative } from "./native.js";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
 import { ProfileRoast } from "./screens/ProfileRoast.jsx";
@@ -80,6 +81,22 @@ function TabBar() {
 }
 
 function Layout() {
+  // Native (Capacitor): fill the real device — no simulated phone bezel, no fake
+  // status bar, no dev picker. Safe-area insets come from the .native-app CSS.
+  if (isNative()) {
+    return (
+      <div className="native-app">
+        <OfflineBanner />
+        <div className="stage">
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </div>
+        <TabBar />
+      </div>
+    );
+  }
+  // Web: the cute phone frame + dev picker (a desktop preview affordance).
   return (
     <div className="stage-wrap">
       <DevPicker />
