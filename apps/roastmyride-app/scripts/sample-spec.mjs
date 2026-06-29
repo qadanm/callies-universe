@@ -20,10 +20,10 @@ const spec = {
   performerName: result.roasterName,
   bit: su.bit,
   reaction: result.reaction,
-  carLabel: car.label,
+  subjectLabel: car.label,
   engineLabel: result.engine === "offline" ? "offline" : undefined,
   beats: su.beats,
-  carPhoto: null, // a dataUrl at runtime; placeholder slot when null
+  subjectPhoto: null, // a dataUrl at runtime; placeholder slot when null
 };
 
 writeFileSync(outFile, JSON.stringify(spec, null, 2));

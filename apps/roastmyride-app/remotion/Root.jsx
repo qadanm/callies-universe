@@ -16,9 +16,9 @@ const DEFAULT_PROPS = {
   performerName: "Mama Denièce",
   bit: "Baby, No",
   reaction: "savage",
-  carLabel: "your ride",
+  subjectLabel: "your ride",
   engineLabel: "offline",
-  carPhoto: null,
+  subjectPhoto: null,
   beats: [
     { type: "setup", text: "Mm-mm-MM. Baby. Come here." },
     { type: "crowd", text: "You see this paint? You SEE it?" },

@@ -4,6 +4,8 @@
 // dynamic import + @vite-ignore (the same trick the brain uses for the Anthropic SDK),
 // so Vite leaves them alone and the web bundle stays clean. Everything no-ops on web.
 
+import { cfg } from "./subjects/index.js";
+
 export function isNative() {
   return typeof window !== "undefined" && !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
@@ -63,7 +65,7 @@ export async function shareFile(blob, filename, _mime) {
     const directory = (fs.Directory && fs.Directory.Cache) || "CACHE";
     await fs.Filesystem.writeFile({ path: filename, data: await blobToBase64(blob), directory });
     const { uri } = await fs.Filesystem.getUri({ path: filename, directory });
-    await sh.Share.share({ title: "RoastMyRide", files: [uri] });
+    await sh.Share.share({ title: cfg("appName"), files: [uri] });
     return true;
   } catch {
     return false;

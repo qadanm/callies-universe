@@ -13,12 +13,12 @@ if (!browser) {
 }
 
 const SPEC = {
-  comedianId: "mama", performerName: "Mama Denièce", bit: "Baby, No", reaction: "savage", carLabel: "your ride",
+  comedianId: "mama", performerName: "Mama Denièce", bit: "Baby, No", reaction: "savage", subjectLabel: "your ride",
   beats: [
     { type: "setup", text: "Mm-mm-MM. Baby. Come here." },
     { type: "punch", text: "This paint job is ", punch: "a cry for help", tail: "." },
   ],
-  carPhoto: null,
+  subjectPhoto: null,
 };
 
 const srv = createApiServer({ offline: true }); // silent voice, REAL render

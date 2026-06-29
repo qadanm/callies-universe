@@ -6,8 +6,8 @@
 // is frame-identical to what plays on screen.
 //
 // inputProps (the "scene spec", built app-side at save time, serialisable):
-//   { comedianId, performerName, bit, reaction, carLabel, engineLabel,
-//     beats: StandupBeat[], carPhoto: dataUrl|null }
+//   { comedianId, performerName, bit, reaction, subjectLabel, engineLabel,
+//     beats: StandupBeat[], subjectPhoto: dataUrl|null }
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
@@ -65,8 +65,8 @@ export function StageVideo(props) {
       <StageScene
         comedianId={props.comedianId}
         performerName={props.performerName}
-        carLabel={props.carLabel}
-        carPhoto={props.carPhoto || null}
+        carLabel={props.subjectLabel}
+        carPhoto={props.subjectPhoto || null}
         segments={segments}
         timeMs={timeMs}
         reaction={props.reaction || "savage"}
