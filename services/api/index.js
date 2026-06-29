@@ -128,7 +128,7 @@ export function createApiServer(opts = {}) {
     // permissive CORS — the app is served from a different port (dev/self-host)
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "content-type");
+    res.setHeader("Access-Control-Allow-Headers", "content-type, x-roast-identity");
     if (req.method === "OPTIONS") return end(res, 204, "");
 
     let url;
