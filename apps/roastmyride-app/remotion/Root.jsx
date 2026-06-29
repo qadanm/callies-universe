@@ -4,7 +4,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { StageVideo } from "./StageVideo.jsx";
-import { buildTimeline } from "../src/standup.js";
+import { buildTimeline, panelWindows } from "../src/standup.js";
 
 export const FPS = 30;
 export const WIDTH = 1080;
@@ -38,7 +38,7 @@ export function RemotionRoot() {
       defaultProps={DEFAULT_PROPS}
       calculateMetadata={({ props }) => {
         const durationsMs = Array.isArray(props.audio) ? props.audio.map((a) => a && a.durationMs) : undefined;
-        const { totalMs } = buildTimeline(props.beats || [], { durationsMs });
+        const { totalMs } = buildTimeline(props.beats || [], { durationsMs, ...panelWindows(props.format) });
         return { durationInFrames: Math.max(1, Math.round((totalMs / 1000) * FPS)) };
       }}
     />

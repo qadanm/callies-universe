@@ -92,6 +92,15 @@ const LAUGH_MS = { punch: 750, closer: 900, crowd: 650, setup: 150 };
 // shift by LEAD_MS, so the per-beat audio mapping is untouched.
 const LEAD_MS = 1300;
 const TAIL_MS = 1700;
+// The panel opens with a branded intro (Callie's Universe ident → show title →
+// submission) and closes on a branded endcard, so it needs longer chrome windows.
+const PANEL_LEAD_MS = 2700;
+const PANEL_TAIL_MS = 3400;
+
+/** Extra lead/tail for the panel's branded intro + endcard (empty → single defaults). */
+export function panelWindows(format) {
+  return format === "panel" ? { leadMs: PANEL_LEAD_MS, tailMs: PANEL_TAIL_MS } : {};
+}
 
 function beatDurationMs(beat) {
   const words = beat.text ? beat.text.trim().split(/\s+/).filter(Boolean).length : 0;

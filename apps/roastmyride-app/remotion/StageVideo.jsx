@@ -12,7 +12,7 @@ import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
 import { PodcastScene } from "../src/components/PodcastScene.jsx";
-import { buildTimeline } from "../src/standup.js";
+import { buildTimeline, panelWindows } from "../src/standup.js";
 import { sfxFor } from "../src/sfx.js";
 
 const GAMEPLAY_VOL = 0.18; // gameplay loop audio, ducked under the VO
@@ -27,7 +27,7 @@ export function StageVideo(props) {
   // When voiced, pace the timeline to the real per-beat audio durations so the
   // captions track the spoken performance exactly.
   const durationsMs = audio ? audio.map((a) => a && a.durationMs) : undefined;
-  const { segments, totalMs, leadMs, tailMs } = buildTimeline(props.beats || [], { durationsMs });
+  const { segments, totalMs, leadMs, tailMs } = buildTimeline(props.beats || [], { durationsMs, ...panelWindows(props.format) });
   const msToFrames = (ms) => Math.max(1, Math.round((ms / 1000) * fps));
 
   return (
@@ -41,6 +41,15 @@ export function StageVideo(props) {
       {/* optional music bed (none committed) — ducked under the VO */}
       {props.musicUrl && <Audio src={props.musicUrl} loop volume={MUSIC_VOL} />}
 
+      {/* Callie's Universe brand stings: the ident chime over the intro, the button
+          over the endcard. They sit in the gaps before/after the VO, so nothing clashes. */}
+      {props.introStingUrl && <Audio src={props.introStingUrl} volume={0.55} />}
+      {props.outroStingUrl && (
+        <Sequence from={msToFrames(totalMs - tailMs)} durationInFrames={msToFrames(tailMs)}>
+          <Audio src={props.outroStingUrl} volume={0.6} />
+        </Sequence>
+      )}
+
       {/* the comedian's voice — one clip per beat, started at the beat's time (full volume) */}
       {audio &&
         audio.map((clip, i) => {
@@ -53,8 +62,9 @@ export function StageVideo(props) {
           );
         })}
 
-      {/* synthesized stingers on the punch + closer beats */}
-      {segments.map((seg, i) => {
+      {/* synthesized stingers on the punch + closer beats — skipped for the panel,
+          a real podcast conversation has no canned rimshots */}
+      {props.format !== "panel" && segments.map((seg, i) => {
         const src = sfxFor(seg.beat && seg.beat.type);
         if (!src) return null;
         return (

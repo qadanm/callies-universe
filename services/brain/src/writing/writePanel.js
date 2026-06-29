@@ -85,7 +85,7 @@ export function buildPanelMessages(a, b, research, context, framing, variant = 0
     `GROUND IT in the real stuff about ${subject} below — its actual reputation and flaws; the specific true detail is what's funny, never generic "${framing.genericFiller}" filler.`,
     `PG-13: aim everything at ${framing.aimTarget}, never at a group, culture, or the ${framing.ownerNoun}'s worth. Two DISTINCT voices — a reader knows who's talking from the line alone.`,
     ``,
-    `Write 6–9 SHORT turns — reads in about 25–35 seconds. Mostly alternate (a quick double is fine). End naturally: they decide what they'd actually tell the person who sent it in, or just move on. NOT a mic drop.`,
+    `Write 5–7 SHORT turns — each line ideally under ~14 words; the whole exchange must read in UNDER about 30 seconds. Mostly alternate (a quick double is fine). End naturally: they decide what they'd actually tell the person who sent it in, or just move on. NOT a mic drop.`,
     `BEFORE YOU FINISH: reread every single line. If a line is built as "not X, it's Y", or any tidy symmetrical reframe, or could be lifted out as a stand-up punchline — REWRITE it as something a person would actually blurt out mid-conversation. When in doubt, make it a plain reaction, not a joke.`,
     `Give it a casual, episode-y title (2–4 words) in "title". Each turn: "speaker" ("a"/"b"), a "type", and in "punch" the single sharpest word/phrase of the one line that lands hardest (for the on-screen highlight).`,
   ].join("\n");

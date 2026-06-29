@@ -166,8 +166,9 @@ try {
   await clickName(/green room/i); // CTA enabled once two are picked → /cooking
   await seeText("Warming up");
   await seeText("The full set", 20000);
-  const panelText = await page.locator(".screen").innerText();
-  check(/Mama/.test(panelText) && /Tony/.test(panelText), "Panel reveal shows BOTH comics (the two-shot)");
+  await page.waitForTimeout(4000); // let the branded intro (Callie's Universe ident → title) play through to the hosts
+  const panelText = await page.locator('[data-testid="stage-scene"]').first().innerText();
+  check(/Mama/i.test(panelText) && /Tony/i.test(panelText), "Panel reveal shows BOTH comics (the two-shot)");
   check((await page.locator('[data-testid="stage-scene"]').count()) >= 1, "Panel roast reel (stage scene) renders");
 
   check(jsErrors.length === 0, `no uncaught JS errors (${jsErrors.length})`);

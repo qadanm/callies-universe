@@ -12,7 +12,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
 import { PodcastScene } from "./PodcastScene.jsx";
-import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
+import { toStandupSet, buildTimeline, activeIndexAt, mmss, panelWindows } from "../standup.js";
 import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
 import { cfg } from "../subjects/index.js";
@@ -32,7 +32,7 @@ export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
   // No backend / any failure → null → silent + word-count estimate, exactly as before.
   const voice = useRoastVoice(standup.comedianId, result.roasterName, standup.beats);
   const { segments, totalMs, leadMs, tailMs } = useMemo(
-    () => buildTimeline(standup.beats, voice ? { durationsMs: voice.durationsMs } : {}),
+    () => buildTimeline(standup.beats, { ...(voice ? { durationsMs: voice.durationsMs } : {}), ...panelWindows(standup.format) }),
     [standup, voice]
   );
 

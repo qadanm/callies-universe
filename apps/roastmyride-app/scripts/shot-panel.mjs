@@ -31,6 +31,7 @@ const carSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"
 
 // 2) Drive the full flow with the photo, capture frames across the timeline.
 const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
+if (process.env.SAFE_DEBUG) await page.addInitScript(() => { window.__SAFE_DEBUG = true; });
 try {
   await page.goto(`${BASE}/#/home`, { waitUntil: "networkidle" });
   await page.evaluate(() => localStorage.setItem("rmr.credits", "9"));
@@ -49,12 +50,13 @@ try {
   await scene.waitFor({ state: "visible", timeout: 8000 });
 
   const shots = [
-    [700, "hook"],
-    [3200, "a"],
-    [3200, "b"],
-    [3200, "c"],
-    [3600, "d"],
-    [4200, "outro"],
+    [400, "ident"],
+    [1100, "title"],
+    [900, "showcase"],
+    [3600, "content1"],
+    [6000, "content2"],
+    [8300, "verdict"],
+    [1700, "endcard"],
   ];
   let t = 0;
   for (const [wait, name] of shots) {
