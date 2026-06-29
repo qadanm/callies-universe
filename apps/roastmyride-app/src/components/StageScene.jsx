@@ -21,7 +21,7 @@
 import React, { useMemo } from "react";
 import { Roaster, Callie } from "@callies-universe/core";
 import { activeIndexAt, callieStateForBeat } from "../standup.js";
-import { popPulse, confettiParticles, confettiAt } from "../sceneMotion.js";
+import { popPulse } from "../sceneMotion.js";
 
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
@@ -57,10 +57,6 @@ export const StageScene = React.memo(function StageScene({
   // Punch-in: emphasis pulse on the punch/closer beats (the caption + the comic hit).
   const emphasize = (type === "punch" || type === "closer") && !reduceMotion;
   const beatPop = emphasize ? popPulse(timeMs, seg ? seg.startMs : 0, 600) : 0;
-  // Celebrate: a deterministic confetti burst from the closer through the CTA.
-  const closerSeg = segments.find((s) => s.beat && s.beat.type === "closer");
-  const celebrateStart = closerSeg ? closerSeg.startMs : totalMs > 0 ? Math.max(0, totalMs - tailMs - 600) : Infinity;
-  const celebrating = !reduceMotion && timeMs >= celebrateStart;
   // Chrome windows: hook (grab) at the open, CTA (convert) at the close.
   const inLead = leadMs > 0 && timeMs < leadMs;
   const inTail = tailMs > 0 && totalMs > 0 && timeMs >= totalMs - tailMs;
@@ -121,8 +117,6 @@ export const StageScene = React.memo(function StageScene({
         @roastmyride
       </div>
 
-      {/* celebration confetti — deterministic, from the closer through the CTA */}
-      {celebrating && <DrivenConfetti since={timeMs - celebrateStart} seed={comedianId} />}
     </div>
   );
 });
@@ -327,22 +321,6 @@ function PlaceholderCar({ label }) {
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, color: "rgba(255,255,255,0.7)" }}>
       <span style={{ fontSize: 30 }}>🚗</span>
       <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || "your ride"}</span>
-    </div>
-  );
-}
-
-// Deterministic confetti (seeded particles, timeMs-driven) — same burst live + export.
-function DrivenConfetti({ since, seed }) {
-  const parts = useMemo(() => confettiParticles(seed), [seed]);
-  return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none", overflow: "hidden" }}>
-      {parts.map((p, i) => {
-        const s = confettiAt(p, since);
-        if (!s) return null;
-        return (
-          <div key={i} style={{ position: "absolute", left: `${s.leftPct}%`, top: `${s.topPct}%`, width: s.size, height: s.size, background: s.color, opacity: s.opacity, transform: `rotate(${s.rotateDeg}deg)`, borderRadius: 2 }} />
-        );
-      })}
     </div>
   );
 }
