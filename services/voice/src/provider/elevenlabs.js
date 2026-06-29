@@ -8,6 +8,14 @@
 //
 // Env: ELEVENLABS_API_KEY (or config.apiKey). Per-character voice ids come from
 // the voice profile (config.voices / VOICE_<ID>_ID).
+//
+// MODEL CHOICE — we stay on eleven_multilingual_v2 (see
+// docs/voice-accents-troubleshooting.md). Eleven v3 renders designed accents more
+// faithfully BUT only serves MP3 (raw PCM downgrades to an older model), so it
+// breaks our exact /with-timestamps karaoke alignment and needs an ffmpeg decode.
+// We judged the alignment + simplicity worth more than marginal accent gain, so the
+// "ethnic-accent" cast is tabled (coming soon) and the active cast uses North-
+// American / English voices that multilingual_v2 renders cleanly.
 
 import { wordsFromAlignment } from "../alignment.js";
 
@@ -33,22 +41,10 @@ export function createElevenLabsProvider(config = {}) {
         headers: { "xi-api-key": apiKey, "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify({
           text,
-          // Voices are DESIGNED on Eleven v3, so we must synthesize on v3 too —
-          // re-rendering a designed voice on an older model (multilingual_v2)
-          // flattens its accent toward a neutral American baseline. v3 supports
-          // this /with-timestamps + pcm_24000 path (audio + word alignment).
-          model_id: env.ELEVENLABS_MODEL_ID || "eleven_v3",
+          model_id: env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2",
           voice_settings: {
             stability: clamp01(profile.stability),
-            // similarity_boost is what keeps the OUTPUT faithful to the designed
-            // voice — including its accent. Too low and a distinctively-accented
-            // voice drifts toward the model's neutral English baseline. Default
-            // high; per-profile override via profile.similarity.
-            similarity_boost: clamp01(profile.similarity ?? 0.9),
-            // style (exaggeration) above ~0.5 trades voice-similarity for "more
-            // style" and flattens accents toward neutral American — so we keep it
-            // moderate. The character's BIG accent lives in the designed voice
-            // and the written word choice, not in cranking this knob.
+            similarity_boost: clamp01(profile.similarity ?? 0.75),
             style: clamp01(profile.expressiveness),
             use_speaker_boost: true,
           },
