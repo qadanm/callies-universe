@@ -73,8 +73,14 @@ try {
     check(false, "Car photo upload renders a real preview (compressed in-browser)");
   }
 
+  // Required "what car is this?" field — a wrong make/model would derail the roast,
+  // so the owner confirms it. Offline (no API) → no auto-ID prefill, so we type it.
+  await page.fill('[data-testid="car-identity"]', "2015 Kia K900 V8");
+  check((await page.locator('[data-testid="car-identity"]').inputValue()) === "2015 Kia K900 V8",
+    "Required car-identity field present + accepts input");
+
   // --- Context chips (core Chip) ---
-  await clickName(/Roast my car/); // the Card CTA advances to /chips
+  await clickName(/Roast my car/); // the Card CTA advances to /chips (now enabled)
   await seeText("How should we cook it");
   await page.getByRole("button", { name: /Brutal/ }).first().click(); // toggle a core Chip
   check(true, "Context chips screen reachable; a Chip toggled");
@@ -144,6 +150,10 @@ try {
   await page.goto(`${BASE}/#/home`, { waitUntil: "networkidle" });
   await seeText("roasts left");
   check((await creditsNow()) === 0, "credits reset to 0 (persisted across reload)");
+  // make the CTA actionable (photo + required identity), then confirm 0 credits → paywall
+  await page.setInputFiles('[data-testid="photo-file"]', { name: "photo.png", mimeType: "image/png", buffer: onePxPng });
+  await page.getByAltText("Your car").first().waitFor({ state: "visible", timeout: 6000 }).catch(() => {});
+  await page.fill('[data-testid="car-identity"]', "2015 Kia K900 V8");
   await clickName(/Roast my car/);
   await seeText("out of roasts");
   check(true, "0 credits gates 'Roast my car' to the paywall");

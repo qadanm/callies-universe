@@ -17,6 +17,14 @@ export default {
     add: "Tap to add photo",
     addSub: "Camera or library",
     emoji: "📸",
+    // The user CONFIRMS the exact car (required). Auto-ID pre-fills it as a guess,
+    // but a wrong trim/year derails the whole roast — so we let the owner nail it.
+    requireIdentity: true,
+    identityLabel: "What's the car? (year · make · model)",
+    identityPlaceholder: "e.g. 2015 Kia K900 V8",
+    identityHint: "Required — and we mean it. Our AI is good at spotting cars, but it can still miss a trim or a year, and the whole roast is built on this. We're car people; we'd rather you nail it. 🏁",
+    identityGuessing: "Taking a guess from your photo…",
+    identityGuessed: "Our guess — fix anything we got wrong:",
   },
   // --- Callie / mascot copy ---
   mascot: {
