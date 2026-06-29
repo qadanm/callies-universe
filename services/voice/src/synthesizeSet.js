@@ -25,10 +25,13 @@ export async function synthesizeSet(beats, performer, config = {}) {
   if (!provider) return offlineVoiceSet(beats, performer, config);
 
   try {
-    const profile = voiceProfile(performer.id, config);
     const clips = [];
     for (let index = 0; index < (beats || []).length; index++) {
-      const text = spokenText(beats[index]);
+      const beat = beats[index];
+      // Panel beats carry a per-line performerId → each comic speaks in their own
+      // voice. Single beats have none → the passed performer (unchanged behavior).
+      const profile = voiceProfile((beat && beat.performerId) || performer.id, config);
+      const text = spokenText(beat);
       const key = `${provider.id}:${profile.voiceId || "default"}:${text}`;
       let audio = audioCache.get(key);
       if (!audio) {

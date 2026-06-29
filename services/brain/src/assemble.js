@@ -43,9 +43,12 @@ export function setToPlainText(set) {
 
 /**
  * @param {object} args
+ * @param {object} [args.performers]  for the panel format: both performers [A, B].
+ *   The legacy single fields (roasterId/roasterName/performer) stay = A.
+ * @param {"single"|"panel"} [args.format]
  * @returns {import("../contract").RoastResult}
  */
-export function buildResult({ performer, research, set, grade, engine, durationMs, usage, degraded }) {
+export function buildResult({ performer, performers, format, research, set, grade, engine, durationMs, usage, degraded }) {
   const { reaction, sequence } = reactionFor(performer.displaySpice, grade);
   const usageList = usage || []; // offline → [] (no tokens)
   const tokensIn = usageList.reduce((n, u) => n + (u.inputTokens || 0), 0);
@@ -76,6 +79,11 @@ export function buildResult({ performer, research, set, grade, engine, durationM
     grade,
     reactionSequence: sequence,
     engine,
+    // Format + cast: "single" carries one performer (above); "panel" adds both.
+    format: format || "single",
+    ...(performers && performers.length
+      ? { performers: performers.map((p) => ({ id: p.id, name: p.name, tag: p.tag, register: p.register, comedicIdentity: p.comedicIdentity })) }
+      : {}),
     // true only when a LIVE attempt failed and we fell back (don't bill the user).
     degraded: !!degraded,
 

@@ -58,6 +58,18 @@ assert(w[0].text === "Hi" && w[0].startMs === 0 && w[0].endMs === 200, "alignmen
 assert(w[1].text === "you" && w[1].startMs === 300 && w[1].endMs === 600, "alignment: word 1 = you [300,600]");
 assert(offlineVoiceSet(beats, { id: "mama", name: "Mama" }).clips.every((c) => c.words === undefined), "offline clips carry no word timings (fallback)");
 
+// PANEL: a per-beat `performerId` routes each line to ITS speaker's voice (the
+// Green Room format). Same text, different speaker → different pace → different
+// duration, proving per-turn voice rather than one voice for the whole set.
+const sameLine = "This is one identical line for the panel pace test.";
+const panelBeats = [
+  { type: "setup", text: sameLine, performerId: "kenji" }, // slow
+  { type: "setup", text: sameLine, performerId: "tony" },  // fast
+];
+const pv = offlineVoiceSet(panelBeats, { id: "mama", name: "Mama" });
+assert(pv.clips.length === 2, "panel voice: one clip per turn");
+assert(pv.durationsMs[0] > pv.durationsMs[1], `panel voice: per-turn performerId routes voice (kenji ${pv.durationsMs[0]} > tony ${pv.durationsMs[1]})`);
+
 if (failures.length) {
   console.error("✗ voice offline smoke FAILED:");
   for (const f of failures) console.error("   - " + f);

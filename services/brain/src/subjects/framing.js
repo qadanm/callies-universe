@@ -41,6 +41,7 @@ export const CAR_FRAMING = {
   ownerNoun: "owner",
   fillerNoun: "car",
   gradeSubjectWord: "Car",
+  submissionNoun: "cars", // "listeners send in photos of their ___"
   angles: [
     "Lead with the car's single most-roasted real flaw and build the set around it.",
     "Open with crowd work / a direct address, then pivot into the car's reputation.",
@@ -62,6 +63,7 @@ export const TEXTS_FRAMING = {
   ownerNoun: "texter",
   fillerNoun: "text thread",
   gradeSubjectWord: "Conversation",
+  submissionNoun: "texts", // "listeners send in screenshots of their ___"
   angles: [
     "Lead with the single most damning message or pattern in the thread and build the set around it.",
     "Open with crowd work about texting culture, then pivot into THIS thread's specific cringe.",

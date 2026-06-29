@@ -11,10 +11,11 @@
 // swap point stays a one-liner.
 
 import { createClaudeModel } from "./model/claude.js";
-import { resolvePerformer } from "./persona.js";
+import { resolvePerformer, resolvePanelPerformers } from "./persona.js";
 import { resolveSubjectPack } from "./subjects/index.js";
 import { defaultResearchCache, createResearchCache } from "./cache.js";
 import { writeSet } from "./writing/writeSet.js";
+import { writePanel } from "./writing/writePanel.js";
 import { gradeSet, pickBest } from "./grading/gradeSet.js";
 import { buildResult } from "./assemble.js";
 import { offlineBrain } from "./fallback/offlineBrain.js";
@@ -61,6 +62,44 @@ export async function generateRoast(input) {
     // writing on the writer. Car research is cached so the whole cast roasts one
     // car off one pass.
     const research = await pack.ground(input, models.utility, cache, config);
+
+    // PANEL — two comics riff together. Same best-of-N + grade bar; the writer is
+    // writePanel (a dialogue) instead of writeSet (a monologue).
+    if (input.format === "panel") {
+      const [a, b] = resolvePanelPerformers(input.roasterIds);
+      const Np = clamp(config.candidates ?? 2, 1, 4);
+      const maxRoundsP = clamp(config.maxRounds ?? 2, 1, 3);
+      let allP = [];
+      let roundsP = 0;
+      let chosenP = null;
+      for (let round = 0; round < maxRoundsP; round++) {
+        roundsP = round + 1;
+        const sets = await Promise.all(
+          Array.from({ length: Np }, (_, i) =>
+            writePanel(a, b, research, input.context, models.write, { variant: round * Np + i, framing: pack.framing })
+          )
+        );
+        const graded = await Promise.all(
+          sets.map(async (set) => ({ set, grade: await gradeSet(set, a, research, models.utility, { framing: pack.framing, performers: [a, b] }) }))
+        );
+        allP = allP.concat(graded);
+        if (graded.some((c) => c.grade.pass)) { chosenP = pickBest(allP); break; }
+      }
+      if (!chosenP) chosenP = pickBest(allP);
+      chosenP.grade.candidates = allP.length;
+      chosenP.grade.rounds = roundsP;
+      return buildResult({
+        performer: a,
+        performers: [a, b],
+        format: "panel",
+        research,
+        set: chosenP.set,
+        grade: chosenP.grade,
+        engine: "live",
+        durationMs: Date.now() - started,
+        usage: collectUsage(models),
+      });
+    }
 
     const N = clamp(config.candidates ?? 2, 1, 6);
     const maxRounds = clamp(config.maxRounds ?? 2, 1, 4);

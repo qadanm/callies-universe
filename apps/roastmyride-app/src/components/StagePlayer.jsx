@@ -11,6 +11,7 @@
 // StrictMode-safe: each effect owns its rAF; elapsed lives in a ref.
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StageScene } from "./StageScene.jsx";
+import { PodcastScene } from "./PodcastScene.jsx";
 import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
 import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
@@ -18,6 +19,7 @@ import { cfg } from "../subjects/index.js";
 
 export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
+  const isPanel = standup.format === "panel" && Array.isArray(standup.performers) && standup.performers.length === 2;
 
   // Same deterministic backdrop the saved video uses (buildRenderSpec). A real
   // licensed loop (bgUrl) is layered as <video>; otherwise the scene draws fauxStyle.
@@ -130,25 +132,42 @@ export function StagePlayer({ result, subjectPhoto, backgroundUrl }) {
     <div style={{ width: "100%", maxWidth: 340, margin: "0 auto" }}>
       {/* the 9:16 reel box: optional gameplay video behind the transparent scene */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "9 / 16", borderRadius: "var(--radius-xl)", overflow: "hidden", boxShadow: "var(--elev-4)", background: "#06101f" }}>
-        {bgUrl && (
+        {bgUrl && !isPanel && (
           <video ref={videoRef} src={bgUrl} muted loop playsInline autoPlay aria-hidden="true" data-testid="stage-background-video" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         )}
-        <StageScene
-          comedianId={standup.comedianId}
-          performerName={result.roasterName || "the comic"}
-          carLabel={carLabelOf(result)}
-          carPhoto={subjectPhoto || null}
-          segments={segments}
-          timeMs={timeMs}
-          reaction={result.reaction || "savage"}
-          backgroundUrl={bgUrl}
-          fauxStyle={pick.fauxStyle}
-          clips={voice ? voice.clips : []}
-          leadMs={leadMs}
-          tailMs={tailMs}
-          totalMs={totalMs}
-          reduceMotion={reduceMotion}
-        />
+        {isPanel ? (
+          <PodcastScene
+            performers={standup.performers}
+            carLabel={carLabelOf(result)}
+            carPhoto={subjectPhoto || null}
+            segments={segments}
+            timeMs={timeMs}
+            clips={voice ? voice.clips : []}
+            leadMs={leadMs}
+            tailMs={tailMs}
+            totalMs={totalMs}
+            reduceMotion={reduceMotion}
+            reaction={result.reaction || "savage"}
+            score={result.grade && result.grade.composite}
+          />
+        ) : (
+          <StageScene
+            comedianId={standup.comedianId}
+            performerName={result.roasterName || "the comic"}
+            carLabel={carLabelOf(result)}
+            carPhoto={subjectPhoto || null}
+            segments={segments}
+            timeMs={timeMs}
+            reaction={result.reaction || "savage"}
+            backgroundUrl={bgUrl}
+            fauxStyle={pick.fauxStyle}
+            clips={voice ? voice.clips : []}
+            leadMs={leadMs}
+            tailMs={tailMs}
+            totalMs={totalMs}
+            reduceMotion={reduceMotion}
+          />
+        )}
       </div>
 
       {/* the comedian's voice — one hidden clip per beat, driven by the rAF tick */}

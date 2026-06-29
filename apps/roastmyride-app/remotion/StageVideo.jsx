@@ -11,6 +11,7 @@
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { StageScene } from "../src/components/StageScene.jsx";
+import { PodcastScene } from "../src/components/PodcastScene.jsx";
 import { buildTimeline } from "../src/standup.js";
 import { sfxFor } from "../src/sfx.js";
 
@@ -31,8 +32,9 @@ export function StageVideo(props) {
 
   return (
     <AbsoluteFill style={{ background: "#06101f" }}>
-      {/* gameplay background — the user's licensed loop (audio ducked under the VO) */}
-      {props.backgroundUrl && (
+      {/* gameplay background — the user's licensed loop (audio ducked under the VO).
+          Skipped for the panel format, which renders its own opaque studio. */}
+      {props.format !== "panel" && props.backgroundUrl && (
         <OffthreadVideo src={props.backgroundUrl} loop volume={GAMEPLAY_VOL} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       )}
 
@@ -62,21 +64,37 @@ export function StageVideo(props) {
         );
       })}
 
-      <StageScene
-        comedianId={props.comedianId}
-        performerName={props.performerName}
-        carLabel={props.subjectLabel}
-        carPhoto={props.subjectPhoto || null}
-        segments={segments}
-        timeMs={timeMs}
-        reaction={props.reaction || "savage"}
-        backgroundUrl={props.backgroundUrl}
-        fauxStyle={props.fauxStyle}
-        clips={audio || []}
-        leadMs={leadMs}
-        tailMs={tailMs}
-        totalMs={totalMs}
-      />
+      {props.format === "panel" && Array.isArray(props.performers) && props.performers.length === 2 ? (
+        <PodcastScene
+          performers={props.performers}
+          carLabel={props.subjectLabel}
+          carPhoto={props.subjectPhoto || null}
+          segments={segments}
+          timeMs={timeMs}
+          clips={audio || []}
+          leadMs={leadMs}
+          tailMs={tailMs}
+          totalMs={totalMs}
+          reaction={props.reaction || "savage"}
+          score={props.score}
+        />
+      ) : (
+        <StageScene
+          comedianId={props.comedianId}
+          performerName={props.performerName}
+          carLabel={props.subjectLabel}
+          carPhoto={props.subjectPhoto || null}
+          segments={segments}
+          timeMs={timeMs}
+          reaction={props.reaction || "savage"}
+          backgroundUrl={props.backgroundUrl}
+          fauxStyle={props.fauxStyle}
+          clips={audio || []}
+          leadMs={leadMs}
+          tailMs={tailMs}
+          totalMs={totalMs}
+        />
+      )}
     </AbsoluteFill>
   );
 }

@@ -26,6 +26,10 @@ const DEFAULT_INPUT = {
   // wire lands it stays null and the brain falls back to the curated offline set.
   conversation: null,
   roasterId: "mama",
+  // Output format: "single" = one comic; "panel" = two comics riff together.
+  // roasterIds = the duo [a, b] for panel mode.
+  format: "single",
+  roasterIds: [],
   context: [],
 };
 

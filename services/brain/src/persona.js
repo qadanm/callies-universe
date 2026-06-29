@@ -130,3 +130,20 @@ export function resolvePerformer(roasterId) {
 export function allPerformers() {
   return Roaster.roster.map((r) => resolvePerformer(r.id));
 }
+
+/**
+ * Resolve a panel's two performers from input.roasterIds. Defaults gracefully:
+ * a missing first → the default comic; a missing/duplicate second → the first
+ * distinct cast member. Always returns two DISTINCT performers [A, B].
+ * @param {string[]} roasterIds
+ */
+export function resolvePanelPerformers(roasterIds) {
+  const ids = Array.isArray(roasterIds) ? roasterIds.filter(Boolean) : [];
+  const a = resolvePerformer(ids[0]);
+  let bId = ids[1];
+  if (!bId || bId === a.id) {
+    const other = Roaster.roster.find((r) => r.id !== a.id);
+    bId = other ? other.id : a.id;
+  }
+  return [a, resolvePerformer(bId)];
+}

@@ -54,19 +54,28 @@ function splitPunch(text, punch) {
  */
 export function toStandupSet(result) {
   const set = result.set || { beats: [] };
+  // PANEL: map each beat's speaker ("a"/"b") to the performer id so the render can
+  // highlight the right comic and voice can speak each line in the right voice.
+  const performers = result.performers || null;
+  const idForSpeaker = (sp) =>
+    !performers ? result.roasterId : (sp === "b" ? performers[1]?.id : performers[0]?.id);
+
   const beats = (set.beats || []).map((b) => {
     const type = BEAT_TYPE[b.type] || "setup";
+    const extra = b.speaker ? { speaker: b.speaker, performerId: idForSpeaker(b.speaker) } : {};
     if (type === "punch" || type === "closer") {
       const { lead, punch, tail } = splitPunch(b.text, b.punch);
-      return { type, text: lead || b.text, punch, tail };
+      return { type, text: lead || b.text, punch, tail, ...extra };
     }
-    return { type, text: b.text };
+    return { type, text: b.text, ...extra };
   });
   return {
     comedianId: result.roasterId,
     bit: set.title || "Tonight's Set",
     runtime: estimateRuntime(set.beats || []),
     beats,
+    format: result.format || "single",
+    performers,
   };
 }
 
@@ -176,10 +185,15 @@ export function buildRenderSpec(result, input) {
     reaction: result.reaction,
     subjectLabel,
     engineLabel: result.engine === "offline" ? "offline" : undefined,
-    beats: su.beats,
+    beats: su.beats, // panel beats carry speaker + performerId
     subjectPhoto: (input && input.carPhoto && input.carPhoto.dataUrl) || null,
     backgroundUrl: bg.backgroundUrl,
     fauxStyle: bg.fauxStyle,
     musicUrl: pickMusic(result),
+    // PANEL: the two performers + format so the render shows the two-shot, and the
+    // grade composite as the show's "verdict" score in the outro.
+    format: result.format || "single",
+    performers: result.performers || undefined,
+    score: (result.grade && result.grade.composite) || undefined,
   };
 }

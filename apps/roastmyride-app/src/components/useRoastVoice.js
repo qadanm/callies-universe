@@ -10,8 +10,11 @@ import { hasRoastApi, fetchVoice } from "../services/roastApi.js";
 const voiceCache = new Map();
 
 function hashBeats(beats) {
-  // djb2 over the spoken text, enough to key the cache deterministically.
-  const s = JSON.stringify((beats || []).map((b) => [b.type, b.text, b.punch, b.tail]));
+  // djb2 over the spoken text + per-line speaker, enough to key the cache
+  // deterministically. performerId MUST be included: panel beats voice each line
+  // in a different comic, so two panels with the same text but swapped speakers
+  // are DIFFERENT audio and must not share a cache entry.
+  const s = JSON.stringify((beats || []).map((b) => [b.type, b.text, b.punch, b.tail, b.performerId]));
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
   return h >>> 0;

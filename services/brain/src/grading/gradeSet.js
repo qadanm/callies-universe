@@ -49,7 +49,12 @@ const GRADE_SCHEMA = {
 };
 
 function setToText(set) {
-  return set.beats.map((b) => `[${b.type}] ${b.text}`).join("\n");
+  // Panel beats carry a speaker → attribute each line so the grader can judge
+  // whether the two voices are actually distinct. Single beats have no speaker
+  // (output unchanged).
+  return set.beats
+    .map((b) => (b.speaker ? `[${b.speaker.toUpperCase()}|${b.type}] ${b.text}` : `[${b.type}] ${b.text}`))
+    .join("\n");
 }
 
 /** Coerce a model-returned score to an integer in [0, 10]. */
@@ -65,12 +70,14 @@ function clampScore(n) {
  * car grading prompt exactly (see scripts/subjects-check.mjs).
  *
  * @param {object} set
- * @param {object} performer
+ * @param {object} performer  the single performer (or A, for a panel)
  * @param {object} research
  * @param {import("../subjects/framing.js").SubjectFraming} framing
+ * @param {object[]} [performers]  for a panel: both performers [A, B] — the grader
+ *   then judges that BOTH voices land and are distinct. Omitted → single (unchanged).
  * @returns {{ system: string, user: string }}
  */
-export function buildGradeMessages(set, performer, research, framing) {
+export function buildGradeMessages(set, performer, research, framing, performers) {
   const axisDescriptions = framing.axisDescriptions;
   const system = [
     `You are a ruthless comedy-club booker grading a roast set before it goes on stage.`,
@@ -95,9 +102,22 @@ export function buildGradeMessages(set, performer, research, framing) {
     `with a set that actually lands. But if it smells like AI, the "human" score must be low.`,
   ].join("\n");
 
+  const isPanel = Array.isArray(performers) && performers.length === 2;
+  const performerBlock = isPanel
+    ? [
+        `This is two PODCAST HOSTS reacting to a listener-submitted photo — a real conversation, NOT a performed bit. Each line is labeled by speaker [A]/[B].`,
+        `It should sound like two people actually talking, where the funny is sparse and FOUND in the truth, not a stream of written jokes.`,
+        `Score "human" LOW (it sounds like AI) for: the "it doesn't X, it Y's" / "that's not a Z, that's a W" antithesis-quip construction (the #1 tell); back-to-back zingers / every line a punchline; puns or tidy buttons; and forced verbal tics or written-out sounds ("mm-mm-MM", "ok ok ok", "ohh", "no no no", repeated stammers). Reward natural, specific, conversational lines in real words.`,
+        `Judge that BOTH voices land AND are DISTINCT — A reads as A, B as B, never interchangeable:`,
+        `  A — ${performers[0].name}: ${performers[0].comedicIdentity} (form: ${performers[0].form})`,
+        `  B — ${performers[1].name}: ${performers[1].comedicIdentity} (form: ${performers[1].form})`,
+      ]
+    : [
+        `Performer: ${performer.name} — ${performer.comedicIdentity}`,
+        `Their comedic structure should be: ${performer.form}`,
+      ];
   const user = [
-    `Performer: ${performer.name} — ${performer.comedicIdentity}`,
-    `Their comedic structure should be: ${performer.form}`,
+    ...performerBlock,
     `${framing.gradeSubjectWord} being roasted: ${framing.gradeLabel(research)}`,
     `Real material the set was supposed to use: ${research.summary}`,
     `  running jokes: ${research.runningJokes.join(" | ") || "(none)"}`,
@@ -120,7 +140,7 @@ export function buildGradeMessages(set, performer, research, framing) {
  */
 export async function gradeSet(set, performer, research, model, opts = {}) {
   const framing = opts.framing || CAR_FRAMING;
-  const { system, user } = buildGradeMessages(set, performer, research, framing);
+  const { system, user } = buildGradeMessages(set, performer, research, framing, opts.performers);
 
   const judged = await model.json({
     system,

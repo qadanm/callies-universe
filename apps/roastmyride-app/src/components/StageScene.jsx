@@ -40,6 +40,8 @@ export const StageScene = React.memo(function StageScene({
   tailMs = 0, // closing-CTA window: [totalMs - tailMs, totalMs)
   totalMs = 0,
   reduceMotion = false, // live: honor prefers-reduced-motion. Export always animates (deterministic).
+  performers = null, // PANEL: [A, B] — when set with format "panel", render the two-shot
+  format = "single",
 }) {
   const idx = activeIndexAt(segments, timeMs);
   const seg = idx >= 0 && idx < segments.length ? segments[idx] : null;
@@ -48,9 +50,16 @@ export const StageScene = React.memo(function StageScene({
   const reacts = type === "punch" || type === "closer" || type === "crowd";
   const callieState = callieStateForBeat(type, reaction);
   const calliePop = reacts && !reduceMotion ? popPulse(timeMs, seg ? seg.startMs : 0, 700) : 0;
+  // PANEL: two comics riff; the ACTIVE speaker of the current beat drives the
+  // caption color + the highlight. Single: the one comic's ring color.
+  const panel = format === "panel" && Array.isArray(performers) && performers.length === 2;
+  const activeSpeaker = panel ? (beat && beat.speaker) || "a" : null;
+  const activeId = panel
+    ? (activeSpeaker === "b" ? performers[1].id : performers[0].id)
+    : comedianId;
   // Per-comic caption signature: each comedian highlights in their core ring color,
   // so a Kenji reel and a Tony reel read differently at a glance.
-  const seed = Roaster.roster.find((r) => r.id === comedianId) || Roaster.roster[0];
+  const seed = Roaster.roster.find((r) => r.id === activeId) || Roaster.roster[0];
   const hiColor = (seed && seed.ring) || "var(--sticker-yellow)";
   // Punch-in: emphasis pulse on the punch/closer beats (the caption + the comic hit).
   const emphasize = (type === "punch" || type === "closer") && !reduceMotion;
@@ -90,18 +99,29 @@ export const StageScene = React.memo(function StageScene({
         <Captions beat={beat} startMs={seg ? seg.startMs : 0} endMs={seg ? seg.endMs : 0} timeMs={timeMs} words={seg && clips[idx] ? clips[idx].words : undefined} hi={hiColor} emphasis={beatPop} reduceMotion={reduceMotion} />
       )}
 
-      {/* the comic — sticker performer; hits a little on the punch/closer beats */}
-      <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
-        <Comic comedianId={comedianId} />
-        <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
-          🎤 {firstName(performerName)}
-        </div>
-      </div>
+      {panel ? (
+        /* PANEL — the two-shot: both comics on stage, the active speaker pops,
+           the other reacts (dimmed). Callie steps aside; the duo IS the show. */
+        <>
+          <PanelComic performer={performers[0]} side="left" active={activeSpeaker === "a"} pop={activeSpeaker === "a" ? beatPop : 0} />
+          <PanelComic performer={performers[1]} side="right" active={activeSpeaker === "b"} pop={activeSpeaker === "b" ? beatPop : 0} />
+        </>
+      ) : (
+        <>
+          {/* the comic — sticker performer; hits a little on the punch/closer beats */}
+          <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
+            <Comic comedianId={comedianId} />
+            <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
+              🎤 {firstName(performerName)}
+            </div>
+          </div>
 
-      {/* Callie reacts (mascot, never the performer) */}
-      <div style={{ position: "absolute", bottom: "9%", right: "4%", zIndex: 5, transform: `translateY(${-10 * calliePop}px) scale(${1 + 0.14 * calliePop})` }}>
-        <Reaction state={callieState} />
-      </div>
+          {/* Callie reacts (mascot, never the performer) */}
+          <div style={{ position: "absolute", bottom: "9%", right: "4%", zIndex: 5, transform: `translateY(${-10 * calliePop}px) scale(${1 + 0.14 * calliePop})` }}>
+            <Reaction state={callieState} />
+          </div>
+        </>
+      )}
 
       {/* watermark */}
       <div style={{ position: "absolute", bottom: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5, font: "var(--type-cap)", fontWeight: 800, color: "rgba(255,255,255,0.92)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
@@ -312,6 +332,33 @@ function PlaceholderSubject({ label }) {
 
 const Comic = React.memo(function Comic({ comedianId }) {
   return <Roaster id={comedianId} size={96} />;
+});
+
+// PANEL performer: bottom-left (A) or bottom-right (B). The active speaker is big,
+// ringed, full-opacity and hits on the punch; the listener is smaller + dimmed.
+const PanelComic = React.memo(function PanelComic({ performer, side, active, pop }) {
+  const pos = side === "left" ? { left: "3%" } : { right: "3%" };
+  const baseScale = active ? 1.02 : 0.84;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "9%",
+        zIndex: 5,
+        textAlign: "center",
+        transformOrigin: "bottom center",
+        transform: `translateY(${-8 * pop}px) scale(${baseScale + 0.08 * pop})`,
+        opacity: active ? 1 : 0.5,
+        filter: active ? "none" : "saturate(0.65) brightness(0.85)",
+        ...pos,
+      }}
+    >
+      <Roaster id={performer.id} size={active ? 100 : 82} ring={active} />
+      <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: active ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
+        🎤 {firstName(performer.name)}
+      </div>
+    </div>
+  );
 });
 const Reaction = React.memo(function Reaction({ state }) {
   return <Callie state={state} size={64} />;

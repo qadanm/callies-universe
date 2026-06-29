@@ -14,6 +14,11 @@ export interface SpeakableBeat {
   text: string;
   punch?: string;
   tail?: string;
+  /** PANEL only: which comic speaks this line. When set, synthesizeSet voices the
+   *  line in THIS performer's voice (per-line), overriding the passed performer. */
+  performerId?: RoasterId;
+  /** PANEL only: the speaker slot ("a"|"b") this line belongs to. */
+  speaker?: "a" | "b";
 }
 
 /** A synthesized line for one beat. */

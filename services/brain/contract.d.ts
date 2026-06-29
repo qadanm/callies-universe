@@ -56,6 +56,11 @@ export interface RoastInput {
    *  and prompt framing). Defaults to "car". Threaded by the app from its subject
    *  config; unknown/missing → the car reference subject. */
   subject?: string;
+  /** Output format. "single" (default) = one comic monologues; "panel" = two comics
+   *  riff together (the "Green Room"). */
+  format?: "single" | "panel";
+  /** For format "panel": the two comics, [a, b]. Resolved to two distinct performers. */
+  roasterIds?: string[];
   /** The car photo. Presence is tracked; `identified` carries any photo-derived ID. */
   carPhoto?: { present: boolean; identified?: CarIdentity | null };
   /** The car to research. Optional: the brain defaults to a representative car
@@ -166,6 +171,8 @@ export interface SetBeat {
   text: string;
   /** The highlighted punch-word inside `text`, if any (drives ShareCard emphasis). */
   punch?: string;
+  /** PANEL only: which comic delivers this line ("a" = performers[0], "b" = performers[1]). */
+  speaker?: "a" | "b";
 }
 
 /** A short stand-up set, shaped to the performing character. */
@@ -258,8 +265,12 @@ export interface RoastResult {
   /* --- evolved, structured fields --- */
   /** The full performed stand-up set. */
   set: StandUpSet;
-  /** Who performed it + their comedic identity. */
+  /** Output format. "single" = one comic; "panel" = two comics riffing together. */
+  format: "single" | "panel";
+  /** Who performed it + their comedic identity (for "panel", this is performers[0]). */
   performer: PerformerSummary;
+  /** PANEL only: both comics, [a, b]. set.beats[i].speaker maps to this array. */
+  performers?: PerformerSummary[];
   /** The live research that grounded the set (shape varies by subject). */
   research: SubjectResearch;
   /** The grader's scores + verdict. */

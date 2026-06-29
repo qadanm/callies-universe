@@ -26,7 +26,10 @@ export { createClaudeModel } from "./src/model/claude.js";
 export { researchCar } from "./src/research/researchCar.js";
 export { writeSet } from "./src/writing/writeSet.js";
 export { gradeSet, pickBest } from "./src/grading/gradeSet.js";
-export { resolvePerformer, allPerformers, COMEDIC_PROFILES } from "./src/persona.js";
+export { resolvePerformer, allPerformers, resolvePanelPerformers, COMEDIC_PROFILES } from "./src/persona.js";
+// Panel ("Green Room") — two comics riff together. writePanel = live dialogue;
+// buildOfflinePanel = deterministic weave of two curated solo sets.
+export { writePanel, buildPanelMessages, buildOfflinePanel } from "./src/writing/writePanel.js";
 // Subject packs — the per-subject grounding + offline sets + prompt framing.
 export { resolveSubjectPack } from "./src/subjects/index.js";
 export { GATES, WEIGHTS, AXES, composite, passes } from "./src/grading/rubric.js";

@@ -154,6 +154,22 @@ try {
   check((await page.getByText("You're offline", { exact: false }).count()) >= 1, "offline banner shows when offline");
   await page.context().setOffline(false);
 
+  // --- PANEL ("Green Room"): two comics riff → the two-shot reel ---
+  await page.evaluate(() => localStorage.setItem("rmr.credits", "5"));
+  await page.goto(`${BASE}/#/cast`, { waitUntil: "networkidle" });
+  await page.reload({ waitUntil: "networkidle" }); // remount so the provider re-reads credits=5
+  await seeText(/taking the stage|Tonight's lineup/);
+  await page.locator('[data-testid="format-panel"]').click();
+  check((await page.getByText("Pick your duo", { exact: false }).count()) >= 1, "Green Room toggle reveals the duo picker");
+  await page.locator('[data-testid="duo-mama"]').click();
+  await page.locator('[data-testid="duo-tony"]').click();
+  await clickName(/green room/i); // CTA enabled once two are picked → /cooking
+  await seeText("Warming up");
+  await seeText("The full set", 20000);
+  const panelText = await page.locator(".screen").innerText();
+  check(/Mama/.test(panelText) && /Tony/.test(panelText), "Panel reveal shows BOTH comics (the two-shot)");
+  check((await page.locator('[data-testid="stage-scene"]').count()) >= 1, "Panel roast reel (stage scene) renders");
+
   check(jsErrors.length === 0, `no uncaught JS errors (${jsErrors.length})`);
   if (jsErrors.length) jsErrors.slice(0, 5).forEach((e) => console.log("     ! " + e));
   if (resourceWarnings.length)

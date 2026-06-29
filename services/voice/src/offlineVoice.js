@@ -33,8 +33,9 @@ function silentWavDataUrl(durationMs) {
 
 /** @returns {import("../contract").SynthesizedSet} */
 export function offlineVoiceSet(beats, performer, config = {}) {
-  const profile = voiceProfile(performer.id, config);
   const clips = (beats || []).map((beat, index) => {
+    // Panel beats carry a per-line performerId; single beats use the passed performer.
+    const profile = voiceProfile((beat && beat.performerId) || performer.id, config);
     const text = spokenText(beat);
     const durationMs = estimateDurationMs(text, profile.pace);
     return { index, dataUrl: silentWavDataUrl(durationMs), mime: "audio/wav", durationMs, text };
