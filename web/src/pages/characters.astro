@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+import { Callie, Roaster } from "@callies-universe/core";
+
+const roster = Roaster.roster;
+const active = roster.filter((r) => !r.comingSoon);
+const soon = roster.filter((r) => r.comingSoon);
+const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
+---
+<Base title="Characters" description="Callie and the original comedian cast of Callie's Universe.">
+  <section class="hero" style="padding-bottom:24px;">
+    <div class="container">
+      <p class="eyebrow">The cast</p>
+      <h1>Original characters.<br/>Nobody is safe.</h1>
+      <p class="lede">Every comic is an original creation of Callie's Universe — their look, name, voice, and personality. Not impersonations of anyone real.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:24px;">
+    <div class="container">
+      <div class="card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:center;">
+        <Callie state="delighted" size={150} />
+        <div style="max-width:440px;text-align:left;">
+          <div class="char__tag">The mascot · the hype-cat</div>
+          <h2 style="font-size:30px;margin:4px 0 8px;">Callie</h2>
+          <p style="margin:0;color:color-mix(in srgb,var(--ink) 76%,transparent);">Callie hosts every show. She never roasts you — she just watches and reacts with her whole heart, losing it in the corner while the comics cook. She's the face of the universe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <p class="eyebrow">The comedians</p>
+      <h2 style="font-size:30px;margin:6px 0 28px;">The lineup</h2>
+      <div class="grid grid--auto">
+        {active.map((c) => (
+          <div class="card char">
+            <div class="char__art"><Roaster id={c.id} size={132} ring /></div>
+            <div class="char__name">{c.name}</div>
+            <div class="char__tag">{c.tag}</div>
+            <div class="char__phrase">“{c.phrase}”</div>
+            <div style="margin-top:8px;font-size:12px;color:color-mix(in srgb,var(--ink) 55%,transparent);">{c.register} · {c.spice}</div>
+          </div>
+        ))}
+      </div>
+
+      {soon.length > 0 && (
+        <>
+          <h2 style="font-size:22px;margin:44px 0 18px;">In the green room — coming soon</h2>
+          <div class="grid grid--auto">
+            {soon.map((c) => (
+              <div class="card char char--soon">
+                <div class="char__art"><Roaster id={c.id} size={120} ring /></div>
+                <div class="char__name">{firstName(c.name)}</div>
+                <div class="char__tag">{c.tag}</div>
+                <div class="char__soon">Coming soon</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+</Base>

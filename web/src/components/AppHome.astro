@@ -1,0 +1,59 @@
+---
+import { Callie, Roaster } from "@callies-universe/core";
+import { activeSite } from "../config/sites.js";
+const site = activeSite;
+const active = Roaster.roster.filter((r) => !r.comingSoon);
+const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
+const steps = [
+  { emoji: "📸", h: `Snap your ${site.subjectNoun || "thing"}`, p: "Drop a photo. Tell us exactly what it is so the roast lands." },
+  { emoji: "🎙️", h: "The comics cook", p: "Two original comedians riff on it like a tiny podcast, with Callie reacting." },
+  { emoji: "📲", h: "Share the video", p: "Get a vertical, captioned reel built to post — your friends do the rest." },
+];
+---
+<section class="hero">
+  <div class="container">
+    <div style="display:flex;justify-content:center;margin-bottom:6px;">
+      <Callie state="savage" size={140} />
+    </div>
+    <p class="eyebrow">{site.emoji} a Callie's Universe show</p>
+    <h1>{site.name}</h1>
+    <p class="lede">{site.blurb}</p>
+    <div class="hero__cta">
+      <a class="btn" href={site.appStoreUrl}>Get it on the App Store</a>
+      <a class="btn btn--ghost" href="#how">How it works</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" style="background:color-mix(in srgb,var(--canvas) 70%,#000 2%);">
+  <div class="container">
+    <p class="eyebrow">How it works</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;">Three taps to a roast.</h2>
+    <div class="grid grid--3">
+      {steps.map((s) => (
+        <div class="card" style="text-align:center;">
+          <div style="font-size:40px;">{s.emoji}</div>
+          <h3 style="font-size:20px;margin:10px 0 6px;">{s.h}</h3>
+          <p style="font-size:15px;color:color-mix(in srgb,var(--ink) 70%,transparent);margin:0;">{s.p}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cast">
+  <div class="container" style="text-align:center;">
+    <p class="eyebrow">The comics</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;">Pick your roaster — or two.</h2>
+    <div class="grid grid--auto" style="max-width:760px;margin:0 auto;">
+      {active.map((c) => (
+        <div class="char">
+          <div class="char__art"><Roaster id={c.id} size={120} ring /></div>
+          <div class="char__name">{firstName(c.name)}</div>
+          <div class="char__tag">{c.tag}</div>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top:34px;"><a class="btn" href={site.appStoreUrl}>Roast your {site.subjectNoun} →</a></div>
+  </div>
+</section>

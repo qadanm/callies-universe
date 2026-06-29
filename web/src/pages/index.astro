@@ -1,0 +1,10 @@
+---
+import Base from "../layouts/Base.astro";
+import HubHome from "../components/HubHome.astro";
+import AppHome from "../components/AppHome.astro";
+import { activeSite } from "../config/sites.js";
+const isNetwork = activeSite.kind === "network";
+---
+<Base>
+  {isNetwork ? <HubHome /> : <AppHome />}
+</Base>

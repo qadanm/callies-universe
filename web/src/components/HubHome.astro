@@ -1,0 +1,57 @@
+---
+import { Callie, Roaster } from "@callies-universe/core";
+import { activeSite, SHOWS } from "../config/sites.js";
+const site = activeSite;
+const teaser = Roaster.roster.filter((r) => !r.comingSoon).slice(0, 6);
+const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
+---
+<section class="hero">
+  <div class="container">
+    <div style="display:flex;justify-content:center;margin-bottom:6px;">
+      <Callie state="celebrating" size={150} />
+    </div>
+    <p class="eyebrow">The comedy studio</p>
+    <h1>Callie's Universe</h1>
+    <p class="lede">{site.blurb}</p>
+    <div class="hero__cta">
+      <a class="btn" href="#shows">See the shows</a>
+      <a class="btn btn--ghost" href="/characters">Meet the cast</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="shows" style="background:color-mix(in srgb,var(--canvas) 70%,#000 2%);">
+  <div class="container">
+    <p class="eyebrow">The shows</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;">One universe. A roast for everything.</h2>
+    <div class="grid grid--3">
+      {SHOWS.map((s) => (
+        <a class="card show" href={s.url}>
+          <span class="show__emoji">{s.emoji}</span>
+          <span>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:18px;">{s.name}</div>
+            <div style="font-size:14px;color:color-mix(in srgb,var(--ink) 66%,transparent);">{s.tagline}</div>
+            {s.status === "soon" && <div class="show__soon">Coming soon</div>}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align:center;">
+    <p class="eyebrow">The cast</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;">Original comedians. Nobody is safe.</h2>
+    <div class="grid grid--auto" style="max-width:880px;margin:0 auto;">
+      {teaser.map((c) => (
+        <div class="char">
+          <div class="char__art"><Roaster id={c.id} size={120} ring /></div>
+          <div class="char__name">{firstName(c.name)}</div>
+          <div class="char__tag">{c.tag}</div>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top:30px;"><a class="btn btn--ghost" href="/characters">Meet the whole cast →</a></div>
+  </div>
+</section>

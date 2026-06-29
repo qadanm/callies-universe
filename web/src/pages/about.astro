@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+import { Callie } from "@callies-universe/core";
+import { SHOWS } from "../config/sites.js";
+const live = SHOWS.filter((s) => s.status === "live").length;
+const total = SHOWS.length;
+---
+<Base title="About" description="What Callie's Universe is, and why it exists.">
+  <section class="hero" style="padding-bottom:24px;">
+    <div class="container">
+      <p class="eyebrow">About the studio</p>
+      <h1>A comedy studio<br/>with one cat in charge.</h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top:24px;">
+    <div class="container prose">
+      <p style="font-size:19px;">Callie's Universe is a comedy studio that makes one thing really well: short, sharable roasts. You submit something — your car, your texts, your outfit — and an original cast of AI comedians turns it into a tiny podcast you'll actually want to post.</p>
+      <h2>One cast, many shows</h2>
+      <p>Every “Roast My ___” app shares the same universe: the same comedians, the same mascot (Callie), the same craft. We build one engine and one set of characters, then point them at new things to roast. {live} of {total} shows are live today; more are in the green room.</p>
+      <h2>Original characters, on purpose</h2>
+      <p>Callie and every comedian are original creations — designed, written, and voiced as fictional characters we own. They're not impersonations of real people. That's both a creative choice and how we keep the universe ours.</p>
+      <h2>Clever, never cruel</h2>
+      <p>The comedy always aims at the thing, never the person. It's a roast of your car — not of you.</p>
+      <div style="display:flex;justify-content:center;margin-top:32px;"><Callie state="celebrating" size={140} /></div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,68 @@
+---
+import "@callies-universe/core/styles.css"; // brand tokens + fonts (single source)
+import "../styles/site.css";
+import { activeSite, SHOWS } from "../config/sites.js";
+import { LEGAL_DOCS, ENTITY } from "../config/legal.js";
+
+const { title, description } = Astro.props;
+const site = activeSite;
+const isNetwork = site.kind === "network";
+const accentCss = Object.entries(site.accent).map(([k, v]) => `--${k}:${v};`).join("");
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+const desc = description || site.tagline;
+const year = 2026;
+
+const navLinks = isNetwork
+  ? [{ href: "/characters", label: "Characters" }, { href: "/#shows", label: "Shows" }, { href: "/about", label: "About" }]
+  : [{ href: "/#how", label: "How it works" }, { href: "/#cast", label: "The comics" }, { href: site.url, label: "Callie's Universe" }];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={site.url} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body style={accentCss}>
+    <header class="nav">
+      <div class="container nav__row">
+        <a class="brand" href="/">
+          <span class="spark">{site.emoji}</span> {site.name}
+        </a>
+        <nav class="nav__links">
+          {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+          {!isNetwork && site.appStoreUrl && <a class="btn" href={site.appStoreUrl}>Get the app</a>}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__grid">
+          <div>
+            <div class="brand"><span class="spark">{site.emoji}</span> {site.name}</div>
+            {!isNetwork && <a href="https://calliesuniverse.com" style="font-size:14px;color:var(--accent-600);font-weight:700;">✦ a Callie's Universe show</a>}
+          </div>
+          <div class="footer__links">
+            {LEGAL_DOCS.map((d) => <a href={`/legal/${d.slug}`}>{d.title}</a>)}
+          </div>
+        </div>
+        <p class="footer__fine">
+          © {year} {ENTITY}. All rights reserved. Callie and the comedian cast are original fictional
+          characters — not impersonations of any real people. {ENTITY}™ and the “Roast My ___” names are trademarks of {ENTITY}.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

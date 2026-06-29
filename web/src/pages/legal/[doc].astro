@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LEGAL, LEGAL_DOCS } from "../../config/legal.js";
+
+export function getStaticPaths() {
+  return LEGAL_DOCS.map((d) => ({ params: { doc: d.slug } }));
+}
+
+const { doc } = Astro.params;
+const data = LEGAL[doc];
+const updated = "June 2026";
+---
+<Base title={data?.title || "Legal"} description={data?.intro}>
+  <section class="section">
+    <div class="container prose">
+      <p class="eyebrow"><a href="/" style="color:var(--accent-600);">← Home</a></p>
+      <h1>{data?.title}</h1>
+      <p class="updated">Last updated {updated} · This is a plain-language draft, not legal advice.</p>
+      <p style="font-size:18px;">{data?.intro}</p>
+      {data?.sections?.map((s) => (
+        <>
+          <h2>{s.h}</h2>
+          {s.body.map((p) => <p>{p}</p>)}
+        </>
+      ))}
+      <p style="margin-top:40px;font-size:14px;color:color-mix(in srgb,var(--ink) 55%,transparent);">
+        More: {LEGAL_DOCS.map((d, i) => (<>{i > 0 ? " · " : ""}<a href={`/legal/${d.slug}`} style="color:var(--accent-600);">{d.title}</a></>))}
+      </p>
+    </div>
+  </section>
+</Base>
