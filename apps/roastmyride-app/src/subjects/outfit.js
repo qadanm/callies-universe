@@ -97,7 +97,6 @@ export default {
   },
   // --- Onboarding ---
   onboarding: {
-    body: "You bring the fit, the app brings the roast — and I'll be right here losing it in the corner. Clever, never cruel.",
     cta: "Roast my fit 🔥",
   },
   // --- Celebrate ---
