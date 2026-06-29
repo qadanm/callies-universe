@@ -361,7 +361,10 @@ const PanelComic = React.memo(function PanelComic({ performer, side, active, pop
   );
 });
 const Reaction = React.memo(function Reaction({ state }) {
-  return <Callie state={state} size={64} />;
+  // Freeze Callie's wall-clock CSS keyframes: the scene is timeMs-deterministic
+  // (her pop comes from the wrapper above), and Remotion can't seek CSS animations
+  // — left on, they jitter/flicker frame-to-frame in the export.
+  return <Callie state={state} size={64} reduceMotion />;
 });
 
 function firstName(name) {

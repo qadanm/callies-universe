@@ -65,6 +65,13 @@ export default {
     emoji: "🚗",
     stickerTag: "🚗 the ride",
   },
+  // --- Submission media display ---
+  // Most submissions are phone photos in PORTRAIT. The scene frames them portrait;
+  // cars sit wide in a tall frame, so we clip slightly (4:5, not full 3:4 / 9:16)
+  // so the reveal isn't awkwardly long. objectFit: cover does the clipping.
+  media: {
+    aspect: "4 / 5",
+  },
   // --- Monetization ---
   monetization: {
     creditLabel: "roasts",

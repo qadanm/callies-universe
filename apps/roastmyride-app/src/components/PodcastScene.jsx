@@ -57,17 +57,21 @@ export const PodcastScene = React.memo(function PodcastScene({
   const callieState = callieStateForBeat(beat && beat.type, reaction);
   const hardBeat = !!(beat && (beat.type === "punch" || beat.type === "closer"));
   const calliePop = hardBeat && !reduceMotion && seg ? popPulse(timeMs, seg.startMs, 550) : 0;
+  // Callie's own motion MUST be timeMs-driven (deterministic) — her built-in CSS
+  // keyframes run on the wall clock, which Remotion can't seek, so they jitter in
+  // the export. We freeze them (reduceMotion on <Callie>) and breathe her by time.
+  const callieBreath = reduceMotion ? 0 : Math.sin((timeMs || 0) / 1500);
 
   return (
     <div data-testid="stage-scene" style={{ position: "absolute", inset: 0, overflow: "hidden", containerType: "inline-size", fontFamily: "var(--font-display, inherit)", color: "#fff", background: "#08060d" }}>
       {/* ===== STUDIO (static, full frame) ===== */}
       <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
         <StudioSet timeMs={timeMs} hideLogo={inLead} />
-        <WallMonitor carPhoto={carPhoto} carLabel={carLabel} timeMs={timeMs} opacity={inLead || inTail ? 0 : 1} />
+        <WallMonitor carPhoto={carPhoto} carLabel={carLabel} opacity={inLead || inTail ? 0 : 1} />
         <HostStation performer={a} side="left" active={aActive} bob={aActive ? bob : 0} timeMs={timeMs} />
         <HostStation performer={b} side="right" active={!aActive} bob={!aActive ? bob : 0} timeMs={timeMs} />
         <Desk />
-        <CallieDesk state={callieState} pop={calliePop} />
+        <CallieDesk state={callieState} pop={calliePop} breath={callieBreath} />
       </div>
 
       {/* ===== OVERLAY UI ===== */}
@@ -141,16 +145,18 @@ function Desk() {
   );
 }
 
-function WallMonitor({ carPhoto, carLabel, timeMs, opacity }) {
-  const zoom = 1.05 + 0.06 * (0.5 + 0.5 * Math.sin(timeMs / 4200));
+function WallMonitor({ carPhoto, carLabel, opacity }) {
+  // Portrait-first: most submissions are vertical phone photos. A tall, centered
+  // studio monitor frames them with little cropping; the per-app media.aspect
+  // (RoastMyRide = 4:5) clips a too-long photo just enough via objectFit: cover.
   return (
-    <div style={{ position: "absolute", top: "12%", left: "15%", right: "15%", zIndex: 3, opacity }}>
-      <div style={{ position: "relative", aspectRatio: "16 / 10", borderRadius: 14, overflow: "hidden", background: "#06060a", border: "7px solid #0a0810", boxShadow: "0 20px 44px rgba(0,0,0,0.65), 0 0 0 2px rgba(255,255,255,0.05) inset" }}>
-        {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})`, display: "block" }} /> : <Placeholder label={carLabel} />}
+    <div style={{ position: "absolute", top: "10.5%", left: "25%", right: "25%", zIndex: 3, opacity }}>
+      <div style={{ position: "relative", aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 14, overflow: "hidden", background: "#06060a", border: "7px solid #0a0810", boxShadow: "0 20px 44px rgba(0,0,0,0.65), 0 0 0 2px rgba(255,255,255,0.05) inset" }}>
+        {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <Placeholder label={carLabel} />}
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(255,255,255,0.10) 0%, transparent 28%)" }} />
-        <div style={{ position: "absolute", left: 12, top: 12, fontWeight: 800, fontSize: "2.6cqi", letterSpacing: "0.05em", textTransform: "uppercase", background: "rgba(255,59,59,0.9)", padding: "4px 11px", borderRadius: 7 }}>● Now reviewing</div>
+        <div style={{ position: "absolute", left: 10, top: 10, fontWeight: 800, fontSize: "2.5cqi", letterSpacing: "0.05em", textTransform: "uppercase", background: "rgba(255,59,59,0.9)", padding: "4px 10px", borderRadius: 7 }}>● Now reviewing</div>
       </div>
-      <div aria-hidden style={{ width: 64, height: 9, margin: "7px auto 0", borderRadius: 4, background: "rgba(0,0,0,0.55)" }} />
+      <div aria-hidden style={{ width: 56, height: 9, margin: "7px auto 0", borderRadius: 4, background: "rgba(0,0,0,0.55)" }} />
     </div>
   );
 }
@@ -191,10 +197,10 @@ function Waveform({ ring, timeMs }) {
 
 // Callie HOSTS — desk center. She reacts with her FACE (her own state engine); a
 // tiny scale pop on the hard beats. No rotation, no idle wobble.
-function CallieDesk({ state, pop }) {
+function CallieDesk({ state, pop, breath = 0 }) {
   return (
-    <div style={{ position: "absolute", bottom: `${SAFE.bottom + 0.5}%`, left: "50%", zIndex: 6, transformOrigin: "bottom center", transform: `translateX(-50%) scale(${1 + 0.05 * pop})`, textAlign: "center" }}>
-      <Callie state={state} size={104} />
+    <div style={{ position: "absolute", bottom: `${SAFE.bottom + 0.5}%`, left: "50%", zIndex: 6, transformOrigin: "bottom center", transform: `translateX(-50%) scale(${1 + 0.012 * breath + 0.05 * pop})`, textAlign: "center" }}>
+      <Callie state={state} size={104} reduceMotion />
       <div style={{ marginTop: -2, fontWeight: 900, fontSize: "2.6cqi", textTransform: "uppercase", letterSpacing: "0.08em", background: "rgba(0,0,0,0.6)", display: "inline-block", padding: "3px 11px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)" }}>★ Callie</div>
     </div>
   );
@@ -206,11 +212,10 @@ function CallieDesk({ state, pop }) {
 // submission. Three quick phases across the lead window (deterministic from time).
 function BrandedIntro({ carPhoto, carLabel, timeMs, leadMs }) {
   const f = clamp01(timeMs / Math.max(1, leadMs));
-  const IDENT = 0.40, TITLE = 0.62;
-  let node;
-  if (f < IDENT) node = <Ident timeMs={timeMs} p={f / IDENT} />;
-  else if (f < TITLE) node = <ShowTitle p={(f - IDENT) / (TITLE - IDENT)} />;
-  else node = <Showcase carPhoto={carPhoto} carLabel={carLabel} p={(f - TITLE) / (1 - TITLE)} />;
+  const SPLIT = 0.54; // one cohesive brand card, then the submission
+  const node = f < SPLIT
+    ? <BrandCard timeMs={timeMs} p={f / SPLIT} />
+    : <Showcase carPhoto={carPhoto} carLabel={carLabel} p={(f - SPLIT) / (1 - SPLIT)} />;
   return <div style={{ position: "absolute", inset: 0, zIndex: 11 }}>{node}</div>;
 }
 
@@ -228,34 +233,21 @@ function Stars({ timeMs }) {
   );
 }
 
-// Callie's Universe network ident.
-function Ident({ timeMs, p }) {
-  const op = clamp01(p * 4);
-  const scale = 0.7 + 0.3 * clamp01(p * 2.4);
-  return (
-    <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1c1334 0%, #0a0714 56%, #04030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: op }}>
-      <Stars timeMs={timeMs} />
-      <div style={{ transform: `scale(${scale})`, textAlign: "center", zIndex: 1 }}>
-        <Callie state="celebrating" size={150} />
-        <div style={{ marginTop: 8, fontWeight: 900, fontSize: "6.4cqi", letterSpacing: "0.06em", color: "var(--canvas)", textShadow: "0 2px 14px rgba(0,0,0,0.6)" }}>
-          <span style={{ color: "var(--sticker-yellow)" }}>✦</span> CALLIE'S UNIVERSE <span style={{ color: "var(--sticker-yellow)" }}>✦</span>
-        </div>
-        <div style={{ marginTop: 8, fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)" }}>presents</div>
-      </div>
-    </div>
-  );
-}
-
-// Roast My Ride show title card (the show's own ember identity).
-function ShowTitle({ p }) {
+// One cohesive cold open — the network presents the show on a single card
+// (combines the old ident + title screens so it doesn't feel like two intros).
+function BrandCard({ timeMs, p }) {
   const show = cfg("appName").replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase();
   const op = clamp01(p * 4);
-  const scale = 0.86 + 0.14 * clamp01(p * 2.2);
+  const rise = clamp01(p * 2.2);
   return (
-    <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 45%, var(--flame-500) 0%, var(--ember-600) 46%, #2a0a02 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
-      <div style={{ fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.85)" }}>★ a Callie's Universe show ★</div>
-      <div style={{ transform: `scale(${scale})`, fontWeight: 900, fontSize: "13cqi", lineHeight: 0.95, textAlign: "center", color: "var(--canvas)", WebkitTextStroke: "2px #1a1008", textShadow: "0 6px 0 rgba(0,0,0,0.4)", padding: "0 6%" }}>{show}</div>
-      <div style={{ fontWeight: 800, fontSize: "3.2cqi", letterSpacing: "0.04em", textTransform: "uppercase", color: "rgba(255,255,255,0.92)", padding: "0 8%", textAlign: "center" }}>{cfg("aso.subtitle")}</div>
+    <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1c1334 0%, #0a0714 56%, #04030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3.5%", opacity: op }}>
+      <Stars timeMs={timeMs} />
+      <div style={{ zIndex: 1, fontWeight: 800, fontSize: "3cqi", letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.72)" }}>
+        <span style={{ color: "var(--sticker-yellow)" }}>✦</span> Callie's Universe presents <span style={{ color: "var(--sticker-yellow)" }}>✦</span>
+      </div>
+      <div style={{ zIndex: 1, transform: `scale(${0.82 + 0.18 * rise})` }}><Callie state="celebrating" size={132} reduceMotion /></div>
+      <div style={{ zIndex: 1, fontWeight: 900, fontSize: "13cqi", lineHeight: 0.95, textAlign: "center", color: "var(--flame-500)", WebkitTextStroke: "2px #1a1008", textShadow: "0 6px 0 rgba(0,0,0,0.45)", padding: "0 6%", transform: `translateY(${(1 - rise) * 14}px)` }}>{show}</div>
+      <div style={{ zIndex: 1, fontWeight: 800, fontSize: "3.2cqi", letterSpacing: "0.04em", textTransform: "uppercase", color: "rgba(255,255,255,0.85)", padding: "0 8%", textAlign: "center" }}>{cfg("aso.subtitle")}</div>
     </div>
   );
 }
@@ -267,8 +259,8 @@ function Showcase({ carPhoto, carLabel, p }) {
   return (
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1a1228 0%, #0a0714 60%, #05030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
       <div style={{ fontWeight: 800, fontSize: "3.4cqi", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's submission</div>
-      <div style={{ width: "78%", transform: `scale(${0.86 + 0.14 * inP})` }}>
-        <div style={{ aspectRatio: "16 / 10", borderRadius: 16, overflow: "hidden", background: "#06060a", border: "6px solid #fff", boxShadow: "0 22px 50px rgba(0,0,0,0.6)" }}>
+      <div style={{ width: "58%", transform: `scale(${0.86 + 0.14 * inP})` }}>
+        <div style={{ aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 16, overflow: "hidden", background: "#06060a", border: "6px solid #fff", boxShadow: "0 22px 50px rgba(0,0,0,0.6)" }}>
           {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <Placeholder label={carLabel} />}
         </div>
       </div>
@@ -301,7 +293,7 @@ function Caption({ beat, seg, timeMs, words: timed, hi, speaker, reduceMotion })
   const fs = tokens.length > 14 ? "5.6cqi" : tokens.length > 8 ? "7cqi" : "8.6cqi";
   const enter = reduceMotion ? 1 : clamp01(rel / 200);
   return (
-    <div style={{ position: "absolute", left: `${SAFE.left + 3}%`, right: `${SAFE.right + 2}%`, top: "33%", transform: `translateY(${(1 - enter) * 12}px)`, zIndex: 7, textAlign: "center" }}>
+    <div style={{ position: "absolute", left: `${SAFE.left + 3}%`, right: `${SAFE.right + 2}%`, top: "50%", transform: `translateY(${(1 - enter) * 12}px)`, zIndex: 7, textAlign: "center" }}>
       <div style={{ display: "inline-block", marginBottom: 10, fontWeight: 900, fontSize: "3.6cqi", letterSpacing: "0.07em", textTransform: "uppercase", color: "#1a1008", background: hi, padding: "4px 16px", borderRadius: 999, boxShadow: "0 3px 10px rgba(0,0,0,0.45)" }}>{speaker}</div>
       <div style={{ display: "inline-block", maxWidth: "100%", padding: "12px 16px", borderRadius: 18, background: "rgba(8,6,14,0.5)" }}>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.14em 0.3em" }}>
@@ -334,7 +326,7 @@ function ReactionPop({ beat, seg, timeMs, aActive, reduceMotion }) {
 // wordmark + Callie + submit-CTA + network sign-off).
 function BrandedOutro({ timeMs, startMs, tailMs, score, carPhoto, carLabel }) {
   const f = clamp01((timeMs - startMs) / Math.max(1, tailMs));
-  const VERDICT = 0.45;
+  const VERDICT = 0.32; // quick verdict, then let the endcard linger
   const node = f < VERDICT
     ? <Verdict score={score} p={f / VERDICT} />
     : <Endcard carPhoto={carPhoto} carLabel={carLabel} p={(f - VERDICT) / (1 - VERDICT)} />;
@@ -360,7 +352,7 @@ function Endcard({ carPhoto, carLabel, p }) {
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 40%, #1c1334 0%, #0a0714 58%, #04030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3.5%", opacity: op }}>
       <Stars timeMs={p * 4000} />
       <div style={{ zIndex: 1, fontWeight: 900, fontSize: "9cqi", color: "var(--canvas)", WebkitTextStroke: "2px #1a1008", letterSpacing: "0.02em", textAlign: "center", padding: "0 6%" }}>{show}</div>
-      <div style={{ zIndex: 1, transform: `scale(${0.9 + 0.1 * clamp01(p * 2)})` }}><Callie state="celebrating" size={116} /></div>
+      <div style={{ zIndex: 1, transform: `scale(${0.9 + 0.1 * clamp01(p * 2)})` }}><Callie state="celebrating" size={116} reduceMotion /></div>
       <div style={{ zIndex: 1, textAlign: "center" }}>
         <div style={{ fontWeight: 900, fontSize: "8cqi", textTransform: "uppercase", color: "var(--flame-500)" }}>Submit yours</div>
         <div style={{ fontWeight: 900, fontSize: "5cqi", marginTop: 8, color: "var(--canvas)" }}>👉 @{cfg("handle")}</div>
