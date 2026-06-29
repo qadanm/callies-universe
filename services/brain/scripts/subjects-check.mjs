@@ -10,7 +10,7 @@
 //
 // Run: node scripts/subjects-check.mjs
 
-import { resolveSubjectPack, resolvePerformer, offlineBrain, generateRoast } from "../index.js";
+import { resolveSubjectPack, resolvePerformer, offlineBrain, generateRoast, analyzeConversation } from "../index.js";
 import { buildWriteMessages } from "../src/writing/writeSet.js";
 import { buildGradeMessages } from "../src/grading/gradeSet.js";
 import { CAR_FRAMING, TEXTS_FRAMING } from "../src/subjects/framing.js";
@@ -126,6 +126,10 @@ assert(resolveSubjectPack("car").id === "car", "dispatch: 'car' → car pack");
 assert(resolveSubjectPack("texts").id === "texts", "dispatch: 'texts' → texts pack");
 assert(resolveSubjectPack(undefined).id === "car", "dispatch: missing → car (default)");
 assert(resolveSubjectPack("nope").id === "car", "dispatch: unknown → car (default)");
+
+// Vision transcription degrades safely (no image / no key → null), like identifyCar.
+assert((await analyzeConversation({})) === null, "analyzeConversation: no image → null");
+assert((await analyzeConversation({ imageDataUrl: "data:image/png;base64,iVBORw0KGgo=" })) === null, "analyzeConversation: no key → null");
 
 // ---------------------------------------------------------------------------
 // 2. CAR PROMPT PARITY — byte-identical to the original templates, across every

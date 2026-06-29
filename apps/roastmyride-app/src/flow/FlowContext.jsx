@@ -10,7 +10,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generateRoast } from "../services/roast.js";
-import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
+import { hasRoastApi, identifyCarViaApi, transcribeViaApi } from "../services/roastApi.js";
 import { hasCreditsApi, fetchCredits, consumeCredit } from "../services/credits.js";
 import { offlineBrain } from "@callies-universe/brain";
 import { cfg } from "../subjects/index.js";
@@ -103,17 +103,27 @@ export function FlowProvider({ children }) {
     }
     generatingRef.current = true;
     try {
-      // Photo subject-ID (server vision) when a backend is present and we have a photo
-      // but no explicit subject — so the brain researches the user's ACTUAL item. The
-      // photo goes ONLY to /identify, never to the text brain (sanitizeForBrain).
-      // Only the car subject uses vision identification; others skip this step.
+      // Server vision when a backend is present and we have an upload: read the
+      // photo into what the (text-only) brain needs to ground the roast — the car's
+      // identity, or the conversation transcript. The image goes ONLY to the vision
+      // endpoint, never to the brain itself (sanitizeForBrain strips it). Each subject
+      // uses its own read; subjects without a vision step just skip this.
       let active = input;
-      if (cfg("id") === "car" && hasRoastApi() && input.carPhoto?.dataUrl && !input.car) {
-        try {
-          const car = await identifyCarViaApi(input.carPhoto.dataUrl);
-          if (car) active = { ...input, car };
-        } catch (e) {
-          console.warn(`[flow] car identification failed (${(e && e.message) || e}); using default`);
+      if (hasRoastApi() && input.carPhoto?.dataUrl) {
+        if (cfg("id") === "car" && !input.car) {
+          try {
+            const car = await identifyCarViaApi(input.carPhoto.dataUrl);
+            if (car) active = { ...input, car };
+          } catch (e) {
+            console.warn(`[flow] car identification failed (${(e && e.message) || e}); using default`);
+          }
+        } else if (cfg("id") === "texts" && !input.conversation) {
+          try {
+            const conversation = await transcribeViaApi(input.carPhoto.dataUrl);
+            if (conversation) active = { ...input, conversation };
+          } catch (e) {
+            console.warn(`[flow] transcription failed (${(e && e.message) || e}); using offline`);
+          }
         }
       }
       const r = await generateRoast(sanitizeForBrain(active));

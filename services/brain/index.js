@@ -14,6 +14,10 @@ export { generateRoast } from "./src/generateRoast.js";
 // Photo car identification (vision) — names the user's actual car for the research.
 export { identifyCar } from "./src/identify.js";
 
+// Conversation transcription (vision) — reads a text-message screenshot into a
+// transcript so the texts subject can ground on the real conversation.
+export { analyzeConversation } from "./src/analyzeConversation.js";
+
 // Offline path (used by the app's fallback story, the CI smoke, and demos).
 export { offlineBrain } from "./src/fallback/offlineBrain.js";
 

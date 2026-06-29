@@ -30,6 +30,18 @@ export async function identifyCarViaApi(imageDataUrl) {
   return j.car || null;
 }
 
+/** POST a conversation screenshot → the transcript string or null (vision). */
+export async function transcribeViaApi(imageDataUrl) {
+  const res = await fetchT(`${BASE}/transcribe`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
+  }, 25000);
+  if (!res.ok) throw new Error(`transcribe ${res.status}`);
+  const j = await res.json();
+  return j.conversation || null;
+}
+
 /** POST the sanitized RoastInput → the RoastResult (live brain runs server-side). */
 export async function roastViaApi(input) {
   const res = await fetchT(`${BASE}/roast`, {
