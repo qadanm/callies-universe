@@ -30,7 +30,7 @@ const EMOTES = {
 
 export function Mascot({
   state = "idle", size = 160, accessory = true, placeholderTag = false,
-  reduceMotion = false, style, ...rest
+  reduceMotion = false, ink = false, className = "", style, ...rest
 }) {
   const cfg = EMOTES[state] || EMOTES.idle;
   const anim = reduceMotion ? "none" : ({
@@ -41,7 +41,8 @@ export function Mascot({
     none:   "none",
   })[cfg.anim || "idle"];
   return (
-    <div style={{ position:"relative", width:size, height:size, display:"inline-flex",
+    <div className={[ink ? "ink" : "", className].filter(Boolean).join(" ") || undefined}
+      style={{ position:"relative", width:size, height:size, display:"inline-flex",
       alignItems:"center", justifyContent:"center", animation:anim, ...style }}
       data-callie-state={state} aria-label={`Callie (${state})`} role="img" {...rest}>
       <Cat cfg={cfg} accessory={accessory} reduceMotion={reduceMotion} />

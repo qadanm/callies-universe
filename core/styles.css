@@ -12,3 +12,4 @@
 @import url("./tokens/radius.css");
 @import url("./tokens/elevation.css");
 @import url("./tokens/motion.css");
+@import url("./tokens/effects.css"); /* facelift: ink/halftone utilities — LAST (uses the above) */

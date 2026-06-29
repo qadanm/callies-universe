@@ -15,10 +15,11 @@ import React from "react";
 
 const OUT = "#3A2208";
 
-export function Roaster({ id = "reginald", size = 140, ring = false, style, ...rest }) {
+export function Roaster({ id = "reginald", size = 140, ring = false, ink = false, className = "", style, ...rest }) {
   const r = ROSTER[id] || ROSTER.reginald;
   return (
-    <div style={{ position: "relative", width: size, height: size, display: "inline-flex",
+    <div className={[ink ? "ink" : "", className].filter(Boolean).join(" ") || undefined}
+      style={{ position: "relative", width: size, height: size, display: "inline-flex",
       alignItems: "center", justifyContent: "center", ...style }}
       data-roaster={id} role="img" aria-label={r.name} {...rest}>
       <svg viewBox="0 0 200 200" width="100%" height="100%" style={{ overflow: "visible" }}>

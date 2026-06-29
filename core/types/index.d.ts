@@ -43,6 +43,14 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   stickerCorner?: "tl" | "tr" | "bl" | "br";
   /** Interior padding (CSS value or token). */
   pad?: string;
+  /** Wobble the border (content stays crisp). Off by default for dense lists. */
+  ink?: boolean;
+  /** "sticker" = hard offset depth (default); "soft" = the legacy glossy elevation. */
+  elevation?: "sticker" | "soft";
+  /** Tiny tilt in degrees, for the scrapbook feel. */
+  rotate?: number;
+  /** Card-face color (per-character / per-section tint). */
+  tint?: string;
   children?: React.ReactNode;
 }
 export function Card(props: CardProps): JSX.Element;
@@ -59,6 +67,8 @@ export function Input(props: InputProps): JSX.Element;
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: "ember" | "flame" | "success" | "info" | "cool" | "pink" | "ink";
+  /** Hand-ink the badge edge (off by default — keeps tiny pills crisp). */
+  ink?: boolean;
   children?: React.ReactNode;
 }
 export function Badge(props: BadgeProps): JSX.Element;
@@ -120,6 +130,9 @@ export interface MascotProps {
   placeholderTag?: boolean;
   /** Force the calm, non-looping render (mirrors prefers-reduced-motion). */
   reduceMotion?: boolean;
+  /** Hand-ink Callie's outline (the facelift wobble). Off by default. */
+  ink?: boolean;
+  className?: string;
   style?: React.CSSProperties;
 }
 /** Renders Callie. `Callie` and `Mascot` are identical, purely presentational. */
@@ -209,6 +222,9 @@ export interface RoasterProps {
   size?: number;
   /** Draw the character's signature background ring (for picker tiles). */
   ring?: boolean;
+  /** Hand-ink the bust outline (the facelift wobble). Off by default. */
+  ink?: boolean;
+  className?: string;
   style?: React.CSSProperties;
 }
 /** Roaster avatar. Static `Roaster.roster` carries the full cast metadata. */
@@ -227,3 +243,53 @@ export interface CastPickerProps {
 }
 /** Featured roaster + tap-to-switch grid; reads Roaster.roster so it auto-extends. */
 export function CastPicker(props: CastPickerProps): JSX.Element;
+
+/* ============================================================
+   Decoration — the facelift's shared ink filter + comic accents
+   ============================================================ */
+
+/**
+ * Mounts the hand-inked SVG filter defs (#ink, #ink2). Render EXACTLY ONCE per
+ * page/app (and once inside the Remotion composition) so `.ink` / filter:url(#ink)
+ * resolve. Zero layout; deterministic (fixed seed).
+ */
+export function FilterHost(): JSX.Element;
+
+export interface BurstProps extends React.HTMLAttributes<HTMLSpanElement> {
+  color?: string;
+  textColor?: string;
+  size?: number;
+  rotate?: number;
+  children?: React.ReactNode;
+}
+/** Outlined comic starburst chip ("NEW"/"HOT"). */
+export function Burst(props: BurstProps): JSX.Element;
+
+export interface SquiggleProps extends React.SVGAttributes<SVGSVGElement> {
+  width?: number;
+  color?: string;
+  thickness?: number;
+}
+/** Hand-drawn marker underline for a headline keyword. */
+export function Squiggle(props: SquiggleProps): JSX.Element;
+
+export interface TapeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  width?: number;
+  height?: number;
+  rotate?: number;
+  color?: string;
+}
+/** A strip of translucent washi tape; position it via `style`. */
+export function Tape(props: TapeProps): JSX.Element;
+
+export interface HalftoneBandProps extends React.HTMLAttributes<HTMLElement> {
+  /** Band background — defaults to the page accent so each site keeps identity. */
+  bg?: string;
+  dotColor?: string;
+  dotOpacity?: number;
+  /** Show a corner star sticker. */
+  star?: boolean;
+  children?: React.ReactNode;
+}
+/** Full-bleed color section with a ben-day halftone overlay. */
+export function HalftoneBand(props: HalftoneBandProps): JSX.Element;

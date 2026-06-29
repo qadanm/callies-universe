@@ -34,6 +34,17 @@
   /* ---- Sticker shadow (crisp, slightly offset, like a peel-off) ---- */
   --shadow-sticker: 0 2px 0 rgba(34, 20, 3, 0.18), 0 6px 12px rgba(34, 20, 3, 0.12);
 
+  /* ---- Die-cut sticker depth (the facelift) — hard, single-direction offset.
+     Box-shadow variants for flat elements; drop-shadow variants for tilted /
+     irregular (ink-bordered) elements where box-shadow would follow the rect. */
+  --shadow-sticker-sm:    3px 4px 0 rgba(34, 20, 3, 0.92);
+  --shadow-sticker-md:    5px 6px 0 rgba(34, 20, 3, 0.92);
+  --shadow-sticker-lg:    7px 8px 0 rgba(34, 20, 3, 0.85);
+  --shadow-sticker-press: 1px 1px 0 rgba(34, 20, 3, 0.92);
+  --drop-sticker:      drop-shadow(7px 8px 0 rgba(34, 20, 3, 0.82));
+  --drop-sticker-dark: drop-shadow(6px 8px 0 #18092F); /* reads on dark / violet bands */
+  --ink-outline: 3px solid var(--ink); /* the hand-drawn border weight */
+
   /* ---- Focus ring ---- */
   --ring: 0 0 0 3px var(--canvas), 0 0 0 6px var(--focus-ring);
 

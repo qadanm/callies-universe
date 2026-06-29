@@ -59,6 +59,7 @@ body {
   width: 390px;
   height: 844px;
   border-radius: 54px;
+  corner-shape: var(--corner-card);
   background: #1a0e04;
   padding: 12px;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
@@ -69,6 +70,7 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 44px;
+  corner-shape: var(--corner-card);
   overflow: hidden;
   background: var(--canvas);
   display: flex;

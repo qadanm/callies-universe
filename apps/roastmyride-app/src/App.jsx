@@ -13,6 +13,7 @@ import {
   useLocation,
 } from "react-router-dom";
 
+import { FilterHost } from "@callies-universe/core";
 import { FlowProvider } from "./flow/FlowContext.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { OfflineBanner } from "./components/OfflineBanner.jsx";
@@ -141,6 +142,7 @@ const router = createHashRouter([
 export function App() {
   return (
     <FlowProvider>
+      <FilterHost />
       <RouterProvider router={router} />
     </FlowProvider>
   );

@@ -58,7 +58,7 @@ export const SITES = {
       { emoji: "🎙️", h: "The comics judge", p: "Two comedians roast the outfit (the fit, never your body)." },
       { emoji: "📲", h: "Post the verdict", p: "Get a vertical video for the feed." },
     ],
-    accent: ramp(["#9D174D", "#DB2777", "#EC4899", "#F472B6", "#F9A8D4", "#FBCFE8", "#FCE7F3", "#FDF2F8"]),
+    accent: ramp(["#9D174D", "#CC2069", "#EC4899", "#F472B6", "#F9A8D4", "#FBCFE8", "#FCE7F3", "#FDF2F8"]),
   },
 
   roastroom: {
@@ -71,7 +71,7 @@ export const SITES = {
       { emoji: "🎙️", h: "The comics clock it", p: "Two comedians roast the decor, the clutter, the choices." },
       { emoji: "📲", h: "Share the tour", p: "Get a vertical video roast of the room." },
     ],
-    accent: ramp(["#166534", "#16A34A", "#22C55E", "#4ADE80", "#86EFAC", "#BBF7D0", "#DCFCE7", "#F0FDF4"]),
+    accent: ramp(["#166534", "#15803D", "#22C55E", "#4ADE80", "#86EFAC", "#BBF7D0", "#DCFCE7", "#F0FDF4"]),
   },
 
   roastprofile: {
@@ -84,7 +84,7 @@ export const SITES = {
       { emoji: "🎙️", h: "The comics review", p: "Two comedians roast the choices — the clichés, the prompts — never you." },
       { emoji: "📲", h: "Fix it, or post it", p: "Get a video and some surprisingly useful notes." },
     ],
-    accent: ramp(["#9F1239", "#E11D48", "#F43F5E", "#FB7185", "#FDA4AF", "#FECDD3", "#FFE4E6", "#FFF1F2"]),
+    accent: ramp(["#9F1239", "#D11641", "#F43F5E", "#FB7185", "#FDA4AF", "#FECDD3", "#FFE4E6", "#FFF1F2"]),
   },
 };
 

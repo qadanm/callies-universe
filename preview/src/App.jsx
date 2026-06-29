@@ -13,6 +13,10 @@ import {
   CallieHost,
   Roaster,
   CastPicker,
+  Burst,
+  Squiggle,
+  Tape,
+  HalftoneBand,
 } from "@callies-universe/core";
 
 /* The nine canonical Callie states, in spec order. */
@@ -277,6 +281,77 @@ const hd = {
   margin: "var(--space-6) 0 var(--space-3)",
 };
 
+/* ---- Facelift ---- */
+const tintFor = (ring) => `color-mix(in srgb, ${ring} 40%, #fff)`;
+const chipStyle = (corner, bg) => ({
+  border: "var(--ink-outline)", padding: "14px 22px", fontWeight: 800, color: "var(--ink)",
+  background: bg, borderRadius: "var(--radius-lg)", cornerShape: `var(${corner})`,
+  boxShadow: "var(--shadow-sticker-md)",
+});
+
+function FaceliftShowcase() {
+  const cast = Roaster.roster.filter((r) => !r.comingSoon);
+  return (
+    <Section id="facelift" title="0 · The facelift" blurb="Superellipse corners, a hand-inked wobble on borders, die-cut sticker depth, color tints, and comic accents — all pure CSS/SVG, defined in core so it cascades to web, app, and video. (Squircles render on Chromium; Safari/iOS fall back to rounded.)">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)", alignItems: "center" }}>
+        <div style={{ position: "relative", width: 150, height: 150, display: "grid", placeItems: "center" }}>
+          <span className="ink" aria-hidden style={{ position: "absolute", inset: -22, background: "var(--sticker-yellow)", clipPath: "polygon(50% 0,59% 18%,78% 8%,75% 30%,97% 28%,82% 46%,100% 60%,78% 64%,86% 88%,63% 78%,55% 100%,44% 79%,22% 90%,28% 66%,4% 64%,22% 48%,2% 32%,24% 30%,20% 8%,40% 18%)" }} />
+          <div style={{ position: "relative" }}><Callie state="celebrating" size={120} ink /></div>
+        </div>
+        <div>
+          <h3 style={{ font: "var(--type-d1)", margin: 0, color: "var(--ink)", WebkitTextStroke: "2px var(--ink)", textShadow: "3px 3px 0 var(--sticker-purple)" }}>
+            Cute, but{" "}
+            <span style={{ position: "relative", display: "inline-block", whiteSpace: "nowrap" }}>
+              <span className="ink" aria-hidden style={{ position: "absolute", left: -4, right: -4, top: "20%", bottom: "12%", background: "var(--marker-hl)", transform: "rotate(-1.6deg)", borderRadius: 7 }} />
+              <span style={{ position: "relative" }}>stunning</span>
+            </span>.
+          </h3>
+          <Squiggle width={220} />
+          <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+            <Button variant="primary">Roast my ride 🔥</Button>
+            <Button variant="accent">Watch a roast</Button>
+            <Burst>NEW</Burst>
+          </div>
+        </div>
+      </div>
+
+      <h3 style={hd}>Inked sticker cards · per-character tint · tape</h3>
+      <Row gap="var(--space-6)">
+        {cast.slice(0, 4).map((r, i) => (
+          <Card key={r.id} ink tint={tintFor(r.ring)} rotate={[-2.5, 2, -1.5, 2.8][i]} pad="var(--space-4)" style={{ width: 178, textAlign: "center", position: "relative" }}>
+            {i === 1 && <Tape />}
+            <Roaster id={r.id} size={104} ink />
+            <div style={{ font: "var(--type-d4)", color: "var(--ink)", marginTop: 4 }}>{r.name.split(" ")[0]}</div>
+            <div style={{ font: "var(--type-legal)", color: "var(--ember-700)", textTransform: "uppercase", fontWeight: 800, marginBottom: 10 }}>{r.tag}</div>
+            <Button size="sm">BUY · $25</Button>
+          </Card>
+        ))}
+      </Row>
+
+      <h3 style={hd}>Halftone band — the contrast moment</h3>
+      <HalftoneBand star bg="#46199A" style={{ borderRadius: "var(--radius-xl)", cornerShape: "var(--corner-card)", padding: "30px 26px" }}>
+        <h4 style={{ color: "#fff", font: "var(--type-d3)", margin: "0 0 18px", textShadow: "3px 3px 0 var(--ember-600)" }}>Stick 'em anywhere.</h4>
+        <Row gap="var(--space-5)">
+          {cast.slice(0, 3).map((r, i) => (
+            <Card key={r.id} ink tint={tintFor(r.ring)} rotate={[-2, 1.6, -1.4][i]} pad="var(--space-4)" style={{ width: 150, textAlign: "center" }}>
+              <Roaster id={r.id} size={90} ink />
+              <div style={{ font: "var(--type-d4)", color: "var(--ink)", marginTop: 4 }}>{r.name.split(" ")[0]}</div>
+            </Card>
+          ))}
+        </Row>
+      </HalftoneBand>
+
+      <h3 style={hd}>Corner-shape language — one API, four roles</h3>
+      <Row gap="var(--space-4)">
+        <div style={chipStyle("--corner-card", "#FFE7B8")}>squircle · cards</div>
+        <div style={chipStyle("--corner-tag", "#CFE9FF")}>notch · tags</div>
+        <div style={chipStyle("--corner-ticket", "#FAD4E6")}>scoop · tickets</div>
+        <div style={chipStyle("--corner-badge", "#D6F2DD")}>bevel · badges</div>
+      </Row>
+    </Section>
+  );
+}
+
 export function App() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [boom, setBoom] = useState(false);
@@ -296,6 +371,7 @@ export function App() {
       </header>
 
       <main style={{ maxWidth: "var(--content-max)", margin: "0 auto", padding: "var(--space-4) var(--gutter) var(--space-12)" }}>
+        <FaceliftShowcase />
         <Tokens />
         <ComponentsBridge onOpenSheet={() => setSheetOpen(true)} onBoom={() => { setBoom(true); setTimeout(() => setBoom(false), 2600); }} />
         <CallieShowcase />

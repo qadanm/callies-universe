@@ -1,6 +1,7 @@
 ---
 import "@callies-universe/core/styles.css"; // brand tokens + fonts (single source)
 import "../styles/site.css";
+import { FilterHost } from "@callies-universe/core";
 import { activeSite, SHOWS } from "../config/sites.js";
 import { LEGAL_DOCS, ENTITY } from "../config/legal.js";
 
@@ -31,6 +32,7 @@ const navLinks = isNetwork
     <link rel="icon" href="/favicon.svg" />
   </head>
   <body style={accentCss}>
+    <FilterHost />
     <header class="nav">
       <div class="container nav__row">
         <a class="brand" href="/">

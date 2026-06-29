@@ -14,9 +14,22 @@
   --radius-blob: 48% 52% 56% 44% / 52% 46% 54% 48%; /* squishy mascot bubble */
 
   /* ---- Semantic ---- */
-  --radius-button: var(--radius-pill);
+  --radius-button: var(--radius-lg);  /* facelift: squircle CTA (was pill) */
   --radius-chip:   var(--radius-pill);
   --radius-card:   var(--radius-lg);
   --radius-input:  var(--radius-md);
   --radius-sheet:  var(--radius-xl);
+
+  /* ---- Corner-shape (the facelift) ----------------------------------------
+     Progressive enhancement layered on top of border-radius. Chromium (incl.
+     the video render) draws the superellipse "squircle"; Safari / iOS WKWebView
+     ignore corner-shape and fall back to the rounded border-radius above.
+     One API, four roles — squircle/notch/scoop/bevel. */
+  --corner-card:   superellipse(3);    /* cards, tiles, sheets, hero panels */
+  --corner-button: superellipse(2.4);  /* CTAs */
+  --corner-chip:   superellipse(2.2);  /* chips, small pills */
+  --corner-input:  superellipse(2);    /* inputs */
+  --corner-tag:    notch;              /* tags */
+  --corner-ticket: scoop;              /* tickets / credit tiles */
+  --corner-badge:  bevel;              /* badges */
 }

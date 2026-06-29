@@ -79,7 +79,7 @@ export const StageScene = React.memo(function StageScene({
 
       {/* brand chip */}
       <div style={{ position: "absolute", top: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5 }}>
-        <span style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", color: "var(--sticker-yellow)", padding: "5px 12px", borderRadius: "var(--radius-pill)" }}>
+        <span style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", color: "var(--sticker-yellow)", padding: "5px 12px", borderRadius: "var(--radius-pill)", cornerShape: "var(--corner-chip)" }}>
           🔥 {cfg("appName")}
         </span>
       </div>
@@ -111,7 +111,7 @@ export const StageScene = React.memo(function StageScene({
           {/* the comic — sticker performer; hits a little on the punch/closer beats */}
           <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
             <Comic comedianId={comedianId} />
-            <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
+            <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
               🎤 {firstName(performerName)}
             </div>
           </div>
@@ -192,6 +192,7 @@ function Captions({ beat, startMs, endMs, timeMs, words: timedWords, hi = "var(-
               background: hot ? hi : "transparent",
               padding: hot ? "0 0.12em" : 0,
               borderRadius: 8,
+              cornerShape: "var(--corner-chip)",
               WebkitTextStroke: hot ? "0" : "2px #1a1008",
               textShadow: hot ? "none" : "0 3px 0 rgba(0,0,0,0.55)",
               opacity: reduceMotion || revealed ? 1 : 0,
@@ -234,8 +235,8 @@ function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
 
 function ShowcaseFrame({ w, rotate = 0, tag, children }) {
   return (
-    <div style={{ width: w, transform: `rotate(${rotate}deg)` }}>
-      <div style={{ background: "#fff", padding: "3%", paddingBottom: tag ? "10%" : "3%", borderRadius: 12, boxShadow: "0 14px 34px rgba(0,0,0,0.55)" }}>
+    <div style={{ width: w, transform: `rotate(${rotate}deg)`, filter: "var(--drop-sticker)" }}>
+      <div className="ink" style={{ background: "#fff", padding: "3%", paddingBottom: tag ? "10%" : "3%", borderRadius: "var(--radius-md)", cornerShape: "var(--corner-card)", border: "var(--ink-outline)" }}>
         <div style={{ aspectRatio: "1 / 1", borderRadius: 6, overflow: "hidden", background: "#0c0805" }}>{children}</div>
         {tag && <div style={{ marginTop: 4, font: "var(--type-legal)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink)", textAlign: "center" }}>{tag}</div>}
       </div>
@@ -309,8 +310,8 @@ function ParkourBg({ timeMs }) {
 
 function Sticker({ style, tag, tone, children }) {
   return (
-    <div style={{ position: "absolute", width: "30%", maxWidth: 130, zIndex: 5, ...style }}>
-      <div style={{ background: "#fff", padding: 5, paddingBottom: 18, borderRadius: 8, boxShadow: "0 8px 22px rgba(0,0,0,0.5)" }}>
+    <div style={{ position: "absolute", width: "30%", maxWidth: 130, zIndex: 5, filter: "var(--drop-sticker)", ...style }}>
+      <div className="ink" style={{ background: "#fff", padding: 5, paddingBottom: 18, borderRadius: "var(--radius-sm)", cornerShape: "var(--corner-card)", border: "var(--ink-outline)" }}>
         <div style={{ aspectRatio: "1 / 1", borderRadius: 4, overflow: "hidden", background: "#0c0805" }}>{children}</div>
         <div style={{ marginTop: 3, font: "var(--type-legal)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink)", textAlign: "center" }}>{tag}</div>
       </div>
@@ -331,7 +332,7 @@ function PlaceholderSubject({ label }) {
 }
 
 const Comic = React.memo(function Comic({ comedianId }) {
-  return <Roaster id={comedianId} size={96} />;
+  return <Roaster id={comedianId} size={96} ink />;
 });
 
 // PANEL performer: bottom-left (A) or bottom-right (B). The active speaker is big,
@@ -353,8 +354,8 @@ const PanelComic = React.memo(function PanelComic({ performer, side, active, pop
         ...pos,
       }}
     >
-      <Roaster id={performer.id} size={active ? 100 : 82} ring={active} />
-      <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: active ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)", display: "inline-block", padding: "2px 8px", borderRadius: 999 }}>
+      <Roaster id={performer.id} size={active ? 100 : 82} ring={active} ink />
+      <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: active ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)", display: "inline-block", padding: "2px 8px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
         🎤 {firstName(performer.name)}
       </div>
     </div>

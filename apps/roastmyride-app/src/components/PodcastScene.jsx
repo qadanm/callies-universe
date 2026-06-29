@@ -76,8 +76,8 @@ export const PodcastScene = React.memo(function PodcastScene({
 
       {/* ===== OVERLAY UI ===== */}
       <div style={{ position: "absolute", top: `${SAFE.top}%`, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: `0 ${SAFE.left + 1}%`, zIndex: 7 }}>
-        <span style={{ fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", padding: "6px 13px", borderRadius: 999 }}>🔥 {cfg("appName")}</span>
-        <span style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.12em", background: "rgba(0,0,0,0.45)", padding: "6px 13px", borderRadius: 999 }}>
+        <span style={{ fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", padding: "6px 13px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>🔥 {cfg("appName")}</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 800, fontSize: "2.8cqi", letterSpacing: "0.12em", background: "rgba(0,0,0,0.45)", padding: "6px 13px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
           <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#ff3b3b", boxShadow: "0 0 9px #ff3b3b", opacity: livePulse }} /> ON AIR
         </span>
       </div>
@@ -151,10 +151,10 @@ function WallMonitor({ carPhoto, carLabel, opacity }) {
   // (RoastMyRide = 4:5) clips a too-long photo just enough via objectFit: cover.
   return (
     <div style={{ position: "absolute", top: "10.5%", left: "25%", right: "25%", zIndex: 3, opacity }}>
-      <div style={{ position: "relative", aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 14, overflow: "hidden", background: "#06060a", border: "7px solid #0a0810", boxShadow: "0 20px 44px rgba(0,0,0,0.65), 0 0 0 2px rgba(255,255,255,0.05) inset" }}>
+      <div style={{ position: "relative", aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 14, cornerShape: "var(--corner-card)", overflow: "hidden", background: "#06060a", border: "7px solid #0a0810", boxShadow: "0 20px 44px rgba(0,0,0,0.65), 0 0 0 2px rgba(255,255,255,0.05) inset" }}>
         {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <Placeholder label={carLabel} />}
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(120deg, rgba(255,255,255,0.10) 0%, transparent 28%)" }} />
-        <div style={{ position: "absolute", left: 10, top: 10, fontWeight: 800, fontSize: "2.5cqi", letterSpacing: "0.05em", textTransform: "uppercase", background: "rgba(255,59,59,0.9)", padding: "4px 10px", borderRadius: 7 }}>● Now reviewing</div>
+        <div style={{ position: "absolute", left: 10, top: 10, fontWeight: 800, fontSize: "2.5cqi", letterSpacing: "0.05em", textTransform: "uppercase", background: "rgba(255,59,59,0.9)", padding: "4px 10px", borderRadius: 7, cornerShape: "var(--corner-chip)" }}>● Now reviewing</div>
       </div>
       <div aria-hidden style={{ width: 56, height: 9, margin: "7px auto 0", borderRadius: 4, background: "rgba(0,0,0,0.55)" }} />
     </div>
@@ -170,11 +170,11 @@ function HostStation({ performer, side, active, bob, timeMs }) {
   const scale = (active ? 1.0 : 0.9) + (active ? 0.03 * bob : 0);
   return (
     <div style={{ position: "absolute", bottom: `${SAFE.bottom + 1}%`, width: "38%", maxWidth: 206, zIndex: 5, textAlign: "center", transformOrigin: "bottom center", transform: `translateY(${lift}px) scale(${scale})`, opacity: active ? 1 : 0.64, filter: active ? "none" : "saturate(0.72) brightness(0.8)", ...pos }}>
-      <div style={{ position: "relative", borderRadius: 20, overflow: "hidden", background: "linear-gradient(180deg, #281c3a, #150e22)", border: `3px solid ${active ? ring : "rgba(255,255,255,0.12)"}`, boxShadow: active ? `0 0 26px ${ring}66, 0 14px 30px rgba(0,0,0,0.55)` : "0 12px 24px rgba(0,0,0,0.45)" }}>
+      <div style={{ position: "relative", borderRadius: 20, cornerShape: "var(--corner-card)", overflow: "hidden", background: "linear-gradient(180deg, #281c3a, #150e22)", border: `3px solid ${active ? ring : "rgba(255,255,255,0.12)"}`, boxShadow: active ? `0 0 26px ${ring}66, 0 14px 30px rgba(0,0,0,0.55)` : "0 12px 24px rgba(0,0,0,0.45)" }}>
         <div style={{ aspectRatio: "1 / 1", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingTop: "6%" }}>
-          <Roaster id={performer.id} size={172} ring={false} />
+          <Roaster id={performer.id} size={172} ring={false} ink />
         </div>
-        {active && <span style={{ position: "absolute", top: 9, right: 9, display: "flex", alignItems: "center", gap: 4, fontWeight: 800, fontSize: "2.4cqi", background: "rgba(255,59,59,0.92)", padding: "3px 9px", borderRadius: 6 }}>● LIVE</span>}
+        {active && <span style={{ position: "absolute", top: 9, right: 9, display: "flex", alignItems: "center", gap: 4, fontWeight: 800, fontSize: "2.4cqi", background: "rgba(255,59,59,0.92)", padding: "3px 9px", borderRadius: 6, cornerShape: "var(--corner-chip)" }}>● LIVE</span>}
         <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "8px 8px", background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.8))", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ fontWeight: 900, fontSize: "3.2cqi", textTransform: "uppercase", letterSpacing: "0.04em" }}>{firstName(performer.name)}</span>
           {active && <Waveform ring={ring} timeMs={timeMs} />}
@@ -200,8 +200,8 @@ function Waveform({ ring, timeMs }) {
 function CallieDesk({ state, pop, breath = 0 }) {
   return (
     <div style={{ position: "absolute", bottom: `${SAFE.bottom + 0.5}%`, left: "50%", zIndex: 6, transformOrigin: "bottom center", transform: `translateX(-50%) scale(${1 + 0.012 * breath + 0.05 * pop})`, textAlign: "center" }}>
-      <Callie state={state} size={104} reduceMotion />
-      <div style={{ marginTop: -2, fontWeight: 900, fontSize: "2.6cqi", textTransform: "uppercase", letterSpacing: "0.08em", background: "rgba(0,0,0,0.6)", display: "inline-block", padding: "3px 11px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)" }}>★ Callie</div>
+      <Callie state={state} size={104} reduceMotion ink />
+      <div style={{ marginTop: -2, fontWeight: 900, fontSize: "2.6cqi", textTransform: "uppercase", letterSpacing: "0.08em", background: "rgba(0,0,0,0.6)", display: "inline-block", padding: "3px 11px", borderRadius: 999, cornerShape: "var(--corner-chip)", border: "1px solid rgba(255,255,255,0.18)" }}>★ Callie</div>
     </div>
   );
 }
@@ -245,7 +245,7 @@ function BrandCard({ timeMs, p }) {
       <div style={{ zIndex: 1, fontWeight: 800, fontSize: "3cqi", letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.72)" }}>
         <span style={{ color: "var(--sticker-yellow)" }}>✦</span> Callie's Universe presents <span style={{ color: "var(--sticker-yellow)" }}>✦</span>
       </div>
-      <div style={{ zIndex: 1, transform: `scale(${0.82 + 0.18 * rise})` }}><Callie state="celebrating" size={132} reduceMotion /></div>
+      <div style={{ zIndex: 1, transform: `scale(${0.82 + 0.18 * rise})` }}><Callie state="celebrating" size={132} reduceMotion ink /></div>
       <div style={{ zIndex: 1, fontWeight: 900, fontSize: "13cqi", lineHeight: 0.95, textAlign: "center", color: "var(--flame-500)", WebkitTextStroke: "2px #1a1008", textShadow: "0 6px 0 rgba(0,0,0,0.45)", padding: "0 6%", transform: `translateY(${(1 - rise) * 14}px)` }}>{show}</div>
       <div style={{ zIndex: 1, fontWeight: 800, fontSize: "3.2cqi", letterSpacing: "0.04em", textTransform: "uppercase", color: "rgba(255,255,255,0.85)", padding: "0 8%", textAlign: "center" }}>{cfg("aso.subtitle")}</div>
     </div>
@@ -259,8 +259,8 @@ function Showcase({ carPhoto, carLabel, p }) {
   return (
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1a1228 0%, #0a0714 60%, #05030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
       <div style={{ fontWeight: 800, fontSize: "3.4cqi", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's submission</div>
-      <div style={{ width: "58%", transform: `scale(${0.86 + 0.14 * inP})` }}>
-        <div style={{ aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 16, overflow: "hidden", background: "#06060a", border: "6px solid #fff", boxShadow: "0 22px 50px rgba(0,0,0,0.6)" }}>
+      <div style={{ width: "58%", transform: `scale(${0.86 + 0.14 * inP})`, filter: "var(--drop-sticker)" }}>
+        <div className="ink" style={{ aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 16, cornerShape: "var(--corner-card)", overflow: "hidden", background: "#06060a", border: "6px solid #fff" }}>
           {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <Placeholder label={carLabel} />}
         </div>
       </div>
@@ -294,14 +294,14 @@ function Caption({ beat, seg, timeMs, words: timed, hi, speaker, reduceMotion })
   const enter = reduceMotion ? 1 : clamp01(rel / 200);
   return (
     <div style={{ position: "absolute", left: `${SAFE.left + 3}%`, right: `${SAFE.right + 2}%`, top: "50%", transform: `translateY(${(1 - enter) * 12}px)`, zIndex: 7, textAlign: "center" }}>
-      <div style={{ display: "inline-block", marginBottom: 10, fontWeight: 900, fontSize: "3.6cqi", letterSpacing: "0.07em", textTransform: "uppercase", color: "#1a1008", background: hi, padding: "4px 16px", borderRadius: 999, boxShadow: "0 3px 10px rgba(0,0,0,0.45)" }}>{speaker}</div>
-      <div style={{ display: "inline-block", maxWidth: "100%", padding: "12px 16px", borderRadius: 18, background: "rgba(8,6,14,0.5)" }}>
+      <div style={{ display: "inline-block", marginBottom: 10, fontWeight: 900, fontSize: "3.6cqi", letterSpacing: "0.07em", textTransform: "uppercase", color: "#1a1008", background: hi, padding: "4px 16px", borderRadius: 999, cornerShape: "var(--corner-chip)", boxShadow: "0 3px 10px rgba(0,0,0,0.45)" }}>{speaker}</div>
+      <div style={{ display: "inline-block", maxWidth: "100%", padding: "12px 16px", borderRadius: 18, cornerShape: "var(--corner-card)", background: "rgba(8,6,14,0.5)" }}>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.14em 0.3em" }}>
           {tokens.map((tok, i) => {
             const hot = tok.punch || i === active;
             const revealed = reduceMotion || i <= active;
             return (
-              <span key={i} style={{ fontWeight: 900, fontSize: fs, lineHeight: 1.08, textTransform: "uppercase", color: hot ? "#1a1008" : "#fff", background: hot ? hi : "transparent", padding: hot ? "0 0.12em" : 0, borderRadius: 7, WebkitTextStroke: hot ? "0" : "2px #1a1008", textShadow: hot ? "none" : "0 3px 0 rgba(0,0,0,0.6)", opacity: revealed ? 1 : 0, transform: `scale(${i === active && !reduceMotion ? 1.06 : 1})` }}>{tok.w}</span>
+              <span key={i} style={{ fontWeight: 900, fontSize: fs, lineHeight: 1.08, textTransform: "uppercase", color: hot ? "#1a1008" : "#fff", background: hot ? hi : "transparent", padding: hot ? "0 0.12em" : 0, borderRadius: 7, cornerShape: "var(--corner-chip)", WebkitTextStroke: hot ? "0" : "2px #1a1008", textShadow: hot ? "none" : "0 3px 0 rgba(0,0,0,0.6)", opacity: revealed ? 1 : 0, transform: `scale(${i === active && !reduceMotion ? 1.06 : 1})` }}>{tok.w}</span>
             );
           })}
         </div>
@@ -352,7 +352,7 @@ function Endcard({ carPhoto, carLabel, p }) {
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 40%, #1c1334 0%, #0a0714 58%, #04030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3.5%", opacity: op }}>
       <Stars timeMs={p * 4000} />
       <div style={{ zIndex: 1, fontWeight: 900, fontSize: "9cqi", color: "var(--canvas)", WebkitTextStroke: "2px #1a1008", letterSpacing: "0.02em", textAlign: "center", padding: "0 6%" }}>{show}</div>
-      <div style={{ zIndex: 1, transform: `scale(${0.9 + 0.1 * clamp01(p * 2)})` }}><Callie state="celebrating" size={116} reduceMotion /></div>
+      <div style={{ zIndex: 1, transform: `scale(${0.9 + 0.1 * clamp01(p * 2)})` }}><Callie state="celebrating" size={116} reduceMotion ink /></div>
       <div style={{ zIndex: 1, textAlign: "center" }}>
         <div style={{ fontWeight: 900, fontSize: "8cqi", textTransform: "uppercase", color: "var(--flame-500)" }}>Submit yours</div>
         <div style={{ fontWeight: 900, fontSize: "5cqi", marginTop: 8, color: "var(--canvas)" }}>👉 @{cfg("handle")}</div>

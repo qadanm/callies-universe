@@ -30,6 +30,7 @@ export function Input({
         background: "var(--surface)",
         border: `2px solid ${borderColor}`,
         borderRadius: "var(--radius-input)",
+        cornerShape: "var(--corner-input)",
         boxShadow: focus ? "0 0 0 4px rgba(7,182,206,0.25)" : "var(--elev-1)",
         transition: "border-color var(--dur-2), box-shadow var(--dur-2)",
       }}>

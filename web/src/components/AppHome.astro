@@ -1,5 +1,5 @@
 ---
-import { Callie, Roaster } from "@callies-universe/core";
+import { Callie, Roaster, Burst } from "@callies-universe/core";
 import { activeSite } from "../config/sites.js";
 import { SUPPORT } from "../config/legal.js";
 const site = activeSite;
@@ -13,14 +13,15 @@ const ctaLabel = live ? "Get it on the App Store" : "Get notified at launch";
 <section class="hero">
   <div class="container">
     <div style="display:flex;justify-content:center;margin-bottom:6px;">
-      <Callie state="savage" size={140} />
+      <Callie state="savage" size={140} ink />
     </div>
     <p class="eyebrow">{site.emoji} a Callie's Universe show{!live ? " · coming soon" : ""}</p>
-    <h1>{site.name}</h1>
+    <h1 class="title-stroke">{site.name}</h1>
     <p class="lede">{site.blurb}</p>
     <div class="hero__cta">
       <a class="btn" href={ctaHref}>{ctaLabel}</a>
       <a class="btn btn--ghost" href="#how">How it works</a>
+      {live && <Burst>NEW</Burst>}
     </div>
   </div>
 </section>
@@ -41,14 +42,15 @@ const ctaLabel = live ? "Get it on the App Store" : "Get notified at launch";
   </div>
 </section>
 
-<section class="section" id="cast">
+<section class="section band" id="cast" style="background:var(--accent-700);">
+  <span class="band__dots halftone"></span>
   <div class="container" style="text-align:center;">
-    <p class="eyebrow">The comics</p>
-    <h2 style="font-size:34px;margin:6px 0 28px;">Pick your roaster — or two.</h2>
+    <p class="eyebrow" style="color:rgba(255,255,255,0.82);">The comics</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,0.22);">Pick your roaster — or two.</h2>
     <div class="grid grid--auto" style="max-width:760px;margin:0 auto;">
       {active.map((c) => (
-        <div class="char">
-          <div class="char__art"><Roaster id={c.id} size={120} ring /></div>
+        <div class="card char" style={`--card-tint:color-mix(in srgb, ${c.ring} 32%, #fff);`}>
+          <div class="char__art"><Roaster id={c.id} size={120} ring ink /></div>
           <div class="char__name">{firstName(c.name)}</div>
           <div class="char__tag">{c.tag}</div>
         </div>

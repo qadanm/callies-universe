@@ -19,13 +19,14 @@ export function Chip({
     minHeight: "var(--tap-min)", padding: "0 18px",
     font: "var(--type-d4)", fontSize: "16px",
     borderRadius: "var(--radius-chip)",
+    cornerShape: "var(--corner-chip)",
     cursor: "pointer", whiteSpace: "nowrap",
     transition: "transform var(--dur-2) var(--ease-spring), background var(--dur-2) var(--ease-out), color var(--dur-2)",
     transform: pop ? "scale(1.08)" : "scale(1)",
     WebkitTapHighlightColor: "transparent", userSelect: "none",
     ...(selected
-      ? { background: "var(--ember-600)", color: "var(--on-ember)", border: "2px solid var(--ember-700)", boxShadow: "var(--gloss-chip)" }
-      : { background: "var(--surface)", color: "var(--ink)", border: "2px solid var(--hairline)", boxShadow: "var(--gloss-chip)" }),
+      ? { background: "var(--ember-600)", color: "var(--on-ember)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-sticker-sm)" }
+      : { background: "var(--surface)", color: "var(--ink)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-sticker-sm)" }),
     ...style,
   };
 

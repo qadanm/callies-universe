@@ -10,6 +10,7 @@
 //     beats: StandupBeat[], subjectPhoto: dataUrl|null }
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
+import { FilterHost } from "@callies-universe/core";
 import { StageScene } from "../src/components/StageScene.jsx";
 import { PodcastScene } from "../src/components/PodcastScene.jsx";
 import { buildTimeline, panelWindows } from "../src/standup.js";
@@ -32,6 +33,9 @@ export function StageVideo(props) {
 
   return (
     <AbsoluteFill style={{ background: "#06101f" }}>
+      {/* hand-inked filter defs (#ink/#ink2) — deterministic fixed seed, so the
+          wobble is frame-identical across renders. Must live inside the painted tree. */}
+      <FilterHost />
       {/* gameplay background — the user's licensed loop (audio ducked under the VO).
           Skipped for the panel format, which renders its own opaque studio. */}
       {props.format !== "panel" && props.backgroundUrl && (

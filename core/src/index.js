@@ -20,3 +20,10 @@ export { Mascot, Callie, CallieStage, MascotHost, CallieHost } from "./component
 // The character cast
 export { Roaster } from "./components/cast/Roaster.jsx";
 export { CastPicker } from "./components/cast/CastPicker.jsx";
+
+// Decoration — the facelift's shared ink filter + comic accents
+export { FilterHost } from "./components/decoration/FilterHost.jsx";
+export { Burst } from "./components/decoration/Burst.jsx";
+export { Squiggle } from "./components/decoration/Squiggle.jsx";
+export { Tape } from "./components/decoration/Tape.jsx";
+export { HalftoneBand } from "./components/decoration/HalftoneBand.jsx";

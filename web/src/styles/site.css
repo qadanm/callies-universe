@@ -18,9 +18,12 @@ h1, h2, h3 { font-family: var(--font-display, system-ui), sans-serif; color: var
 .section { padding: 88px 0; }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-weight: 800; font-size: 13px; color: var(--accent-600); }
 
-.btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 800; font-size: 17px; border-radius: 999px; padding: 15px 28px; background: var(--accent-600); color: #fff; border: none; cursor: pointer; box-shadow: 0 10px 26px rgba(20,10,40,0.18); transition: transform .15s ease; }
-.btn:hover { transform: translateY(-2px); }
-.btn--ghost { background: transparent; color: var(--accent-600); border: 2px solid var(--accent-600); box-shadow: none; }
+/* Facelift: squircle + ink outline + hard sticker shadow + squash. Label stays
+   crisp (no wobble filter on the button itself). */
+.btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 800; font-size: 17px; border-radius: var(--radius-lg); corner-shape: var(--corner-button); padding: 15px 26px; background: var(--accent-600); color: #fff; border: var(--ink-outline); cursor: pointer; box-shadow: var(--shadow-sticker-md); transition: transform .12s ease, box-shadow .12s ease; }
+.btn:hover { transform: translate(-1px,-1px); box-shadow: var(--shadow-sticker-lg); }
+.btn:active { transform: translate(2px,3px); box-shadow: var(--shadow-sticker-press); }
+.btn--ghost { background: var(--surface, #fff); color: var(--accent-600); border: var(--ink-outline); box-shadow: var(--shadow-sticker-md); }
 
 /* nav */
 .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: color-mix(in srgb, var(--canvas) 82%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
@@ -43,7 +46,14 @@ h1, h2, h3 { font-family: var(--font-display, system-ui), sans-serif; color: var
 .grid--3 { grid-template-columns: repeat(3, 1fr); }
 .grid--auto { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 @media (max-width: 860px) { .grid--3 { grid-template-columns: 1fr; } }
-.card { background: var(--surface, #fff); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); border-radius: 22px; padding: 22px; box-shadow: 0 14px 34px rgba(20,10,40,0.06); }
+/* Facelift card = die-cut sticker. A hand-inked superellipse border layer
+   (::before) behind crisp content, with a hard offset drop-shadow. Per-card
+   face color via --card-tint. */
+.card { position: relative; background: transparent; border: none; border-radius: var(--radius-lg); padding: 22px; filter: var(--drop-sticker); }
+.card::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--card-tint, var(--surface, #fff)); border: var(--ink-outline); border-radius: var(--radius-lg); corner-shape: var(--corner-card); filter: var(--filter-ink); }
+.card > * { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .card::before { filter: none; } }
+.no-ink .card::before { filter: none; }
 
 .char { text-align: center; }
 .char__art { width: 124px; height: 124px; margin: 0 auto 6px; }
@@ -72,3 +82,21 @@ h1, h2, h3 { font-family: var(--font-display, system-ui), sans-serif; color: var
 .footer__links a { color: color-mix(in srgb, var(--ink) 64%, transparent); }
 .footer__links a:hover { color: var(--accent-600); }
 .footer__fine { margin-top: 22px; font-size: 13px; color: color-mix(in srgb, var(--ink) 52%, transparent); max-width: 640px; }
+
+/* ---- Facelift accents -------------------------------------------------- */
+/* Marker-highlight a headline keyword: <span class="hl"><span class="hl__mark"></span><span class="hl__tx">word</span></span> */
+.hl { position: relative; display: inline-block; white-space: nowrap; }
+.hl__mark { position: absolute; left: -5px; right: -5px; top: 16%; bottom: 12%; background: var(--marker-hl); transform: rotate(-1.8deg); border-radius: 8px; corner-shape: var(--corner-chip); filter: var(--filter-ink); }
+.hl__tx { position: relative; }
+.title-stroke { -webkit-text-stroke: 2px var(--ink); text-shadow: 4px 4px 0 var(--accent-700); }
+@media (prefers-reduced-motion: reduce) { .hl__mark { filter: none; } }
+.no-ink .hl__mark { filter: none; }
+
+/* A full-bleed accent band with a ben-day halftone overlay (the contrast moment). */
+.band { position: relative; overflow: hidden; background: var(--accent-700); }
+.band > .container { position: relative; z-index: 1; }
+.band__dots { position: absolute; inset: 0; color: #fff; opacity: 0.10; pointer-events: none; }
+
+/* sticker pills keep the corner language */
+.char__soon { corner-shape: var(--corner-tag); }
+.show__soon { corner-shape: var(--corner-tag); }

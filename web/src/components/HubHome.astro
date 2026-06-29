@@ -8,10 +8,10 @@ const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
 <section class="hero">
   <div class="container">
     <div style="display:flex;justify-content:center;margin-bottom:6px;">
-      <Callie state="celebrating" size={150} />
+      <Callie state="celebrating" size={150} ink />
     </div>
     <p class="eyebrow">The comedy studio</p>
-    <h1>Callie's Universe</h1>
+    <h1 class="title-stroke">Callie's Universe</h1>
     <p class="lede">{site.blurb}</p>
     <div class="hero__cta">
       <a class="btn" href="#shows">See the shows</a>
@@ -39,19 +39,20 @@ const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
   </div>
 </section>
 
-<section class="section">
+<section class="section band" style="background:var(--accent-700);">
+  <span class="band__dots halftone"></span>
   <div class="container" style="text-align:center;">
-    <p class="eyebrow">The cast</p>
-    <h2 style="font-size:34px;margin:6px 0 28px;">Original comedians. Nobody is safe.</h2>
+    <p class="eyebrow" style="color:rgba(255,255,255,0.82);">The cast</p>
+    <h2 style="font-size:34px;margin:6px 0 28px;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,0.22);">Original comedians. Nobody is safe.</h2>
     <div class="grid grid--auto" style="max-width:880px;margin:0 auto;">
       {teaser.map((c) => (
-        <div class="char">
-          <div class="char__art"><Roaster id={c.id} size={120} ring /></div>
+        <div class="card char" style={`--card-tint:color-mix(in srgb, ${c.ring} 32%, #fff);`}>
+          <div class="char__art"><Roaster id={c.id} size={120} ring ink /></div>
           <div class="char__name">{firstName(c.name)}</div>
           <div class="char__tag">{c.tag}</div>
         </div>
       ))}
     </div>
-    <div style="margin-top:30px;"><a class="btn btn--ghost" href="/characters">Meet the whole cast →</a></div>
+    <div style="margin-top:30px;"><a class="btn" href="/characters">Meet the whole cast →</a></div>
   </div>
 </section>
