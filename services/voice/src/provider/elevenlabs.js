@@ -33,10 +33,22 @@ export function createElevenLabsProvider(config = {}) {
         headers: { "xi-api-key": apiKey, "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify({
           text,
-          model_id: env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2",
+          // Voices are DESIGNED on Eleven v3, so we must synthesize on v3 too —
+          // re-rendering a designed voice on an older model (multilingual_v2)
+          // flattens its accent toward a neutral American baseline. v3 supports
+          // this /with-timestamps + pcm_24000 path (audio + word alignment).
+          model_id: env.ELEVENLABS_MODEL_ID || "eleven_v3",
           voice_settings: {
             stability: clamp01(profile.stability),
-            similarity_boost: 0.75,
+            // similarity_boost is what keeps the OUTPUT faithful to the designed
+            // voice — including its accent. Too low and a distinctively-accented
+            // voice drifts toward the model's neutral English baseline. Default
+            // high; per-profile override via profile.similarity.
+            similarity_boost: clamp01(profile.similarity ?? 0.9),
+            // style (exaggeration) above ~0.5 trades voice-similarity for "more
+            // style" and flattens accents toward neutral American — so we keep it
+            // moderate. The character's BIG accent lives in the designed voice
+            // and the written word choice, not in cranking this knob.
             style: clamp01(profile.expressiveness),
             use_speaker_boost: true,
           },

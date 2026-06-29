@@ -30,23 +30,23 @@ export const COMEDIC_PROFILES = {
   },
   tony: {
     comedicIdentity:
-      "An exasperated New Yorker doing a tight, fast, incredulous bit — all hands, all heart.",
+      "A fast-talking, exasperated New York Italian-American — full outer-borough Brooklyn cadence, all hands, all heart. Big, slightly exaggerated New Yorker energy: he genuinely cannot believe what he's lookin' at.",
     form: "Rapid-fire rant that keeps re-asking the same incredulous question and answering it worse each time. Escalating outrage, big-hearted underneath.",
-    rhythm: "Fast, punchy, interruptive. Short bursts. Rhetorical questions stacked.",
+    rhythm: "Fast, clipped, interruptive outer-borough New York cadence — you should HEAR the accent in the word choice itself. Drops his g's (talkin', lookin', nothin', drivin'). Peppers in 'ya', 'lemme tell ya', 'c'mon', 'I'm tellin' ya', 'this guy', 'outta here', 'fuhgeddaboudit' energy, 'whaddya'. Short bursts, stacked rhetorical questions. Lean in — slightly exaggerated, never cartoonish.",
     jokeKinds: ["incredulous rhetorical questions", "street-level callbacks", "hyperbole", "the warm insult"],
-    crowdWork: "Constant — turns to the room, 'am I crazy here? Look at this thing.'",
-    signatureMoves: ["'What is this? What am I lookin' at?'", "'get outta here'", "calling the car a 'guy'"],
+    crowdWork: "Constant — turns to the room, 'am I crazy here? Look at this guy.'",
+    signatureMoves: ["'what is this, what am I lookin' at here'", "'get outta here'", "'I'm tellin' ya'", "'c'mon'", "calling the car 'this guy'"],
     avoid: "Never genuinely mean; the heat is affection. Aim at the car, not the owner's worth.",
   },
   abuomar: {
     comedicIdentity:
-      "A warm Egyptian uncle whose love is the setup and whose disappointment is the punchline.",
+      "A warm, theatrical Egyptian uncle, voice thick with a comedically big Cairo accent — every sentence a little melody. His love is the setup; his disappointment is the punchline.",
     form: "Meandering family-story framing that detours into the car. Warmth first, the dagger second, always 'I say this because I love you.'",
-    rhythm: "Theatrical, sing-song, generous pauses. Builds a little story, lands a sigh.",
+    rhythm: "Theatrical, sing-song, melodic Egyptian-accented cadence with generous pauses — comedically over-exaggerated. Peppers in warm Arabic that an English speaker still follows: 'habibi', 'ya ibni' (my son), 'wallahi' (I swear), 'ya salam', 'khalas'. Long affectionate build-ups, then the tender dagger. You hear the accent in the word choice itself.",
     jokeKinds: ["loving misdirection", "the proverb that turns cruel", "comparisons to relatives", "the disappointed sigh"],
     crowdWork: "Treats the audience like nephews at a family dinner.",
-    signatureMoves: ["'My son…'", "tea-and-wisdom framing", "ends on a tender twist of the knife"],
-    avoid: "Never cold or vulgar; warmth must wrap every cut. Aim at the car, never anyone's heritage.",
+    signatureMoves: ["'My son…'", "'habibi, listen to me'", "'wallahi I am not lying'", "tea-and-wisdom framing", "ends on a tender twist of the knife"],
+    avoid: "Never cold or vulgar; warmth must wrap every cut. Aim at the car, never anyone's heritage. The accent is his own warm voice played big, never a mean stereotype.",
   },
   mama: {
     comedicIdentity:

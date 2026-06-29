@@ -11,8 +11,8 @@ import { Roaster } from "@callies-universe/core";
 // Delivery DNA per character (provider-agnostic 0..1 knobs the adapter maps).
 const DELIVERY = {
   reginald: { pace: 0.85, stability: 0.8, expressiveness: 0.25, note: "dry, measured nature-doc narrator" },
-  tony: { pace: 1.05, stability: 0.62, expressiveness: 0.4, note: "dry, low-key NY incredulous — calm, not loud" },
-  abuomar: { pace: 0.95, stability: 0.55, expressiveness: 0.7, note: "warm, theatrical, sing-song" },
+  tony: { pace: 1.1, stability: 0.45, expressiveness: 0.58, note: "animated NY Italian-American — incredulous, hands-moving, slightly exaggerated; fast & clipped but conversational, never shouting" },
+  abuomar: { pace: 0.95, stability: 0.45, expressiveness: 0.5, similarity: 0.95, note: "theatrical Egyptian uncle — the big accent lives in the designed voice; keep style moderate + similarity high so it doesn't drift American" },
   mama: { pace: 1.0, stability: 0.4, expressiveness: 0.9, note: "church-fan snap, big and loving" },
   mateo: { pace: 1.05, stability: 0.3, expressiveness: 0.95, note: "operatic telenovela melodrama" },
   jeanluc: { pace: 0.8, stability: 0.85, expressiveness: 0.2, note: "flat, bored, unbothered" },
