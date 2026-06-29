@@ -7,6 +7,7 @@ import { CallieHost } from "@callies-universe/core";
 import { resolvePerformer } from "@callies-universe/brain";
 import { restore } from "../services/purchases.js";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { cfg } from "../subjects/index.js";
 
 const reduceMotionLabel = () =>
   typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -21,7 +22,7 @@ export function Settings() {
   const onRestore = async () => {
     try {
       const r = await restore();
-      if (r && typeof r.credits === "number") { setCredits(r.credits); setMsg(`Restored — ${r.credits} roasts`); }
+      if (r && typeof r.credits === "number") { setCredits(r.credits); setMsg(`Restored — ${r.credits} ${cfg("monetization.creditLabel")}`); }
       else setMsg("Nothing to restore");
     } catch (e) {
       setMsg("Restore failed — try again");
@@ -41,7 +42,6 @@ export function Settings() {
     ] },
     { g: "Roasting", items: [
       { label: "Default roaster", val: roasterName },
-      { label: "Spice ceiling", val: "Medium" },
       { label: "Spice ceiling", val: "Medium" },
     ] },
     { g: "Accessibility", items: [
@@ -89,7 +89,7 @@ export function Settings() {
       ))}
       <div style={{ padding: "var(--space-5)", textAlign: "center" }}>
         <span style={{ font: "var(--type-legal)", color: "var(--text-hint)" }}>
-          RoastMyRide · clever, never cruel · PG-13
+          {cfg("appName")} · clever, never cruel · PG-13
         </span>
       </div>
     </div>

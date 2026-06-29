@@ -17,6 +17,7 @@ import { FlowProvider } from "./flow/FlowContext.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { OfflineBanner } from "./components/OfflineBanner.jsx";
 import { isNative } from "./native.js";
+import { cfg } from "./subjects/index.js";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
 import { Chips } from "./screens/Chips.jsx";
@@ -103,7 +104,7 @@ function Layout() {
           <div className="notch" />
           <div className="statusbar">
             <span>9:41</span>
-            <span>🔥 RoastMyRide</span>
+            <span>🔥 {cfg("appName")}</span>
             <span>100%</span>
           </div>
           <OfflineBanner />

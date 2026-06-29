@@ -7,6 +7,7 @@ import { Button, Badge, Sheet, Confetti, CallieHost, Callie } from "@callies-uni
 import { ShareCard } from "../components/ShareCard.jsx";
 import { toStandupSet, comicStyle } from "../standup.js";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { cfg } from "../subjects/index.js";
 
 export function Celebrate() {
   const go = useNavigate();
@@ -29,12 +30,12 @@ export function Celebrate() {
         onClose={() => go("/home")}
         primaryAction={
           <Button variant="primary" size="lg" block onClick={() => go("/home")}>
-            Book another set
+            {cfg("celebrate.cta")}
           </Button>
         }
       >
         <p style={{ textAlign: "center", margin: "0 0 var(--space-4)" }}>
-          "{set.bit}" is live. Tag us <b style={{ color: "var(--ember-600)" }}>@roastmyride</b> and we'll re-share
+          "{set.bit}" is live. Tag us <b style={{ color: "var(--ember-600)" }}>@{cfg("handle")}</b> and we'll re-share
           the best sets.
         </p>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-4)" }}>

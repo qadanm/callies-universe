@@ -7,36 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Chip, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Eyebrow, H, stickyBar } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
-
-const BUCKETS = [
-  {
-    group: "Heat",
-    items: [
-      ["gentle", "😌 Gentle"],
-      ["medium", "🌶 Medium"],
-      ["brutal", "🔥 Brutal"],
-    ],
-  },
-  {
-    group: "Fair game",
-    items: [
-      ["thecar", "🚗 The car"],
-      ["mytaste", "🎨 My taste"],
-      ["themods", "🔧 The mods"],
-      ["howidrive", "🏁 How I drive"],
-      ["pricetag", "💸 Price tag"],
-    ],
-  },
-  {
-    group: "Vibe",
-    items: [
-      ["deadpan", "😐 Deadpan"],
-      ["hype", "📣 Hype"],
-      ["brainrot", "🧠 Brainrot"],
-      ["battle", "🥊 Roast battle"],
-    ],
-  },
-];
+import { cfg } from "../subjects/index.js";
 
 export function Chips() {
   const go = useNavigate();
@@ -56,7 +27,7 @@ export function Chips() {
     go("/cast");
   };
 
-  const buckets = useMemo(() => BUCKETS, []);
+  const buckets = useMemo(() => cfg("chips.buckets", []), []);
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>

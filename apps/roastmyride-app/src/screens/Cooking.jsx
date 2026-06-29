@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { resolvePerformer } from "@callies-universe/brain";
 import { CookingProgress } from "../components/CookingProgress.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { cfg } from "../subjects/index.js";
 
 const STEPS = (name) => [
-  `${name} is researching your ride…`,
+  `${name} is researching your ${cfg("brain.researching")}…`,
   "Writing tonight's set…",
   "Working out the punchlines…",
   "Warming up the crowd…",

@@ -3,6 +3,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@callies-universe/core";
+import { cfg } from "../subjects/index.js";
 
 const DOCS = {
   privacy: {
@@ -40,7 +41,7 @@ export function Legal() {
         ))}
       </div>
       <p style={{ font: "var(--type-legal)", color: "var(--text-hint)", marginTop: "var(--space-4)" }}>
-        Questions? @roastmyride. RoastMyRide v0.3.0.
+        Questions? @{cfg("handle")}. {cfg("appName")} v0.3.0.
       </p>
       <div style={{ marginTop: "var(--space-4)" }}>
         <Button variant="secondary" onClick={() => go("/settings")}>Back to settings</Button>

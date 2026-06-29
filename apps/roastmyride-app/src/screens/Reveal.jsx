@@ -20,6 +20,7 @@ import { toStandupSet, comicStyle, buildRenderSpec } from "../standup.js";
 import { hasRoastApi, renderVideo, renderVideoAsync, renderPoster } from "../services/roastApi.js";
 import { shareFile, haptic } from "../native.js";
 import { useFlow } from "../flow/FlowContext.jsx";
+import { cfg } from "../subjects/index.js";
 
 const slugOf = (spec) => String(spec.bit || "set").replace(/\W+/g, "-").toLowerCase();
 const firstNameOf = (name) => String(name || "The comic").replace(/[“"].*$/, "").split(" ")[0];
@@ -39,7 +40,7 @@ export function Reveal() {
     if (await shareFile(blob, filename, mime)) return;
     const file = new File([blob], filename, { type: mime });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      return navigator.share({ files: [file], title: "RoastMyRide" }).catch(() => {});
+      return navigator.share({ files: [file], title: cfg("appName") }).catch(() => {});
     }
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -61,7 +62,7 @@ export function Reveal() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `roastmyride-${slugOf(spec)}.json`;
+    a.download = `${cfg("handle")}-${slugOf(spec)}.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -82,7 +83,7 @@ export function Reveal() {
       } catch {
         blob = await renderVideo(spec);
       }
-      await shareOrDownload(blob, `roastmyride-${slugOf(spec)}.mp4`, "video/mp4");
+      await shareOrDownload(blob, `${cfg("handle")}-${slugOf(spec)}.mp4`, "video/mp4");
     } catch (e) {
       console.warn(`[reveal] render failed (${e && e.message}); downloading spec instead`);
       downloadSpec(spec);
@@ -100,7 +101,7 @@ export function Reveal() {
     setSavingImage(true);
     try {
       const blob = await renderPoster(spec);
-      await shareOrDownload(blob, `roastmyride-${slugOf(spec)}.png`, "image/png");
+      await shareOrDownload(blob, `${cfg("handle")}-${slugOf(spec)}.png`, "image/png");
     } catch (e) {
       console.warn(`[reveal] poster failed (${e && e.message})`);
     } finally {
@@ -141,7 +142,7 @@ export function Reveal() {
         {roast.grade && (
           <div style={{ font: "var(--type-cap)", color: "var(--text-hint)", textAlign: "center" }}>
             Cleared the booker {roast.grade.pass ? "✅" : "⚠️"} · funny {roast.grade.scores.funny} ·
-            {" "}not-AI {roast.grade.scores.human} · on-the-car {roast.grade.scores.edge}
+            {" "}not-AI {roast.grade.scores.human} · {cfg("grade.edgeLabel")} {roast.grade.scores.edge}
             {roast.research?.sources?.length ? ` · grounded in ${roast.research.sources.length} sources` : ""}
           </div>
         )}
@@ -176,7 +177,7 @@ export function Reveal() {
 
         {/* the full set — text transcript (accessible, skimmable) */}
         <div>
-          <Eyebrow>The full set</Eyebrow>
+          <Eyebrow>{cfg("reveal.heading")}</Eyebrow>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
             {set.beats.map((b, i) => (
               <SetBeat key={i} beat={b} />

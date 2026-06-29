@@ -8,6 +8,7 @@ import { ScreenScroll, Wordmark } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { loadCompressedImage } from "../photo.js";
 import { isNative, pickPhoto, haptic } from "../native.js";
+import { cfg } from "../subjects/index.js";
 
 const uploadTarget = {
   width: "100%",
@@ -61,16 +62,16 @@ export function Home() {
     <ScreenScroll>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Wordmark />
-        <Badge tone="ember">{credits} roasts left</Badge>
+        <Badge tone="ember">{credits} {cfg("monetization.creditLabel")} left</Badge>
       </div>
 
       <Card pad="var(--space-5)" style={{ textAlign: "center" }} sticker={<Badge tone="flame">HOT</Badge>} stickerCorner="tr">
         <div style={{ display: "flex", justifyContent: "center", marginTop: -8 }}>
           <CallieHost context="home" size={120} bubble />
         </div>
-        <h2 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "4px 0 4px" }}>Drop a pic of your ride</h2>
+        <h2 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "4px 0 4px" }}>{cfg("upload.label")}</h2>
         <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-4)" }}>
-          The more of your ride I can see, the harder I cook.
+          {cfg("upload.subcopy")}
         </p>
         <input
           ref={fileRef}
@@ -80,21 +81,21 @@ export function Home() {
           onChange={onPick}
           style={{ display: "none" }}
         />
-        <button onClick={addPhoto} style={uploadTarget} aria-label="Add a car photo">
+        <button onClick={addPhoto} style={uploadTarget} aria-label={cfg("upload.alt")}>
           {car.dataUrl ? (
             <>
               <img
                 src={car.dataUrl}
-                alt="Your car"
+                alt={cfg("upload.alt")}
                 style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: "var(--radius-md)" }}
               />
-              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)", marginTop: 6 }}>Tap to replace</span>
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)", marginTop: 6 }}>{cfg("upload.replace")}</span>
             </>
           ) : (
             <>
-              <span style={{ fontSize: 40, lineHeight: 1 }}>📸</span>
-              <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>Tap to add photo</span>
-              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>Camera or library</span>
+              <span style={{ fontSize: 40, lineHeight: 1 }}>{cfg("upload.emoji")}</span>
+              <span style={{ font: "var(--type-d4)", color: "var(--ember-600)" }}>{cfg("upload.add")}</span>
+              <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>{cfg("upload.addSub")}</span>
             </>
           )}
         </button>
@@ -102,7 +103,7 @@ export function Home() {
           <p style={{ font: "var(--type-cap)", color: "var(--ember-600)", margin: "var(--space-2) 0 0" }}>{err}</p>
         )}
         <Button variant="primary" size="lg" block style={{ marginTop: "var(--space-4)" }} onClick={() => { haptic(); go(credits < 1 ? "/credits" : "/chips"); }}>
-          Roast my car
+          {cfg("upload.cta")}
         </Button>
       </Card>
 
@@ -110,7 +111,7 @@ export function Home() {
         {/* design used a now-retired "watching" emote — core's nearest 9-state is "curious". */}
         <Callie state="curious" size={48} />
         <span style={{ font: "var(--type-sm)", color: "var(--text-muted)" }}>
-          Callie's standing by. Drop a car and watch it cook.
+          {cfg("mascot.home")}
         </span>
       </div>
     </ScreenScroll>

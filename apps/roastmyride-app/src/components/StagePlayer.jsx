@@ -14,6 +14,7 @@ import { StageScene } from "./StageScene.jsx";
 import { toStandupSet, buildTimeline, activeIndexAt, mmss } from "../standup.js";
 import { pickBackground } from "../gameplayBackgrounds.js";
 import { useRoastVoice } from "./useRoastVoice.js";
+import { cfg } from "../subjects/index.js";
 
 export function StagePlayer({ result, carPhoto, backgroundUrl }) {
   const standup = useMemo(() => toStandupSet(result), [result]);
@@ -179,7 +180,7 @@ export function StagePlayer({ result, carPhoto, backgroundUrl }) {
 
 function carLabelOf(result) {
   const c = (result.research && result.research.car) || {};
-  return c.label || [c.year, c.make, c.model].filter(Boolean).join(" ") || "your ride";
+  return c.label || [c.year, c.make, c.model].filter(Boolean).join(" ") || cfg("brain.subjectNoun");
 }
 
 // Live playback honors the OS "reduce motion" setting (the exported video always

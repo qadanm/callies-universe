@@ -21,6 +21,7 @@ import React, { useMemo } from "react";
 import { Roaster, Callie } from "@callies-universe/core";
 import { activeIndexAt, callieStateForBeat } from "../standup.js";
 import { popPulse } from "../sceneMotion.js";
+import { cfg } from "../subjects/index.js";
 
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
@@ -70,13 +71,13 @@ export const StageScene = React.memo(function StageScene({
       {/* brand chip */}
       <div style={{ position: "absolute", top: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5 }}>
         <span style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", background: "rgba(0,0,0,0.45)", color: "var(--sticker-yellow)", padding: "5px 12px", borderRadius: "var(--radius-pill)" }}>
-          🔥 RoastMyRide
+          🔥 {cfg("appName")}
         </span>
       </div>
 
       {/* the car — ALWAYS on screen, as a tilted polaroid sticker (crossfades in
           after the big showcase during the hook) */}
-      <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)", opacity: cornerReveal }} tag="🚗 the ride" tone="var(--sticker-yellow)">
+      <Sticker style={{ top: "8%", left: "4%", transform: "rotate(-5deg)", opacity: cornerReveal }} tag={cfg("theme.stickerTag")} tone="var(--sticker-yellow)">
         {carPhoto ? <img src={carPhoto} alt="The car" style={imgFill} /> : <PlaceholderCar label={carLabel} />}
       </Sticker>
 
@@ -104,7 +105,7 @@ export const StageScene = React.memo(function StageScene({
 
       {/* watermark */}
       <div style={{ position: "absolute", bottom: "2.5%", left: 0, right: 0, textAlign: "center", zIndex: 5, font: "var(--type-cap)", fontWeight: 800, color: "rgba(255,255,255,0.92)", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-        @roastmyride
+        @{cfg("handle")}
       </div>
 
     </div>
@@ -205,7 +206,7 @@ function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
         </ShowcaseFrame>
       </div>
       <div style={{ ...bigText, color: "#fff", fontSize: "clamp(26px, 9vw, 52px)", padding: "0 6%" }}>
-        {carLabel || "your ride"} <span aria-hidden="true">💀</span>
+        {carLabel || cfg("brain.subjectNoun")} <span aria-hidden="true">💀</span>
       </div>
     </div>
   );
@@ -228,7 +229,7 @@ function Outro({ performerName, timeMs, startMs, reduceMotion }) {
   return (
     <div style={{ ...centerStage, opacity: p }}>
       <div style={{ ...bigText, color: "var(--sticker-yellow)", fontSize: "clamp(34px, 13vw, 72px)", transform: `scale(${0.92 + 0.08 * p})` }}>Roast<br />yours</div>
-      <div style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, color: "#fff", marginTop: 10, fontSize: "clamp(20px, 7vw, 36px)" }}>👉 @roastmyride</div>
+      <div style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, color: "#fff", marginTop: 10, fontSize: "clamp(20px, 7vw, 36px)" }}>👉 @{cfg("handle")}</div>
     </div>
   );
 }
@@ -304,7 +305,7 @@ function PlaceholderCar({ label }) {
   return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, color: "rgba(255,255,255,0.7)" }}>
       <span style={{ fontSize: 30 }}>🚗</span>
-      <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || "your ride"}</span>
+      <span style={{ font: "var(--type-legal)", padding: "0 4px", textAlign: "center" }}>{label || cfg("brain.subjectNoun")}</span>
     </div>
   );
 }

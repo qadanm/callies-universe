@@ -5,6 +5,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, CallieHost, Confetti } from "@callies-universe/core";
 import { Eyebrow, H } from "../components/ui.jsx";
+import { cfg } from "../subjects/index.js";
 
 export function Onboarding() {
   const go = useNavigate();
@@ -37,13 +38,12 @@ export function Onboarding() {
           <br />I just react.
         </H>
         <p style={{ font: "var(--type-lead)", color: "var(--text-muted)", margin: 0, maxWidth: 300 }}>
-          You bring the car, the app brings the roast — and I'll be right here losing it in the corner.
-          Clever, never cruel.
+          {cfg("onboarding.body")}
         </p>
       </div>
       <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
         <Button variant="primary" size="lg" block onClick={() => go("/home")}>
-          Roast my car 🔥
+          {cfg("onboarding.cta")}
         </Button>
         <Button variant="ghost" block onClick={() => go("/home")}>
           I'll look around first

@@ -12,6 +12,7 @@
 import { resolvePerformer } from "@callies-universe/brain";
 import { pickBackground } from "./gameplayBackgrounds.js";
 import { pickMusic } from "./musicBeds.js";
+import { cfg } from "./subjects/index.js";
 
 // Brain beat type → HANDOFF display type.
 const BEAT_TYPE = {
@@ -163,7 +164,7 @@ export function mmss(totalMs) {
 export function buildRenderSpec(result, input) {
   const su = toStandupSet(result);
   const car = (result.research && result.research.car) || {};
-  const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || "your ride";
+  const carLabel = car.label || [car.year, car.make, car.model].filter(Boolean).join(" ") || cfg("brain.subjectNoun");
   // The gameplay backdrop is chosen deterministically from the roast, so the saved
   // video uses the exact same backdrop the live reel shows.
   const bg = pickBackground(result);

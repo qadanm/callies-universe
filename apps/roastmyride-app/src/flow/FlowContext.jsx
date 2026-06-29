@@ -13,6 +13,7 @@ import { generateRoast } from "../services/roast.js";
 import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
 import { hasCreditsApi, fetchCredits, consumeCredit } from "../services/credits.js";
 import { offlineBrain } from "@callies-universe/brain";
+import { cfg } from "../subjects/index.js";
 
 const DEFAULT_INPUT = {
   carPhoto: { present: false },
@@ -31,7 +32,7 @@ const DEFAULT_INPUT = {
  */
 const PREVIEW_RESULT = offlineBrain({
   carPhoto: { present: true },
-  car: { label: "your ride" },
+  car: { label: cfg("brain.subjectNoun") },
   roasterId: "mama",
   context: [],
   config: { offline: true },
