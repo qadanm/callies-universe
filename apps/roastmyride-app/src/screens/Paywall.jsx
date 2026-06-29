@@ -18,7 +18,7 @@ const BUNDLES = [
 
 export function Paywall() {
   const go = useNavigate();
-  const { setCredits } = useFlow();
+  const { credits, setCredits } = useFlow();
   const [sel, setSel] = useState(1);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
@@ -63,7 +63,7 @@ export function Paywall() {
       <ScreenScroll style={{ paddingBottom: 0 }}>
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
           <CallieHost context="paywall" size={120} bubble />
-          <Eyebrow>You're out of roasts</Eyebrow>
+          <Eyebrow>{credits < 1 ? "You're out of roasts" : `${credits} roasts left`}</Eyebrow>
           <H style={{ fontSize: 34 }}>Stock up &amp; keep cooking</H>
           <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: 0, maxWidth: 280 }}>
             Chips &amp; context are always free. Credits pay for the video render.
