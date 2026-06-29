@@ -1,25 +1,25 @@
 ---
 import { Callie, Roaster } from "@callies-universe/core";
 import { activeSite } from "../config/sites.js";
+import { SUPPORT } from "../config/legal.js";
 const site = activeSite;
 const active = Roaster.roster.filter((r) => !r.comingSoon);
 const firstName = (n) => String(n || "").replace(/[“"].*$/, "").split(" ")[0];
-const steps = [
-  { emoji: "📸", h: `Snap your ${site.subjectNoun || "thing"}`, p: "Drop a photo. Tell us exactly what it is so the roast lands." },
-  { emoji: "🎙️", h: "The comics cook", p: "Two original comedians riff on it like a tiny podcast, with Callie reacting." },
-  { emoji: "📲", h: "Share the video", p: "Get a vertical, captioned reel built to post — your friends do the rest." },
-];
+const steps = site.steps || [];
+const live = site.status === "live";
+const ctaHref = live ? site.appStoreUrl : `mailto:${SUPPORT}?subject=Notify me when ${site.name} launches`;
+const ctaLabel = live ? "Get it on the App Store" : "Get notified at launch";
 ---
 <section class="hero">
   <div class="container">
     <div style="display:flex;justify-content:center;margin-bottom:6px;">
       <Callie state="savage" size={140} />
     </div>
-    <p class="eyebrow">{site.emoji} a Callie's Universe show</p>
+    <p class="eyebrow">{site.emoji} a Callie's Universe show{!live ? " · coming soon" : ""}</p>
     <h1>{site.name}</h1>
     <p class="lede">{site.blurb}</p>
     <div class="hero__cta">
-      <a class="btn" href={site.appStoreUrl}>Get it on the App Store</a>
+      <a class="btn" href={ctaHref}>{ctaLabel}</a>
       <a class="btn btn--ghost" href="#how">How it works</a>
     </div>
   </div>
@@ -54,6 +54,6 @@ const steps = [
         </div>
       ))}
     </div>
-    <div style="margin-top:34px;"><a class="btn" href={site.appStoreUrl}>Roast your {site.subjectNoun} →</a></div>
+    <div style="margin-top:34px;"><a class="btn" href={ctaHref}>{live ? `Roast your ${site.subjectNoun} →` : ctaLabel}</a></div>
   </div>
 </section>

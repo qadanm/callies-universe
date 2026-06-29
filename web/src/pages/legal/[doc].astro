@@ -1,13 +1,14 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { LEGAL, LEGAL_DOCS } from "../../config/legal.js";
+import { getLegal, LEGAL_DOCS } from "../../config/legal.js";
+import { activeSite } from "../../config/sites.js";
 
 export function getStaticPaths() {
   return LEGAL_DOCS.map((d) => ({ params: { doc: d.slug } }));
 }
 
 const { doc } = Astro.params;
-const data = LEGAL[doc];
+const data = getLegal(activeSite)[doc];
 const updated = "June 2026";
 ---
 <Base title={data?.title || "Legal"} description={data?.intro}>

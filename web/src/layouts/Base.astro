@@ -38,7 +38,7 @@ const navLinks = isNetwork
         </a>
         <nav class="nav__links">
           {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
-          {!isNetwork && site.appStoreUrl && <a class="btn" href={site.appStoreUrl}>Get the app</a>}
+          {!isNetwork && site.status === "live" && <a class="btn" href={site.appStoreUrl}>Get the app</a>}
         </nav>
       </div>
     </header>
@@ -55,6 +55,7 @@ const navLinks = isNetwork
             {!isNetwork && <a href="https://calliesuniverse.com" style="font-size:14px;color:var(--accent-600);font-weight:700;">✦ a Callie's Universe show</a>}
           </div>
           <div class="footer__links">
+            <a href="/support">Support</a>
             {LEGAL_DOCS.map((d) => <a href={`/legal/${d.slug}`}>{d.title}</a>)}
           </div>
         </div>
