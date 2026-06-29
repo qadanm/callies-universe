@@ -65,15 +65,19 @@ const mouths = {
 const nose = <path d="M97 104 L103 104 L100 109 Z" fill="rgba(58,34,8,0.4)" />;
 
 /* ---- roster metadata (travels on Roaster.roster) ---- */
+// Active cast first, then the strong-accent cast tabled as `comingSoon` (greyed in
+// the picker). See docs/voice-accents-troubleshooting.md for why they're tabled.
 const ROSTER = {
   reginald: { name: "Sir Reginald Pemberton-Hare", tag: "Posh nat-geo narrator", register: "Dry · deadpan", spice: "Mild", phrase: "It should not still be running. And yet… it persists.", skin: "#F3CBA4", cloth: "#8A6E45", ring: "#C9D98F" },
   tony:     { name: "Tony “Two-Times” Calabrese", tag: "Exasperated New Yorker", register: "Fast · big-hearted", spice: "Medium", phrase: "What is this? What am I lookin’ at here?", skin: "#E3AC80", cloth: "#26407A", ring: "#FFCB2B" },
-  abuomar:  { name: "Abu Omar", tag: "Warm Egyptian uncle", register: "Theatrical · warm", spice: "Mild", phrase: "My son… the car, I do not love.", skin: "#C98E58", cloth: "#7A2E3A", ring: "#FFB877" },
   mama:     { name: "Mama Denièce", tag: "Loving-savage mom", register: "Church-fan snap", spice: "Spicy", phrase: "Mm-mm-MM. Baby, I say this with love… no.", skin: "#6E4226", cloth: "#6B3FA0", ring: "#C9A2F0" },
-  mateo:    { name: "Mateo “El Tigre” Rivas", tag: "Telenovela hype-man", register: "Operatic drama", spice: "Spicy", phrase: "The car — the car has broken my heart.", skin: "#D89C68", cloth: "#1A1A1F", ring: "#FF4FA3" },
-  jeanluc:  { name: "Jean-Luc Moreau", tag: "Unbothered Frenchman", register: "Deadpan disdain", spice: "Medium", phrase: "It is a car. It is here. I am… unmoved.", skin: "#F1C7A0", cloth: "#2C5AA8", ring: "#8FC2FF" },
-  priya:    { name: "Priya Nair", tag: "Comparison auntie", register: "Lovingly brutal", spice: "Spicy", phrase: "Sharma-ji’s son has better. But it’s nice, beta.", skin: "#B87B4A", cloth: "#1F8A7A", ring: "#5FD6C4" },
-  kenji:    { name: "Kenji “Ken” Tanaka", tag: "Zen minimalist", register: "Three-word KO", spice: "Mild", phrase: "…Hm. It is a car.", skin: "#ECBC8E", cloth: "#3A3A44", ring: "#AEB6C2" },
+  buford:   { name: "Buford “Sweet Tea” Coalsworth", tag: "Front-porch uncle", register: "Slow · molasses", spice: "Mild", phrase: "Bless its little heart… that ain’t a car, son.", skin: "#D8A772", cloth: "#8A4B2F", ring: "#E0A33A" },
+  gord:     { name: "Gord “Sorry-Aboot-It” Beaudry", tag: "Hoser rink dad", register: "Warm · sorry-eh", spice: "Medium", phrase: "Aw geez, sorry, bud… no offence, eh?", skin: "#EAC4A0", cloth: "#2C6E49", ring: "#E84855" },
+  abuomar:  { name: "Abu Omar", tag: "Warm Egyptian uncle", register: "Theatrical · warm", spice: "Mild", phrase: "My son… the car, I do not love.", skin: "#C98E58", cloth: "#7A2E3A", ring: "#FFB877", comingSoon: true },
+  mateo:    { name: "Mateo “El Tigre” Rivas", tag: "Telenovela hype-man", register: "Operatic drama", spice: "Spicy", phrase: "The car — the car has broken my heart.", skin: "#D89C68", cloth: "#1A1A1F", ring: "#FF4FA3", comingSoon: true },
+  jeanluc:  { name: "Jean-Luc Moreau", tag: "Unbothered Frenchman", register: "Deadpan disdain", spice: "Medium", phrase: "It is a car. It is here. I am… unmoved.", skin: "#F1C7A0", cloth: "#2C5AA8", ring: "#8FC2FF", comingSoon: true },
+  priya:    { name: "Priya Nair", tag: "Comparison auntie", register: "Lovingly brutal", spice: "Spicy", phrase: "Sharma-ji’s son has better. But it’s nice, beta.", skin: "#B87B4A", cloth: "#1F8A7A", ring: "#5FD6C4", comingSoon: true },
+  kenji:    { name: "Kenji “Ken” Tanaka", tag: "Zen minimalist", register: "Three-word KO", spice: "Mild", phrase: "…Hm. It is a car.", skin: "#ECBC8E", cloth: "#3A3A44", ring: "#AEB6C2", comingSoon: true },
 };
 Roaster.roster = Object.keys(ROSTER).map((id) => ({ id, ...ROSTER[id] }));
 
@@ -112,6 +116,36 @@ const ART = {
     <rect x="134" y="158" width="6" height="42" fill="#fff" opacity="0.85" />
     {/* espresso cup */}
     <g transform="translate(150 150)"><rect x="-12" y="-8" width="22" height="16" rx="3" fill="#fff" stroke={OUT} strokeWidth="3" /><path d="M10 -4 q8 0 8 6 q0 6 -8 6" fill="none" stroke={OUT} strokeWidth="3" /></g>
+  </g>),
+
+  buford: () => (<g>
+    {/* trucker cap (crown + brim) */}
+    <path d="M44 70 C46 44 70 34 100 34 C130 34 154 44 156 70 C156 58 130 52 100 52 C70 52 44 58 44 70 Z" fill="#3F7D4F" stroke={OUT} strokeWidth="4" />
+    <path d="M40 70 Q100 64 160 70 L170 81 Q100 75 30 81 Z" fill="#356B43" stroke={OUT} strokeWidth="3.5" />
+    {eyes.half}
+    {/* big grey mustache */}
+    <path d="M74 116 Q100 106 126 116 Q112 128 100 122 Q88 128 74 116 Z" fill="#CFC9BE" stroke={OUT} strokeWidth="2.5" />
+    {nose}{mouths.smile}
+    {/* flannel collar + plaid hint */}
+    <path d="M82 152 L100 168 L118 152" fill="none" stroke="#5C3320" strokeWidth="5" />
+    <path d="M70 160 L82 200 M130 160 L118 200" stroke="rgba(0,0,0,0.18)" strokeWidth="3" />
+    {/* sweet-tea mason jar */}
+    <g transform="translate(151 154)"><rect x="-11" y="-12" width="22" height="24" rx="4" fill="#C98A3A" stroke={OUT} strokeWidth="3" opacity="0.92" /><rect x="-11" y="-12" width="22" height="6" rx="3" fill="#E0B45A" /><rect x="-2" y="-20" width="5" height="9" fill="#9ACBE0" opacity="0.7" /></g>
+  </g>),
+
+  gord: () => (<g>
+    {/* toque (beanie) + fold band + pom */}
+    <path d="M48 72 C48 44 72 30 100 30 C128 30 152 44 152 72 C140 60 116 56 100 56 C84 56 60 60 48 72 Z" fill="#B23A48" stroke={OUT} strokeWidth="4" />
+    <rect x="46" y="66" width="108" height="14" rx="7" fill="#9A2F3C" stroke={OUT} strokeWidth="3.5" />
+    <circle cx="100" cy="26" r="8" fill="#F4F1EA" stroke={OUT} strokeWidth="3" />
+    {eyes.happy}
+    {/* light stubble */}
+    <path d="M70 120 Q100 138 130 120 Q100 132 70 120 Z" fill="rgba(40,30,20,0.16)" />
+    {nose}{mouths.grin}
+    {/* jersey collar */}
+    <path d="M84 152 L100 166 L116 152" fill="none" stroke="#214A8A" strokeWidth="5" />
+    {/* double-double coffee cup */}
+    <g transform="translate(150 156)"><path d="M-10 -10 h20 l-2 21 h-16 z" fill="#fff" stroke={OUT} strokeWidth="3" /><rect x="-11" y="-13" width="22" height="5" rx="2" fill="#7A4A2E" /></g>
   </g>),
 
   abuomar: () => (<g>

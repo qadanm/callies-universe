@@ -58,7 +58,8 @@ for (const s of CALLIE_STATES) {
   assert(html.includes(`Callie (${s})`), `missing Callie state: ${s}`);
 }
 
-assert(core.Roaster.roster.length === 8, `expected 8 roasters, got ${core.Roaster.roster.length}`);
+const activeRoasters = core.Roaster.roster.filter((r) => !r.comingSoon);
+assert(activeRoasters.length >= 5, `expected >=5 active roasters, got ${activeRoasters.length}`);
 for (const r of core.Roaster.roster) {
   assert(html.includes(r.name), `missing roaster avatar: ${r.name}`);
 }

@@ -109,6 +109,26 @@ const OFFLINE_SETS = {
       { type: "closer", text: "…Hm." },
     ],
   },
+  buford: {
+    title: "Bless Your Heart",
+    performanceNote: "Front-porch drawl applied to a text thread.",
+    beats: [
+      { type: "opener", text: "Well now… lemme get my readin' glasses for this one." },
+      { type: "setup", text: "You typed all that out. A whole paragraph. Straight from the heart." },
+      { type: "punchline", text: "And they sent back one little 'k'. Bless your heart.", punch: "one little 'k'" },
+      { type: "closer", text: "Mm-mm. Leave it be, son." },
+    ],
+  },
+  gord: {
+    title: "No Offence, Eh",
+    performanceNote: "Apologetic hoser reading a text thread.",
+    beats: [
+      { type: "opener", text: "Aw geez. Sorry, bud, but lemme read this back to ya." },
+      { type: "crowd-work", text: "No offence, eh, but… oof." },
+      { type: "punchline", text: "You sent a paragraph and got a thumbs-up. That's rough, buddy. Sorry.", punch: "a thumbs-up" },
+      { type: "closer", text: "She's got heart though, eh? Give'er." },
+    ],
+  },
 };
 
 export const textsPack = {

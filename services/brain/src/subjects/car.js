@@ -103,6 +103,26 @@ const OFFLINE_SETS = {
       { type: "closer", text: "…Hm." },
     ],
   },
+  buford: {
+    title: "Bless Its Heart",
+    performanceNote: "Front-porch drawl; long slow build, quiet deadpan button.",
+    beats: [
+      { type: "opener", text: "Well now… set still a minute. Lemme look at ya." },
+      { type: "setup", text: "That thing's been parked so long the grass growed up through the floorboard." },
+      { type: "punchline", text: "Bless its little heart — it ain't a car, it's a leftover.", punch: "a leftover" },
+      { type: "closer", text: "I have known mules with more git-up." },
+    ],
+  },
+  gord: {
+    title: "Sorry Aboot Her",
+    performanceNote: "Apologetic hoser; soft jab, then an immediate sorry.",
+    beats: [
+      { type: "opener", text: "Aw geez, sorry to say this aboot her, bud, but…" },
+      { type: "crowd-work", text: "No offence, eh? You seein' this too?" },
+      { type: "punchline", text: "Them rims look like a beer-league playoff overtime. Sorry.", punch: "playoff overtime" },
+      { type: "closer", text: "But hey — she's got heart, eh? Give'er." },
+    ],
+  },
 };
 
 export const carPack = {

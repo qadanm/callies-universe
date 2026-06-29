@@ -18,6 +18,8 @@ const DELIVERY = {
   jeanluc: { pace: 0.8, stability: 0.85, expressiveness: 0.2, note: "flat, bored, unbothered" },
   priya: { pace: 1.0, stability: 0.5, expressiveness: 0.7, note: "brisk, knowing, backhanded" },
   kenji: { pace: 0.7, stability: 0.9, expressiveness: 0.15, note: "glacial, serene, minimal" },
+  buford: { pace: 0.64, stability: 0.78, expressiveness: 0.58, note: "deep molasses Gulf-Coast drawl — slow, low, deadpan button" },
+  gord: { pace: 0.88, stability: 0.6, expressiveness: 0.75, note: "warm deep Canadian hoser — apologetic, sing-song 'eh' lilt" },
 };
 
 const DEFAULT_DELIVERY = { pace: 1.0, stability: 0.5, expressiveness: 0.6, note: "neutral" };

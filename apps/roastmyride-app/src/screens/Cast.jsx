@@ -42,11 +42,12 @@ export function Cast() {
   };
 
   const roster = Roaster.roster;
+  const activeCount = roster.filter((r) => !r.comingSoon).length;
   const [a, b] = duo;
   const aName = a && firstName(roster.find((r) => r.id === a)?.name);
   const bName = b && firstName(roster.find((r) => r.id === b)?.name);
 
-  const style = sel ? comicStyle(sel.id) : `Eight comics. Same ${cfg("brain.subjectNoun")}. Eight completely different shows.`;
+  const style = sel ? comicStyle(sel.id) : `${activeCount} comics. Same ${cfg("brain.subjectNoun")}. ${activeCount} completely different shows.`;
   const duoReady = duo.length === 2;
 
   return (
@@ -137,13 +138,17 @@ function DuoPicker({ roster, duo, onToggle }) {
         {roster.map((c) => {
           const slot = duo.indexOf(c.id); // -1, 0 (A), 1 (B)
           const picked = slot >= 0;
+          const soon = c.comingSoon;
           return (
             <button
               key={c.id}
               data-testid={`duo-${c.id}`}
+              disabled={soon}
               aria-pressed={picked}
-              onClick={() => onToggle(c.id)}
+              aria-label={soon ? `${c.name} (coming soon)` : c.name}
+              onClick={() => !soon && onToggle(c.id)}
               style={{
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -153,7 +158,9 @@ function DuoPicker({ roster, duo, onToggle }) {
                 border: `3px solid ${picked ? "var(--ember-600)" : "transparent"}`,
                 background: picked ? "var(--surface)" : "transparent",
                 boxShadow: picked ? "var(--gloss-card)" : "none",
-                cursor: "pointer",
+                cursor: soon ? "default" : "pointer",
+                opacity: soon ? 0.5 : 1,
+                filter: soon ? "grayscale(1)" : "none",
               }}
             >
               <div style={{ position: "relative" }}>
@@ -165,6 +172,7 @@ function DuoPicker({ roster, duo, onToggle }) {
                 )}
               </div>
               <span style={{ font: "var(--type-legal)", fontWeight: 700, color: picked ? "var(--ember-600)" : "var(--text-muted)" }}>{firstName(c.name)}</span>
+              {soon && <span style={{ position: "absolute", top: 3, left: "50%", transform: "translateX(-50%)", fontSize: 8.5, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--ink)", color: "var(--canvas)", padding: "1px 5px", borderRadius: 6, whiteSpace: "nowrap" }}>Soon</span>}
             </button>
           );
         })}

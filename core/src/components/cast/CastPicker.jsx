@@ -10,8 +10,11 @@ import { Roaster } from "./Roaster.jsx";
  */
 export function CastPicker({ initialId, onChange, style, ...rest }) {
   const roster = Roaster.roster;
-  const startIdx = Math.max(0, roster.findIndex((r) => r.id === initialId));
-  const [pick, setPick] = useState(startIdx === -1 ? 0 : startIdx);
+  // Never feature a coming-soon (tabled) character — start on the requested one if
+  // it's available, else the first active comic.
+  const firstActive = Math.max(0, roster.findIndex((r) => !r.comingSoon));
+  const wanted = roster.findIndex((r) => r.id === initialId);
+  const [pick, setPick] = useState(wanted >= 0 && !roster[wanted].comingSoon ? wanted : firstActive);
   const [fav, setFav] = useState({});
   const [previewing, setPreviewing] = useState(false);
   const r = roster[pick];
@@ -48,16 +51,20 @@ export function CastPicker({ initialId, onChange, style, ...rest }) {
           <span style={{ font: "var(--type-cap)", color: "var(--text-hint)" }}>{roster.length} roasters · tap to switch</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--space-2)" }}>
-          {roster.map((c, i) => (
-            <button key={c.id} onClick={() => setPick(i)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "8px 2px", borderRadius: "var(--radius-lg)", border: `3px solid ${i === pick ? "var(--ember-600)" : "transparent"}`, background: i === pick ? "var(--surface)" : "transparent", boxShadow: i === pick ? "var(--gloss-card)" : "none", cursor: "pointer" }}>
+          {roster.map((c, i) => {
+            const soon = c.comingSoon;
+            const active = i === pick && !soon;
+            return (
+            <button key={c.id} disabled={soon} onClick={() => !soon && setPick(i)} aria-label={soon ? `${c.name} (coming soon)` : c.name} style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "8px 2px", borderRadius: "var(--radius-lg)", border: `3px solid ${active ? "var(--ember-600)" : "transparent"}`, background: active ? "var(--surface)" : "transparent", boxShadow: active ? "var(--gloss-card)" : "none", cursor: soon ? "default" : "pointer", opacity: soon ? 0.5 : 1, filter: soon ? "grayscale(1)" : "none" }}>
               <div style={{ position: "relative" }}>
                 <Roaster id={c.id} size={62} ring />
-                {fav[c.id] && <span style={{ position: "absolute", top: -2, right: -2, fontSize: 14, color: "var(--sticker-yellow)", textShadow: "0 1px 0 var(--ink)" }}>★</span>}
-                {i === pick && <span style={{ position: "absolute", bottom: -2, right: -2, width: 20, height: 20, borderRadius: "var(--radius-pill)", background: "var(--ember-600)", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--canvas)" }}>✓</span>}
+                {fav[c.id] && !soon && <span style={{ position: "absolute", top: -2, right: -2, fontSize: 14, color: "var(--sticker-yellow)", textShadow: "0 1px 0 var(--ink)" }}>★</span>}
+                {active && <span style={{ position: "absolute", bottom: -2, right: -2, width: 20, height: 20, borderRadius: "var(--radius-pill)", background: "var(--ember-600)", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--canvas)" }}>✓</span>}
               </div>
-              <span style={{ font: "var(--type-legal)", fontWeight: 700, color: i === pick ? "var(--ember-600)" : "var(--text-muted)" }}>{c.name.replace(/[“"].*$/, "").split(" ")[0]}</span>
+              <span style={{ font: "var(--type-legal)", fontWeight: 700, color: active ? "var(--ember-600)" : "var(--text-muted)" }}>{c.name.replace(/[“"].*$/, "").split(" ")[0]}</span>
+              {soon && <span style={{ position: "absolute", top: 3, left: "50%", transform: "translateX(-50%)", fontSize: 8.5, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--ink)", color: "var(--canvas)", padding: "1px 5px", borderRadius: 6, whiteSpace: "nowrap" }}>Soon</span>}
             </button>
-          ))}
+          );})}
         </div>
       </div>
     </div>
