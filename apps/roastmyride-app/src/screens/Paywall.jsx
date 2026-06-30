@@ -67,6 +67,7 @@ export function Paywall() {
     <div
       style={{
         flex: 1,
+        minHeight: 0,
         display: "flex",
         flexDirection: "column",
         background: "radial-gradient(120% 50% at 50% 0%, var(--heat-300) 0%, var(--canvas) 45%)",
@@ -74,8 +75,8 @@ export function Paywall() {
     >
       <ScreenScroll style={{ paddingBottom: 0 }}>
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-          <CallieHost context="paywall" size={120} bubble />
-          <Eyebrow>{credits < 1 ? "You're out of roasts" : `${credits} roasts left`}</Eyebrow>
+          <CallieHost context="paywall" size={120} />
+          <Eyebrow>{credits < 1 ? "You're out of roasts" : `${credits} ${credits === 1 ? "roast" : "roasts"} left`}</Eyebrow>
           <H style={{ fontSize: 34 }}>Stock up &amp; keep cooking</H>
           <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: 0, maxWidth: 280 }}>
             Chips &amp; context are always free. Credits pay for the video render.
@@ -97,7 +98,7 @@ export function Paywall() {
       </ScreenScroll>
       <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: 8 }}>
         <Button variant="primary" size="lg" block onClick={buy} disabled={busy}>
-          {busy ? "Processing…" : `Get ${BUNDLES[sel].credits} roasts`}
+          {busy ? "Processing…" : `Get ${BUNDLES[sel].credits} ${BUNDLES[sel].credits === 1 ? "roast" : "roasts"}`}
         </Button>
         <button
           onClick={restorePurchases}

@@ -3,7 +3,7 @@
   "appName": "RoastMyRide",
   "webDir": "dist",
   "ios": {
-    "contentInset": "always",
+    "contentInset": "never",
     "backgroundColor": "#FFF6EC"
   },
   "plugins": {

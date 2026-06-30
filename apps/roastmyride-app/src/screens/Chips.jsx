@@ -30,7 +30,7 @@ export function Chips() {
   const buckets = useMemo(() => cfg("chips.buckets", []), []);
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+    <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
       <ScreenScroll style={{ paddingBottom: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
           <CallieHost context="cast" size={60} />

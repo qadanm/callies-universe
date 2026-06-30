@@ -49,10 +49,10 @@ export function Celebrate() {
             roast={clip}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-3)" }}>
-          <Badge tone="flame">🔥 2.4k views</Badge>
-          <Badge tone="cool">💬 88</Badge>
-          <Badge tone="pink">↗ 311 shares</Badge>
+        <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
+          <Badge tone="flame">🎤 {roast.roasterName}</Badge>
+          <Badge tone="cool">🎬 Stand-up clip</Badge>
+          <Badge tone="pink">✨ Fresh out the oven</Badge>
         </div>
       </Sheet>
     </div>

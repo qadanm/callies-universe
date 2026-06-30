@@ -103,7 +103,7 @@ export function Home() {
 
       <Card pad="var(--space-5)" style={{ textAlign: "center" }} sticker={<Badge tone="flame">HOT</Badge>} stickerCorner="tr">
         <div style={{ display: "flex", justifyContent: "center", marginTop: -8 }}>
-          <CallieHost context="home" size={120} bubble />
+          <CallieHost context="home" size={120} />
         </div>
         <h2 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "4px 0 4px" }}>{cfg("upload.label")}</h2>
         <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-4)" }}>

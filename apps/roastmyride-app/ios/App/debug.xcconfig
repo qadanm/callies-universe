@@ -1,0 +1,5 @@
+// Signing for local device builds. Automatic signing registers the App ID and
+// provisions com.callies.roastmyride under this team. This is the paid
+// "Moe Qadan" Individual account (XP3QE9YCM3) that Xcode is signed into.
+DEVELOPMENT_TEAM = XP3QE9YCM3
+CODE_SIGN_STYLE = Automatic

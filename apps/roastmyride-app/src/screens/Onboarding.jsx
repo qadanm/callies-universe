@@ -41,7 +41,7 @@ export function Onboarding() {
           Her comedians handle that. Bring {cfg("brain.subjectNoun")}, they cook it, and Callie reacts from the corner, on your side the whole time. Clever, never cruel.
         </p>
       </div>
-      <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+      <div style={{ padding: "var(--space-5)", paddingBottom: "calc(var(--space-5) + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
         <Button variant="primary" size="lg" block onClick={() => go("/home")}>
           {cfg("onboarding.cta")}
         </Button>

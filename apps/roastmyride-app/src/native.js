@@ -76,8 +76,9 @@ export async function initNativeChrome() {
   document.documentElement.classList.add("native");
   const StatusBar = plugin("StatusBar");
   try {
-    await StatusBar?.setStyle?.({ style: "DARK" }); // dark text on the light app bg
-    await StatusBar?.setOverlaysWebView?.({ overlay: false });
+    // Capacitor's Style.LIGHT = DARK status-bar content (for a light app background)
+    await StatusBar?.setStyle?.({ style: "LIGHT" }); // dark text/icons on the cream bg
+    await StatusBar?.setOverlaysWebView?.({ overlay: true }); // full-bleed: app bg runs behind the status bar
   } catch { /* ignore */ }
   const SplashScreen = plugin("SplashScreen");
   try { await SplashScreen?.hide?.(); } catch { /* ignore */ }

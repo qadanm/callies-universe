@@ -107,7 +107,8 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 8px 0 18px;
+  /* the bar's background runs to the bottom edge; icons sit above the home indicator */
+  padding: 8px 0 calc(10px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--hairline);
   background: var(--canvas);
   flex-shrink: 0;
@@ -146,7 +147,14 @@ html.native :not(input):not(textarea):not([contenteditable]) { -webkit-user-sele
   display: flex;
   flex-direction: column;
   background: var(--canvas);
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* No top/bottom safe-area padding here: that would inset the WHOLE app box and let
+     the cream .native-app background show as a bar above a screen's own gradient.
+     Instead each screen's background runs full-bleed (behind the status bar + home
+     indicator) and the insets are absorbed by the inner content (ScreenScroll top
+     padding) and the bottom bars (tabbar / stickyBar). */
+  padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
   overflow: hidden;
 }
 .native-app > .stage { flex: 1; min-height: 0; }
+/* never let a stray wide child cause a horizontal scroll on a phone */
+html.native, html.native body, .native-app { max-width: 100%; overflow-x: hidden; }

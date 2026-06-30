@@ -56,7 +56,7 @@ export function Settings() {
   ];
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", background: "var(--canvas-sink)" }}>
+    <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overflowX: "hidden", background: "var(--canvas-sink)", paddingTop: "env(safe-area-inset-top)" }}>
       <div style={{ padding: "var(--space-5) var(--space-5) var(--space-3)", display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
         <CallieHost context="settings" size={52} />
         <h1 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: 0 }}>Settings</h1>

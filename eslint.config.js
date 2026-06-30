@@ -37,7 +37,8 @@ export default [
       "**/.vite/**",
       "**/*.d.ts", // TypeScript declarations — typechecked by tsc, not this JS parser
       "project/**", // the design export (source of truth), not workspace code
-      "apps/roastmyride-app/ios/DerivedData/**", // native build output
+      "**/DerivedData*/**", // native build output (any DerivedData path / device + sim)
+      "**/ios/App/Pods/**", // CocoaPods sources if ever used
     ],
   },
   {

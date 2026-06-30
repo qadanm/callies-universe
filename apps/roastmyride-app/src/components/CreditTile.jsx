@@ -48,7 +48,7 @@ export function CreditTile({
         }}>BEST VALUE</span>
       )}
       <span aria-hidden="true" style={{ fontSize: 28 }}>🎟️</span>
-      <span style={{ font: "var(--type-d3)", color: "var(--ink)", lineHeight: 1 }}>{credits} roasts</span>
+      <span style={{ font: "var(--type-d3)", color: "var(--ink)", lineHeight: 1 }}>{credits} {credits === 1 ? "roast" : "roasts"}</span>
       <span style={{ font: "var(--type-body)", fontWeight: 700, color: "var(--ember-600)" }}>{price}</span>
       {perRoast && <span style={{ font: "var(--type-cap)", color: "var(--text-muted)" }}>{perRoast} each</span>}
     </button>

@@ -11,7 +11,7 @@ export function Legal() {
   const docs = cfg("legal", {});
   const d = docs[doc] || docs.privacy || { title: "Privacy & data", body: [] };
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-5)" }}>
+    <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overflowX: "hidden", padding: "var(--space-5)", paddingTop: "calc(var(--space-5) + env(safe-area-inset-top))", paddingBottom: "calc(var(--space-5) + env(safe-area-inset-bottom))" }}>
       <h1 style={{ font: "var(--type-d2)", color: "var(--ink)", margin: "0 0 var(--space-3)" }}>{d.title}</h1>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
         {d.body.map((p, i) => (

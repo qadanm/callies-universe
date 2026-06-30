@@ -131,7 +131,7 @@ export function Reveal() {
     : roast.segments;
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", background: "radial-gradient(120% 60% at 50% 0%, var(--heat-300) 0%, var(--canvas) 50%)" }}>
+    <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", position: "relative", background: "radial-gradient(120% 60% at 50% 0%, var(--heat-300) 0%, var(--canvas) 50%)" }}>
       <ScreenScroll style={{ paddingBottom: "var(--space-4)" }}>
         {/* the stage scene: the show plays here (and is what the video will be) */}
         <div style={{ animation: "rmr-pop-in var(--dur-4) var(--ease-spring) both" }}>

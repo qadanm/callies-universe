@@ -9,7 +9,14 @@ export function ScreenScroll({ children, style }) {
       style={{
         flex: 1,
         overflowY: "auto",
+        overflowX: "hidden",
         padding: "var(--space-5)",
+        // the screen background runs full-bleed behind the status bar; inset the
+        // CONTENT down so it clears the notch/status bar
+        paddingTop: "calc(var(--space-5) + env(safe-area-inset-top))",
+        // clear the home indicator on screens with no bottom bar; screens that add a
+        // stickyBar override paddingBottom to 0 (the bar carries the inset instead)
+        paddingBottom: "calc(var(--space-5) + env(safe-area-inset-bottom))",
         display: "flex",
         flexDirection: "column",
         gap: "var(--space-5)",
@@ -59,7 +66,8 @@ export function Wordmark() {
 export const stickyBar = {
   display: "flex",
   gap: "var(--space-3)",
-  padding: "var(--space-4) var(--space-5)",
+  // the bar runs to the bottom edge; its buttons sit above the home indicator
+  padding: "var(--space-4) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom))",
   borderTop: "1px solid var(--hairline)",
   background: "var(--canvas)",
 };
