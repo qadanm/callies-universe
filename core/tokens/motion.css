@@ -39,9 +39,11 @@
   0%   { transform: scale(0.9) translateY(10px); }
   100% { transform: scale(1) translateY(0); }
 }
+/* reaction pulse: a gentle breathe + tiny lean. No vertical hop (that reads as
+   a mascot that never sits still). */
 @keyframes rmr-bob {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50%      { transform: translateY(-8px) rotate(1deg); }
+  0%, 100% { transform: rotate(-1deg) scale(1); }
+  50%      { transform: rotate(1deg) scale(1.03); }
 }
 @keyframes rmr-wiggle {
   0%, 100% { transform: rotate(-3deg); }
@@ -56,10 +58,10 @@
   0%, 90%, 100% { transform: scaleY(1); }
   94%           { transform: scaleY(0.08); }
 }
-/* soft squishy idle: gentle breathe + lean, no harsh rotation */
+/* soft idle: a barely-there breathe in place. No vertical hop. */
 @keyframes rmr-squish-idle {
-  0%, 100% { transform: translateY(0) scale(1, 1); }
-  50%      { transform: translateY(-5px) scale(1.03, 0.97); }
+  0%, 100% { transform: scale(1, 1); }
+  50%      { transform: scale(1.02, 0.99); }
 }
 /* laugh/react jiggle: quick happy shake */
 @keyframes rmr-jiggle {
