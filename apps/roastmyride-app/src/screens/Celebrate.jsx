@@ -25,7 +25,7 @@ export function Celebrate() {
       <Confetti count={40} />
       <Sheet
         open
-        title="It's live! You menace 😈"
+        title="It's live. You menace."
         header={<CallieHost context="celebrate" size={96} />}
         onClose={() => go("/home")}
         primaryAction={

@@ -138,14 +138,6 @@ export function Reveal() {
           <StagePlayer result={roast} subjectPhoto={subjectPhoto} />
         </div>
 
-        {/* grader verdict: the anti-cringe guarantee, made visible */}
-        {roast.grade && (
-          <div style={{ font: "var(--type-cap)", color: "var(--text-hint)", textAlign: "center" }}>
-            Quality check {roast.grade.pass ? "✅" : "⚠️"} · funny {roast.grade.scores.funny} ·
-            {" "}not-AI {roast.grade.scores.human} · {cfg("grade.edgeLabel")} {roast.grade.scores.edge}
-            {roast.research?.sources?.length ? ` · grounded in ${roast.research.sources.length} sources` : ""}
-          </div>
-        )}
 
         {/* degraded fallback: be transparent + reassure (we didn't bill it) */}
         {roast.degraded && (

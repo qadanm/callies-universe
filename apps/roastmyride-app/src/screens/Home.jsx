@@ -84,7 +84,7 @@ export function Home() {
       celebrate();
       runIdentityGuess(img.dataUrl);
     } catch (ex) {
-      setErr(ex.message || "Couldn't read that photo.");
+      setErr("Couldn't use that photo. Try another one.");
     }
   };
 
@@ -110,14 +110,13 @@ export function Home() {
   const names = voiceIds.map((id) => firstName(activeVoices().find((v) => v.id === id)?.name)).filter(Boolean);
 
   // ---- CTA state: the label tells the user the one thing left to do ----
+  // The car name is NOT required: auto-ID pre-fills it and the user can fix it,
+  // but a blank name never blocks the roast (the brain falls back).
   const hasPhoto = !!photo.dataUrl;
-  const hasCar = !requireIdentity || carLabel.trim().length > 0;
   const twoVoices = voiceIds.length === 2;
-  const ready = hasPhoto && hasCar && twoVoices;
+  const ready = hasPhoto && twoVoices;
   const ctaLabel = !hasPhoto
     ? "Add a photo first"
-    : !hasCar
-    ? "Name the car first"
     : !twoVoices
     ? "Pick 2 voices"
     : cfg("upload.cta") + " 🔥";
@@ -188,7 +187,7 @@ export function Home() {
           {requireIdentity && photo.dataUrl && (
             <div style={{ marginTop: "var(--space-3)", textAlign: "left" }}>
               <label htmlFor="car-identity" style={{ font: "var(--type-cap)", fontWeight: 800, color: "var(--ink)", display: "block", marginBottom: 5 }}>
-                {cfg("upload.identityLabel")} <span style={{ color: "var(--ember-600)" }}>*</span>
+                {cfg("upload.identityLabel")}
               </label>
               {idState === "guessing" && (
                 <p style={{ font: "var(--type-legal)", color: "var(--text-hint)", margin: "0 2px 5px", fontStyle: "italic" }}>{cfg("upload.identityGuessing")}</p>

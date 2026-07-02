@@ -22,8 +22,6 @@ import { isNative } from "./native.js";
 import { cfg } from "./subjects/index.js";
 import { Onboarding, hasOnboarded } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
-import { Chips } from "./screens/Chips.jsx";
-import { Cast } from "./screens/Cast.jsx";
 import { Cooking } from "./screens/Cooking.jsx";
 import { Reveal } from "./screens/Reveal.jsx";
 import { Celebrate } from "./screens/Celebrate.jsx";
@@ -35,8 +33,6 @@ import { Legal } from "./screens/Legal.jsx";
 const SCREENS = [
   ["/", "Onboard"],
   ["/home", "Home"],
-  ["/chips", "Chips"],
-  ["/cast", "Cast"],
   ["/cooking", "Cooking"],
   ["/reveal", "Reveal"],
   ["/celebrate", "Share"],
@@ -129,8 +125,6 @@ const router = createHashRouter([
       // First launch: the 3-step intro. Every launch after: straight to the app.
       { index: true, element: hasOnboarded() ? <Navigate to="/home" replace /> : <Onboarding /> },
       { path: "home", element: <Home /> },
-      { path: "chips", element: <Chips /> },
-      { path: "cast", element: <Cast /> },
       { path: "cooking", element: <Cooking /> },
       { path: "reveal", element: <Reveal /> },
       { path: "celebrate", element: <Celebrate /> },

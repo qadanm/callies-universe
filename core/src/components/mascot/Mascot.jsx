@@ -185,7 +185,7 @@ const CALLIE_SCRIPT = {
   cooking: { enter: "cooking", idle: ["cooking", "curious", "delighted"], tips: ["Ooh, this one's gonna be good…", "Almost ready…"] },
   reveal: { enter: "savage", idle: ["savage", "delighted", "celebrating"], tips: ["Screenshot this. Trust me.", "Hit share before you chicken out 😼"] },
   celebrate: { enter: "celebrating", idle: ["celebrating", "delighted"], tips: ["Tag us and we'll re-share the best ones!", "One down. Roast another?"] },
-  paywall: { enter: "comfort", idle: ["comfort", "curious", "idle"], react: { buy: "celebrating" }, tips: ["The 5-pack is the move, honestly.", "No subscription. One-time. Promise. 🙏"] },
+  paywall: { enter: "comfort", idle: ["comfort", "curious", "idle"], react: { buy: "celebrating" }, tips: ["The 5-pack is the move, honestly.", "No subscription. One-time only."] },
   settings: { enter: "comfort", idle: ["idle", "comfort"], tips: ["Turn on reduce-motion if I'm too hyper."] },
   call: { enter: "curious", idle: ["curious", "comfort", "idle"], react: { answer: "delighted", decline: "comfort" }, tips: ["Someone's calling… wanna pick up?", "It's always a friendly voice."] },
   empty: { enter: "empty", idle: ["empty", "comfort"], tips: ["Nothing here yet. Let's fix that."] },
