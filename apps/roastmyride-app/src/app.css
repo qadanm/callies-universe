@@ -158,3 +158,9 @@ html.native :not(input):not(textarea):not([contenteditable]) { -webkit-user-sele
 .native-app > .stage { flex: 1; min-height: 0; }
 /* never let a stray wide child cause a horizontal scroll on a phone */
 html.native, html.native body, .native-app { max-width: 100%; overflow-x: hidden; }
+
+/* voice-preview equalizer bars (VoicePicker) */
+@keyframes rmr-eq {
+  0%, 100% { transform: scaleY(0.35); }
+  50%      { transform: scaleY(1); }
+}

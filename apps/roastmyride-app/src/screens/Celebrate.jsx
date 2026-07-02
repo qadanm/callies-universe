@@ -25,7 +25,7 @@ export function Celebrate() {
       <Confetti count={40} />
       <Sheet
         open
-        title="Set's live! You menace 😈"
+        title="It's live! You menace 😈"
         header={<CallieHost context="celebrate" size={96} />}
         onClose={() => go("/home")}
         primaryAction={
@@ -35,8 +35,8 @@ export function Celebrate() {
         }
       >
         <p style={{ textAlign: "center", margin: "0 0 var(--space-4)" }}>
-          "{set.bit}" is live. Tag us <b style={{ color: "var(--ember-600)" }}>@{cfg("handle")}</b> and we'll re-share
-          the best sets.
+          Your roast is live. Tag us <b style={{ color: "var(--ember-600)" }}>@{cfg("handle")}</b> and we'll re-share
+          the best ones.
         </p>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-4)" }}>
           <ShareCard
@@ -50,9 +50,9 @@ export function Celebrate() {
           />
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
-          <Badge tone="flame">🎤 {roast.roasterName}</Badge>
-          <Badge tone="cool">🎬 Stand-up clip</Badge>
-          <Badge tone="pink">✨ Fresh out the oven</Badge>
+          <Badge tone="flame">🔊 {roast.roasterName}</Badge>
+          <Badge tone="cool">🎬 Roast clip</Badge>
+          <Badge tone="pink">✨ Hot off the press</Badge>
         </div>
       </Sheet>
     </div>

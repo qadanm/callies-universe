@@ -1,9 +1,8 @@
-// Screen 5: Warming up (was "Cooking"). Backstage while the comic writes tonight's set.
-// CORE-REUSED: CallieHost (context "cooking", now reads as Callie hosting backstage).
-// ROASTMYRIDE-NEW: progress bar + "warming up" copy reframed around the performance.
+// Progress screen while the roast is written + voiced.
+// CORE-REUSED: CallieHost (context "cooking" = Callie waiting with you).
 //
 // This screen calls the roast SEAM via flow.generate() → services/roast.js (the
-// real brain: research → write → grade). When the set resolves, it advances to
+// real brain: research → write → grade). When the roast resolves, it advances to
 // the reveal. Swapping behind the seam changed nothing here.
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +12,10 @@ import { useFlow } from "../flow/FlowContext.jsx";
 import { cfg } from "../subjects/index.js";
 
 const STEPS = (name) => [
-  `${name} is researching your ${cfg("brain.researching")}…`,
-  "Writing tonight's set…",
-  "Working out the punchlines…",
-  "Warming up the crowd…",
+  `${name} is looking up your ${cfg("brain.researching")}…`,
+  "Writing the roast…",
+  "Sharpening the punchlines…",
+  "Recording both voices…",
 ];
 
 export function Cooking() {
@@ -62,7 +61,7 @@ export function Cooking() {
         background: "radial-gradient(120% 70% at 50% 30%, var(--heat-300) 0%, var(--canvas) 60%)",
       }}
     >
-      <CookingProgress title="Warming up…" steps={steps} step={step} hint="This usually takes ~10 seconds" size={200} />
+      <CookingProgress title="Getting your roast ready…" steps={steps} step={step} hint="This usually takes ~10 seconds" size={200} />
     </div>
   );
 }

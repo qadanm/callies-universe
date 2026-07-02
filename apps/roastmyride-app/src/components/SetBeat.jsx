@@ -50,7 +50,7 @@ export function SetBeat({ beat }) {
         <Callie state="savage" size={40} />
         <div>
           <div style={{ font: "var(--type-cap)", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ember-600)", fontWeight: 800 }}>
-            🎤 crowd work
+            🔊 back and forth
           </div>
           <p style={{ margin: "2px 0 0", font: "var(--type-body)", color: "var(--ink)" }}>{beat.text}</p>
         </div>
@@ -64,7 +64,7 @@ export function SetBeat({ beat }) {
     <div>
       {isCloser && (
         <div style={{ font: "var(--type-cap)", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ember-600)", fontWeight: 800, marginBottom: 4 }}>
-          🎤 mic drop
+          🔥 the closer
         </div>
       )}
       <p

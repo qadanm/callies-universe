@@ -25,11 +25,13 @@ const DEFAULT_INPUT = {
   // vision read of the screenshot (the texts analog of car /identify). Until that
   // wire lands it stays null and the brain falls back to the curated offline set.
   conversation: null,
+  // The roast is ALWAYS two voices trading lines about the car. roasterIds is the
+  // ordered pair [a, b]; roasterId mirrors the lead (a) for anything that still
+  // reads a single id. format stays "panel" internally (the render/brain term)
+  // but nothing user-facing ever says "panel" or "green room": just "two voices".
   roasterId: "mama",
-  // Output format: "single" = one comic; "panel" = two comics riff together.
-  // roasterIds = the duo [a, b] for panel mode.
-  format: "single",
-  roasterIds: [],
+  format: "panel",
+  roasterIds: ["mama", "tony"],
   context: [],
 };
 

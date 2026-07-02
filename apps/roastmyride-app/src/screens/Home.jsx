@@ -1,19 +1,20 @@
-// Screen 2: Home = the WHOLE roast setup, two panels + one CTA.
-//   Panel 1 "Your ride"  : photo + the required "what is it?" field
-//   Panel 2 "Your comic" : horizontal strip of the active cast (Mama pre-picked)
-//   + one slim optional Seasoning row (chips live in a bottom sheet)
-// Chips/Cast are no longer between the user and the roast: the CTA goes straight
-// to /cooking. Callie hosts from the header (small, reactive), never the hero.
-// CORE-REUSED: CallieHost, Card, Badge, Button, Chip, Sheet, Roaster.
+// Home = the WHOLE setup, two panels + one button.
+//   Panel 1 "Your car"    : photo + the required "what is it?" field
+//   Panel 2 "Pick 2 voices": four voice cards, each with a real audio preview;
+//                            tap two to choose the pair that roasts the car.
+// One button goes straight to the roast. Callie hosts from the header (small,
+// reactive), never the hero. No "show", no "comic", no "green room".
+// CORE-REUSED: CallieHost, Card, Badge, Chip, Sheet.
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Badge, Chip, Sheet, CallieHost, Roaster } from "@callies-universe/core";
+import { Button, Card, Badge, Chip, Sheet, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Wordmark, stickyBar } from "../components/ui.jsx";
+import { VoicePicker, activeVoices } from "../components/VoicePicker.jsx";
+import { stopPreview } from "../services/voicePreview.js";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { hasRoastApi, identifyCarViaApi } from "../services/roastApi.js";
 import { loadCompressedImage } from "../photo.js";
 import { isNative, pickPhoto, haptic } from "../native.js";
-import { comicStyle } from "../standup.js";
 import { cfg } from "../subjects/index.js";
 
 const uploadTarget = {
@@ -43,8 +44,11 @@ export function Home() {
   const requireIdentity = !!cfg("upload.requireIdentity");
   const [carLabel, setCarLabel] = useState(input.car?.label || "");
   const [idState, setIdState] = useState("idle"); // idle | guessing | guessed
-  const [seasonOpen, setSeasonOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
   const [callieEvt, setCallieEvt] = useState(null); // "upload" pops her when a photo lands
+
+  // Stop any preview clip when leaving Home (so it never bleeds into cooking).
+  useEffect(() => () => stopPreview(), []);
 
   // The identity field is the source of truth for the car the brain roasts.
   useEffect(() => {
@@ -101,28 +105,28 @@ export function Home() {
     if (fileRef.current) fileRef.current.click();
   };
 
-  // ---- comic panel state ----
-  const roster = Roaster.roster;
-  const active = useMemo(() => roster.filter((r) => !r.comingSoon), [roster]);
-  const isDuo = input.format === "panel" && Array.isArray(input.roasterIds) && input.roasterIds.length === 2;
-  const selected = active.find((r) => r.id === input.roasterId) || active[0];
-  const pickComic = (id) => {
-    haptic();
-    update({ format: "single", roasterId: id, roasterIds: [] });
-  };
-  const duoNames = isDuo
-    ? input.roasterIds.map((id) => firstName(roster.find((r) => r.id === id)?.name)).join(" & ")
-    : null;
+  // ---- the two voices ----
+  const voiceIds = Array.isArray(input.roasterIds) ? input.roasterIds : [];
+  const onVoices = (next) => update({ roasterIds: next, roasterId: next[0] || input.roasterId });
+  const names = voiceIds.map((id) => firstName(activeVoices().find((v) => v.id === id)?.name)).filter(Boolean);
 
   // ---- CTA state: the label tells the user the one thing left to do ----
   const hasPhoto = !!photo.dataUrl;
   const hasCar = !requireIdentity || carLabel.trim().length > 0;
-  const ready = hasPhoto && hasCar;
-  const ctaLabel = !hasPhoto ? "Add a photo first" : !hasCar ? "Name the car first" : cfg("upload.cta") + " 🔥";
+  const twoVoices = voiceIds.length === 2;
+  const ready = hasPhoto && hasCar && twoVoices;
+  const ctaLabel = !hasPhoto
+    ? "Add a photo first"
+    : !hasCar
+    ? "Name the car first"
+    : !twoVoices
+    ? "Pick 2 voices"
+    : cfg("upload.cta") + " 🔥";
   const proceed = () => {
     if (!ready) return;
     haptic();
-    update({ car: carLabel.trim() ? { label: carLabel.trim() } : null });
+    stopPreview();
+    update({ car: carLabel.trim() ? { label: carLabel.trim() } : null, roasterId: voiceIds[0] });
     go(credits < 1 ? "/credits" : "/cooking");
   };
 
@@ -145,7 +149,7 @@ export function Home() {
           </button>
         </div>
 
-        {/* Panel 1: the ride */}
+        {/* Panel 1: the car */}
         <Card pad="var(--space-4)">
           <PanelTitle emoji={cfg("theme.emoji")} text={noun} />
           <input
@@ -205,66 +209,21 @@ export function Home() {
           )}
         </Card>
 
-        {/* Panel 2: the comic */}
+        {/* Panel 2: pick the two voices (with real audio previews) */}
         <Card pad="var(--space-4)">
-          <PanelTitle emoji="🎤" text="Your comic" />
-          {isDuo ? (
-            <button onClick={() => go("/cast")} style={duoRow} aria-label="Change your duo">
-              <span style={{ display: "flex" }}>
-                {input.roasterIds.map((id, i) => (
-                  <span key={id} style={{ marginLeft: i ? -10 : 0, position: "relative" }}>
-                    <Roaster id={id} size={44} ring />
-                    <span style={abBadge}>{i === 0 ? "A" : "B"}</span>
-                  </span>
-                ))}
-              </span>
-              <span style={{ font: "var(--type-sm)", fontWeight: 700, color: "var(--ink)", textAlign: "left", flex: 1 }}>
-                {duoNames} in the green room 🎙️
-              </span>
-              <span style={{ font: "var(--type-cap)", color: "var(--ember-600)", fontWeight: 800 }}>Change</span>
-            </button>
-          ) : (
-            <>
-              <div style={strip} role="radiogroup" aria-label="Pick your comic">
-                {active.map((c) => {
-                  const on = selected && c.id === selected.id;
-                  return (
-                    <button
-                      key={c.id}
-                      role="radio"
-                      aria-checked={on}
-                      data-testid={`comic-${c.id}`}
-                      onClick={() => pickComic(c.id)}
-                      style={{
-                        flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                        background: "none", border: "none", cursor: "pointer", padding: 4,
-                      }}
-                    >
-                      <span style={{ borderRadius: 999, boxShadow: on ? "0 0 0 3px var(--ember-600)" : "0 0 0 2px var(--hairline)", lineHeight: 0 }}>
-                        <Roaster id={c.id} size={58} />
-                      </span>
-                      <span style={{ font: "var(--type-legal)", fontWeight: 700, color: on ? "var(--ember-600)" : "var(--text-muted)" }}>
-                        {firstName(c.name)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              {selected && (
-                <p style={{ font: "var(--type-cap)", color: "var(--text-muted)", margin: "6px 2px 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {firstName(selected.name)} · {comicStyle(selected.id)}
-                </p>
-              )}
-            </>
-          )}
-          <button onClick={() => { haptic(); go("/cast"); }} style={ghostRow}>
-            Full cast, voices and duos <span aria-hidden="true">→</span>
-          </button>
+          <PanelTitle emoji="🔊" text="Pick 2 voices" />
+          <p style={{ font: "var(--type-cap)", color: "var(--text-muted)", margin: "-6px 0 var(--space-3)" }}>
+            Tap two. Hit ▶ to hear any voice first.
+          </p>
+          <VoicePicker selected={voiceIds} onChange={onVoices} />
+          <p style={{ font: "var(--type-cap)", color: twoVoices ? "var(--ink)" : "var(--text-hint)", margin: "var(--space-3) 2px 0", fontWeight: 700, textAlign: "center" }}>
+            {twoVoices ? `${names[0]} and ${names[1]} will roast it, back and forth.` : "Choose two to continue."}
+          </p>
         </Card>
 
-        {/* Optional seasoning: one slim row, never a step */}
-        <button onClick={() => { haptic(); setSeasonOpen(true); }} style={seasonRow} data-testid="seasoning-row">
-          <span style={{ font: "var(--type-sm)", fontWeight: 800, color: "var(--ink)" }}>🌶️ Seasoning</span>
+        {/* Optional style: one slim row, never a step */}
+        <button onClick={() => { haptic(); setStyleOpen(true); }} style={styleRow} data-testid="style-row">
+          <span style={{ font: "var(--type-sm)", fontWeight: 800, color: "var(--ink)" }}>🌶️ Roast style</span>
           <span style={{ font: "var(--type-cap)", color: chipCount ? "var(--ember-600)" : "var(--text-hint)", fontWeight: 700 }}>
             {chipCount ? `${chipCount} picked` : "Optional"}
           </span>
@@ -281,13 +240,13 @@ export function Home() {
         </p>
       </div>
 
-      {seasonOpen && <SeasoningSheet onClose={() => setSeasonOpen(false)} />}
+      {styleOpen && <StyleSheet onClose={() => setStyleOpen(false)} />}
     </div>
   );
 }
 
-/* Chips, demoted from a screen to a sheet. Same FlowContext field. */
-function SeasoningSheet({ onClose }) {
+/* The optional roast-style chips, as a bottom sheet. Same FlowContext field. */
+function StyleSheet({ onClose }) {
   const { input, update } = useFlow();
   const [picked, setPicked] = useState(() => new Set(input.context));
   const buckets = useMemo(() => cfg("chips.buckets", []), []);
@@ -304,7 +263,7 @@ function SeasoningSheet({ onClose }) {
   return (
     <Sheet
       open
-      title="How should we cook it?"
+      title="How hard should they go?"
       onClose={done}
       style={{ paddingBottom: "calc(var(--space-6) + env(safe-area-inset-bottom))" }}
       primaryAction={
@@ -314,7 +273,7 @@ function SeasoningSheet({ onClose }) {
       }
     >
       <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-3)", textAlign: "center" }}>
-        Tap a few, or none. Chips are always free.
+        All free. Pick a few, or skip it.
       </p>
       {buckets.map((b) => (
         <div key={b.group} style={{ marginBottom: "var(--space-3)" }}>
@@ -342,33 +301,7 @@ function PanelTitle({ emoji, text }) {
   );
 }
 
-const strip = {
-  display: "flex", gap: 6, overflowX: "auto", overflowY: "hidden",
-  padding: "2px 2px 4px", margin: "0 -2px", WebkitOverflowScrolling: "touch",
-  scrollbarWidth: "none",
-};
-
-const ghostRow = {
-  width: "100%", marginTop: "var(--space-3)", minHeight: 40,
-  background: "none", border: "none", cursor: "pointer",
-  font: "var(--type-cap)", fontWeight: 800, color: "var(--ember-600)",
-  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-};
-
-const duoRow = {
-  width: "100%", display: "flex", alignItems: "center", gap: 12,
-  background: "var(--canvas-sink)", border: "2px solid var(--heat-400)",
-  borderRadius: "var(--radius-md)", padding: "10px 12px", cursor: "pointer",
-};
-
-const abBadge = {
-  position: "absolute", bottom: -2, right: -2, width: 16, height: 16,
-  borderRadius: 999, background: "var(--ember-600)", color: "#fff",
-  fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center",
-  border: "2px solid var(--canvas)",
-};
-
-const seasonRow = {
+const styleRow = {
   width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
   minHeight: 46, padding: "0 var(--space-4)", cursor: "pointer",
   background: "var(--surface)", border: "1px solid var(--hairline)",

@@ -81,9 +81,9 @@ export function Paywall() {
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
           <CallieHost context="paywall" size={72} />
           <Eyebrow>{credits < 1 ? "You're out of roasts" : `${credits} ${credits === 1 ? "roast" : "roasts"} left`}</Eyebrow>
-          <H style={{ fontSize: 34 }}>Stock up &amp; keep cooking</H>
+          <H style={{ fontSize: 34 }}>Stock up on roasts</H>
           <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: 0, maxWidth: 280 }}>
-            Chips &amp; context are always free. Credits pay for the video render.
+            Picking voices and style is always free. Credits pay for the video.
           </p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>

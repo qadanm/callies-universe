@@ -112,7 +112,7 @@ export const StageScene = React.memo(function StageScene({
           <div style={{ position: "absolute", bottom: "9%", left: "3%", zIndex: 5, textAlign: "center", transform: `translateY(${-8 * beatPop}px) scale(${1 + 0.08 * beatPop})`, transformOrigin: "bottom center" }}>
             <Comic comedianId={comedianId} />
             <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: "rgba(0,0,0,0.5)", display: "inline-block", padding: "2px 8px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
-              🎤 {firstName(performerName)}
+              🔊 {firstName(performerName)}
             </div>
           </div>
 
@@ -220,7 +220,7 @@ function Hook({ carPhoto, carLabel, timeMs, leadMs, reduceMotion }) {
   const op = reduceMotion ? 1 : Math.min(inP, clamp01((leadMs - timeMs) / 250)); // fade out last 250ms
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 6, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
-      <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's victim</div>
+      <div style={{ font: "var(--type-cap)", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>the car</div>
       <div style={{ display: "flex", gap: "4%", alignItems: "center", justifyContent: "center", width: "100%", transform: `scale(${0.82 + 0.18 * inP})` }}>
         <ShowcaseFrame w="64%" rotate={-3}>
           {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={imgFill} /> : <PlaceholderSubject label={carLabel} />}
@@ -356,7 +356,7 @@ const PanelComic = React.memo(function PanelComic({ performer, side, active, pop
     >
       <Roaster id={performer.id} size={active ? 100 : 82} ring={active} ink />
       <div style={{ marginTop: -6, font: "var(--type-legal)", fontWeight: 800, background: active ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)", display: "inline-block", padding: "2px 8px", borderRadius: 999, cornerShape: "var(--corner-chip)" }}>
-        🎤 {firstName(performer.name)}
+        🔊 {firstName(performer.name)}
       </div>
     </div>
   );

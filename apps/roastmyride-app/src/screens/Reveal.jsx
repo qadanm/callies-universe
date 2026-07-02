@@ -141,7 +141,7 @@ export function Reveal() {
         {/* grader verdict: the anti-cringe guarantee, made visible */}
         {roast.grade && (
           <div style={{ font: "var(--type-cap)", color: "var(--text-hint)", textAlign: "center" }}>
-            Cleared the booker {roast.grade.pass ? "✅" : "⚠️"} · funny {roast.grade.scores.funny} ·
+            Quality check {roast.grade.pass ? "✅" : "⚠️"} · funny {roast.grade.scores.funny} ·
             {" "}not-AI {roast.grade.scores.human} · {cfg("grade.edgeLabel")} {roast.grade.scores.edge}
             {roast.research?.sources?.length ? ` · grounded in ${roast.research.sources.length} sources` : ""}
           </div>
@@ -201,7 +201,7 @@ export function Reveal() {
               </Button>
             )}
             <Button variant="secondary" style={{ flex: 1 }} onClick={() => go("/cooking")} disabled={saving}>
-              New set
+              New roast
             </Button>
           </div>
         </div>

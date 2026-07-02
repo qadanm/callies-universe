@@ -53,7 +53,7 @@ export function ShareCard({
           font: "var(--type-cap)", fontWeight: 700, textTransform: "uppercase",
           letterSpacing: "0.06em", background: "rgba(34,20,3,0.35)",
           padding: "5px 12px", borderRadius: "var(--radius-pill)",
-        }}>{standup ? `🎤 Live set · ${roasterName}` : `🔥 ${roasterName} · ${spice}`}</span>
+        }}>{standup ? `🔊 ${roasterName}` : `🔥 ${roasterName} · ${spice}`}</span>
         {standup && act && (
           <span style={{ font: "var(--type-cap)", opacity: 0.92, fontStyle: "italic" }}>{act}</span>
         )}
@@ -90,7 +90,7 @@ export function ShareCard({
         font: "var(--type-cap)", fontWeight: 700, opacity: 0.95,
       }}>
         <span style={{ display: "inline-flex", width: 18, height: 18, borderRadius: 6, background: "var(--ink)", color: "var(--flame-500)", alignItems: "center", justifyContent: "center", fontSize: 12 }}>R</span>
-        {standup ? `stand-up clip · ${watermark}` : watermark}
+        {standup ? `roast clip · ${watermark}` : watermark}
       </div>
     </div>
   );

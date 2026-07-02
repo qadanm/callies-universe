@@ -243,7 +243,7 @@ function BrandCard({ timeMs, p }) {
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1c1334 0%, #0a0714 56%, #04030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3.5%", opacity: op }}>
       <Stars timeMs={timeMs} />
       <div style={{ zIndex: 1, fontWeight: 800, fontSize: "3cqi", letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.72)" }}>
-        <span style={{ color: "var(--sticker-yellow)" }}>✦</span> Callie's Universe presents <span style={{ color: "var(--sticker-yellow)" }}>✦</span>
+        <span style={{ color: "var(--sticker-yellow)" }}>✦</span> two voices, one car <span style={{ color: "var(--sticker-yellow)" }}>✦</span>
       </div>
       <div style={{ zIndex: 1, transform: `scale(${0.82 + 0.18 * rise})` }}><Callie state="celebrating" size={132} reduceMotion ink /></div>
       <div style={{ zIndex: 1, fontWeight: 900, fontSize: "13cqi", lineHeight: 0.95, textAlign: "center", color: "var(--flame-500)", WebkitTextStroke: "2px #1a1008", textShadow: "0 6px 0 rgba(0,0,0,0.45)", padding: "0 6%", transform: `translateY(${(1 - rise) * 14}px)` }}>{show}</div>
@@ -258,7 +258,7 @@ function Showcase({ carPhoto, carLabel, p }) {
   const inP = clamp01(p * 1.6);
   return (
     <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 42%, #1a1228 0%, #0a0714 60%, #05030a 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3%", opacity: op }}>
-      <div style={{ fontWeight: 800, fontSize: "3.4cqi", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>tonight's submission</div>
+      <div style={{ fontWeight: 800, fontSize: "3.4cqi", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>the car</div>
       <div style={{ width: "58%", transform: `scale(${0.86 + 0.14 * inP})`, filter: "var(--drop-sticker)" }}>
         <div className="ink" style={{ aspectRatio: cfg("media.aspect", "3 / 4"), borderRadius: 16, cornerShape: "var(--corner-card)", overflow: "hidden", background: "#06060a", border: "6px solid #fff" }}>
           {carPhoto ? <img src={carPhoto} alt={cfg("upload.alt")} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <Placeholder label={carLabel} />}
@@ -357,7 +357,7 @@ function Endcard({ carPhoto, carLabel, p }) {
         <div style={{ fontWeight: 900, fontSize: "8cqi", textTransform: "uppercase", color: "var(--flame-500)" }}>Submit yours</div>
         <div style={{ fontWeight: 900, fontSize: "5cqi", marginTop: 8, color: "var(--canvas)" }}>👉 @{cfg("handle")}</div>
       </div>
-      <div style={{ zIndex: 1, marginTop: "1%", fontWeight: 800, fontSize: "3cqi", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>✦ a Callie's Universe show ✦</div>
+      <div style={{ zIndex: 1, marginTop: "1%", fontWeight: 800, fontSize: "3cqi", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--sticker-yellow)" }}>✦ made with RoastMyRide ✦</div>
     </div>
   );
 }

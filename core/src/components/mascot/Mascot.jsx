@@ -182,7 +182,7 @@ const CALLIE_SCRIPT = {
   seasoning: { enter: "curious", idle: ["curious", "comfort", "idle"], react: { added: "delighted" }, tips: ["A selfie makes it personal. Totally optional.", "Pinky promise it's just you."] },
   cast: { enter: "delighted", idle: ["delighted", "curious", "idle"], tips: ["Tap a roaster to hear them warm up.", "They all aim at the car, never at you."] },
   roaster: { enter: "delighted", idle: ["delighted", "curious", "idle"], tips: ["Tap a roaster to hear them warm up."] },
-  cooking: { enter: "cooking", idle: ["cooking", "curious", "delighted"], tips: ["Ooh, this one's gonna be good…", "Almost plated 👨‍🍳"] },
+  cooking: { enter: "cooking", idle: ["cooking", "curious", "delighted"], tips: ["Ooh, this one's gonna be good…", "Almost ready…"] },
   reveal: { enter: "savage", idle: ["savage", "delighted", "celebrating"], tips: ["Screenshot this. Trust me.", "Hit share before you chicken out 😼"] },
   celebrate: { enter: "celebrating", idle: ["celebrating", "delighted"], tips: ["Tag us and we'll re-share the best ones!", "One down. Roast another?"] },
   paywall: { enter: "comfort", idle: ["comfort", "curious", "idle"], react: { buy: "celebrating" }, tips: ["The 5-pack is the move, honestly.", "No subscription. One-time. Promise. 🙏"] },

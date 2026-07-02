@@ -69,10 +69,10 @@ const nose = <path d="M97 104 L103 104 L100 109 Z" fill="rgba(58,34,8,0.4)" />;
 // Active cast first, then the strong-accent cast tabled as `comingSoon` (greyed in
 // the picker). See docs/voice-accents-troubleshooting.md for why they're tabled.
 const ROSTER = {
-  reginald: { name: "Sir Reginald Pemberton-Hare", tag: "Posh nat-geo narrator", register: "Dry · deadpan", spice: "Mild", phrase: "It should not still be running. And yet… it persists.", skin: "#F3CBA4", cloth: "#8A6E45", ring: "#C9D98F" },
-  tony:     { name: "Tony “Two-Times” Calabrese", tag: "Exasperated New Yorker", register: "Fast · big-hearted", spice: "Medium", phrase: "What is this? What am I lookin’ at here?", skin: "#E3AC80", cloth: "#26407A", ring: "#FFCB2B" },
-  mama:     { name: "Mama Denièce", tag: "Loving-savage mom", register: "Church-fan snap", spice: "Spicy", phrase: "Mm-mm-MM. Baby, I say this with love… no.", skin: "#6E4226", cloth: "#6B3FA0", ring: "#C9A2F0" },
-  buford:   { name: "Buford “Sweet Tea” Coalsworth", tag: "Front-porch uncle", register: "Slow · molasses", spice: "Mild", phrase: "Bless its little heart… that ain’t a car, son.", skin: "#D8A772", cloth: "#8A4B2F", ring: "#E0A33A" },
+  reginald: { name: "Sir Reginald Pemberton-Hare", tag: "Dry British narrator", register: "Deadpan", spice: "Mild", phrase: "Here we observe a car admired chiefly by the person selling it.", skin: "#F3CBA4", cloth: "#8A6E45", ring: "#C9D98F" },
+  tony:     { name: "Tony “Two-Times” Calabrese", tag: "Fed-up New Yorker", register: "Fast, loud", spice: "Medium", phrase: "You paid for this. With money. That you earned.", skin: "#E3AC80", cloth: "#26407A", ring: "#FFCB2B" },
+  mama:     { name: "Mama Denièce", tag: "Blunt mom", register: "Warm, brutal", spice: "Spicy", phrase: "It's a beautiful car, baby. For somebody who gave up.", skin: "#6E4226", cloth: "#6B3FA0", ring: "#C9A2F0" },
+  buford:   { name: "Buford “Sweet Tea” Coalsworth", tag: "Slow-talking uncle", register: "Easy, drawling", spice: "Mild", phrase: "That is a whole lot of car for a fella with nowhere to be.", skin: "#D8A772", cloth: "#8A4B2F", ring: "#E0A33A" },
   gord:     { name: "Gord “Sorry-Aboot-It” Beaudry", tag: "Hoser rink dad", register: "Warm · sorry-eh", spice: "Medium", phrase: "Aw geez, sorry, bud… no offence, eh?", skin: "#EAC4A0", cloth: "#2C6E49", ring: "#E84855", comingSoon: true },
   abuomar:  { name: "Abu Omar", tag: "Warm Egyptian uncle", register: "Theatrical · warm", spice: "Mild", phrase: "My son… the car, I do not love.", skin: "#C98E58", cloth: "#7A2E3A", ring: "#FFB877", comingSoon: true },
   mateo:    { name: "Mateo “El Tigre” Rivas", tag: "Telenovela hype-man", register: "Operatic drama", spice: "Spicy", phrase: "The car… the car has broken my heart.", skin: "#D89C68", cloth: "#1A1A1F", ring: "#FF4FA3", comingSoon: true },

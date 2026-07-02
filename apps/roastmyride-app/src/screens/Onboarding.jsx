@@ -42,27 +42,26 @@ export function Onboarding() {
   const noun = cfg("brain.subjectNoun"); // e.g. "your ride"
   const steps = [
     {
-      eyebrow: "Welcome to the show",
-      title: "Meet Callie.",
-      sub: `She runs the club and she's on your side. She never roasts you. Ever.`,
+      eyebrow: "Here's the idea",
+      title: "Get your car roasted.",
+      sub: `Add one photo. Two voices tear ${noun} apart. You keep the clip.`,
+      visual: <ClipMock />,
+    },
+    {
+      eyebrow: "Your call",
+      title: "You pick the two voices.",
+      sub: "Four to choose from. Tap any one to hear it before you decide.",
+      visual: <VoicesRow />,
+    },
+    {
+      eyebrow: "Don't worry",
+      title: "Callie's on your side.",
+      sub: "She's your host and she keeps it fun. She never roasts you.",
       visual: (
         <div style={{ position: "relative" }}>
           <CallieHost context="onboarding" size={150} />
-          <span aria-hidden="true" style={hostPill}>★ host</span>
         </div>
       ),
-    },
-    {
-      eyebrow: "The cast",
-      title: "Her comics do the roasting.",
-      sub: `Real characters, real voices. Aimed at ${noun}, never at you.`,
-      visual: <ComicsRow />,
-    },
-    {
-      eyebrow: "The show",
-      title: "One pic in. One comedy clip out.",
-      sub: "A short stand-up set about " + noun + ". Yours to keep and share.",
-      visual: <ShowMock />,
     },
   ];
   const s = steps[step];
@@ -118,23 +117,23 @@ export function Onboarding() {
   );
 }
 
-/* Step 2: the active comics, mics out. The middle one leads. */
-function ComicsRow() {
+/* Step 2: the voices you can pick, each with a little speaker cue. */
+function VoicesRow() {
   const active = Roaster.roster.filter((r) => !r.comingSoon).slice(0, 3);
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: "var(--space-3)" }}>
       {active.map((c, i) => (
         <div key={c.id} style={{ position: "relative" }}>
           <Roaster id={c.id} size={i === 1 ? 96 : 72} ring />
-          <span aria-hidden="true" style={{ position: "absolute", bottom: -4, right: -4, fontSize: i === 1 ? 22 : 18 }}>🎤</span>
+          <span aria-hidden="true" style={{ position: "absolute", bottom: -4, right: -4, fontSize: i === 1 ? 22 : 18 }}>🔊</span>
         </div>
       ))}
     </div>
   );
 }
 
-/* Step 3: a tiny mock of the show frame. Callie small in the corner (canon). */
-function ShowMock() {
+/* Step 1: a tiny mock of the finished clip: a photo with a play button. */
+function ClipMock() {
   return (
     <div
       style={{
@@ -151,27 +150,20 @@ function ShowMock() {
         justifyContent: "center",
       }}
     >
-      <span style={{ fontSize: 44 }} aria-hidden="true">📸</span>
+      <span style={{ fontSize: 44 }} aria-hidden="true">🚗</span>
       <span
         aria-hidden="true"
         style={{
           position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 26, color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,.6)", paddingLeft: 74,
+          fontSize: 30, color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,.6)",
         }}
       >▶️</span>
       <div style={{ position: "absolute", bottom: 6, right: 6 }}>
-        <Callie state="delighted" size={44} />
+        <Callie state="delighted" size={40} />
       </div>
     </div>
   );
 }
-
-const hostPill = {
-  position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%)",
-  whiteSpace: "nowrap", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 10,
-  letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--ink)",
-  color: "var(--canvas)", padding: "2px 8px", borderRadius: "var(--radius-pill)",
-};
 
 const skipBtn = {
   background: "none", border: "none", cursor: "pointer", padding: "8px 4px",
