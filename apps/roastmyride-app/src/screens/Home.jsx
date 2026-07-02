@@ -4,10 +4,10 @@
 //                            tap two to choose the pair that roasts the car.
 // One button goes straight to the roast. Callie hosts from the header (small,
 // reactive), never the hero. No "show", no "comic", no "green room".
-// CORE-REUSED: CallieHost, Card, Badge, Chip, Sheet.
-import React, { useEffect, useMemo, useRef, useState } from "react";
+// CORE-REUSED: CallieHost, Card, Badge.
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Badge, Chip, Sheet, CallieHost } from "@callies-universe/core";
+import { Button, Card, Badge, CallieHost } from "@callies-universe/core";
 import { ScreenScroll, Wordmark, stickyBar } from "../components/ui.jsx";
 import { VoicePicker, activeVoices } from "../components/VoicePicker.jsx";
 import { stopPreview } from "../services/voicePreview.js";
@@ -44,7 +44,6 @@ export function Home() {
   const requireIdentity = !!cfg("upload.requireIdentity");
   const [carLabel, setCarLabel] = useState(input.car?.label || "");
   const [idState, setIdState] = useState("idle"); // idle | guessing | guessed
-  const [styleOpen, setStyleOpen] = useState(false);
   const [callieEvt, setCallieEvt] = useState(null); // "upload" pops her when a photo lands
 
   // Stop any preview clip when leaving Home (so it never bleeds into cooking).
@@ -130,7 +129,9 @@ export function Home() {
     go(credits < 1 ? "/credits" : "/cooking");
   };
 
-  const chipCount = (input.context || []).length;
+  // How mean: one simple choice, three levels (default medium).
+  const level = (input.context && input.context[0]) || "medium";
+  const setLevel = (key) => { haptic(); update({ context: [key] }); };
   const noun = capFirst(cfg("brain.subjectNoun")); // "Your ride"
 
   return (
@@ -221,13 +222,27 @@ export function Home() {
           </p>
         </Card>
 
-        {/* Optional style: one slim row, never a step */}
-        <button onClick={() => { haptic(); setStyleOpen(true); }} style={styleRow} data-testid="style-row">
-          <span style={{ font: "var(--type-sm)", fontWeight: 800, color: "var(--ink)" }}>🌶️ Roast style</span>
-          <span style={{ font: "var(--type-cap)", color: chipCount ? "var(--ember-600)" : "var(--text-hint)", fontWeight: 700 }}>
-            {chipCount ? `${chipCount} picked` : "Optional"}
-          </span>
-        </button>
+        {/* How mean: three levels, one tap. That's the whole thing. */}
+        <div>
+          <div style={{ font: "var(--type-cap)", fontWeight: 800, color: "var(--ink)", margin: "0 2px 8px" }}>How mean?</div>
+          <div style={meanWrap} role="radiogroup" aria-label="How mean should they be">
+            {MEAN.map((m) => {
+              const on = level === m.key;
+              return (
+                <button
+                  key={m.key}
+                  role="radio"
+                  aria-checked={on}
+                  data-testid={`mean-${m.key}`}
+                  onClick={() => setLevel(m.key)}
+                  style={{ ...meanSeg, ...(on ? meanOn : meanOff) }}
+                >
+                  <span aria-hidden="true" style={{ fontSize: 17 }}>{m.emoji}</span> {m.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </ScreenScroll>
 
       {/* One primary action. The label IS the instruction. */}
@@ -239,59 +254,17 @@ export function Home() {
           1 credit per roast · Callie never roasts you
         </p>
       </div>
-
-      {styleOpen && <StyleSheet onClose={() => setStyleOpen(false)} />}
     </div>
   );
 }
 
-/* The optional roast-style chips, as a bottom sheet. Same FlowContext field. */
-function StyleSheet({ onClose }) {
-  const { input, update } = useFlow();
-  const [picked, setPicked] = useState(() => new Set(input.context));
-  const buckets = useMemo(() => cfg("chips.buckets", []), []);
-  const toggle = (key, on) =>
-    setPicked((prev) => {
-      const next = new Set(prev);
-      on ? next.add(key) : next.delete(key);
-      return next;
-    });
-  const done = () => {
-    update({ context: [...picked] });
-    onClose();
-  };
-  return (
-    <Sheet
-      open
-      title="How hard should they go?"
-      onClose={done}
-      style={{ paddingBottom: "calc(var(--space-6) + env(safe-area-inset-bottom))" }}
-      primaryAction={
-        <Button variant="primary" size="lg" block onClick={done}>
-          {picked.size ? `Done · ${picked.size} picked` : "Done"}
-        </Button>
-      }
-    >
-      <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: "0 0 var(--space-3)", textAlign: "center" }}>
-        All free. Pick a few, or skip it.
-      </p>
-      {buckets.map((b) => (
-        <div key={b.group} style={{ marginBottom: "var(--space-3)" }}>
-          <div style={{ font: "var(--type-cap)", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-hint)", margin: "0 0 8px 4px" }}>
-            {b.group}
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
-            {b.items.map(([key, label]) => (
-              <Chip key={key} selected={picked.has(key)} onToggle={(on) => toggle(key, on)}>
-                {label}
-              </Chip>
-            ))}
-          </div>
-        </div>
-      ))}
-    </Sheet>
-  );
-}
+// The only "style" control: how mean the two voices are. Maps to the brain's
+// heat keys (gentle / medium / brutal), so the roast pipeline is unchanged.
+const MEAN = [
+  { key: "gentle", label: "Gentle", emoji: "😌" },
+  { key: "medium", label: "Medium", emoji: "🌶️" },
+  { key: "brutal", label: "Brutal", emoji: "🔥" },
+];
 
 function PanelTitle({ emoji, text }) {
   return (
@@ -301,9 +274,15 @@ function PanelTitle({ emoji, text }) {
   );
 }
 
-const styleRow = {
-  width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-  minHeight: 46, padding: "0 var(--space-4)", cursor: "pointer",
-  background: "var(--surface)", border: "1px solid var(--hairline)",
-  borderRadius: "var(--radius-md)", cornerShape: "var(--corner-chip)",
+const meanWrap = {
+  display: "flex", gap: 6, background: "var(--canvas-sink)",
+  padding: 5, borderRadius: "var(--radius-pill)", cornerShape: "var(--corner-chip)",
 };
+const meanSeg = {
+  flex: 1, minHeight: 46, border: "none", cursor: "pointer",
+  borderRadius: "var(--radius-pill)", cornerShape: "var(--corner-chip)",
+  font: "var(--type-button)", fontSize: 15,
+  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+};
+const meanOn = { background: "var(--ember-600)", color: "#fff", boxShadow: "var(--gloss-card)" };
+const meanOff = { background: "transparent", color: "var(--text-muted)" };

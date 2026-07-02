@@ -32,7 +32,8 @@ const DEFAULT_INPUT = {
   roasterId: "mama",
   format: "panel",
   roasterIds: ["mama", "tony"],
-  context: [],
+  // "How mean" = one heat level (gentle | medium | brutal). Default medium.
+  context: ["medium"],
 };
 
 /**
