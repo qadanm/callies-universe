@@ -18,7 +18,7 @@ export const isRealPurchases = () => !!PROVIDER || (isNative() && !!RC_IOS_KEY);
 
 // _rc holds a WRAPPER { P: Purchases }, never the raw plugin object. Capacitor
 // plugin objects are Proxies that forward every property access to a native
-// call — including `.then`. Returning the raw proxy from an async function
+// call: including `.then`. Returning the raw proxy from an async function
 // makes the promise machinery treat it as a thenable, call the fake .then
 // ("Purchases.then() is not implemented on ios"), and the await NEVER settles.
 // This was the root cause of the purchase flow hanging at "configuring".
@@ -43,7 +43,7 @@ async function rc(onStep) {
   trace("rc: configure() calling");
   // The native configure completes (device logs show "configured with StoreKit
   // version 2") but its JS promise has been observed not resolving on this
-  // build — so trace its settle independently and race it against a settle
+  // build: so trace its settle independently and race it against a settle
   // window instead of blocking the flow on it.
   const confP = Purchases.configure({ apiKey: RC_IOS_KEY, appUserID: authHeaders()["x-roast-identity"] });
   confP.then(() => trace("rc: configure RESOLVED")).catch((e) => trace("rc: configure REJECTED", e && e.message));
@@ -104,7 +104,7 @@ export async function buyBundle(bundle, onStep) {
       trace("buy: purchasePackage ok", res && res.customerInfo ? "customerInfo received" : "done");
       return { ok: true, granted: 0, viaWebhook: true };
     }
-    // FALLBACK: offerings unavailable/empty — buy the store product directly.
+    // FALLBACK: offerings unavailable/empty: buy the store product directly.
     onStep && onStep("fallback: fetching product");
     trace("buy: getProducts calling", bundle.productId);
     const prods = await withTimeout(

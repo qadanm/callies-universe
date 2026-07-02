@@ -114,14 +114,15 @@ export function Cast() {
         )}
       </ScreenScroll>
 
+      {/* Detail screen: picking here just updates the flow; Home owns the roast CTA. */}
       <div style={stickyBar}>
         {mode === "single" ? (
-          <Button variant="primary" size="lg" block onClick={() => go("/cooking")}>
-            Put {sel ? firstName(sel.name) : "them"} on stage
+          <Button variant="primary" size="lg" block onClick={() => go("/home")}>
+            {sel ? `Pick ${firstName(sel.name)}` : "Done"}
           </Button>
         ) : (
-          <Button variant="primary" size="lg" block disabled={!duoReady} onClick={() => duoReady && go("/cooking")}>
-            {duoReady ? `${aName} & ${bName} → the green room 🎙️` : `Pick two comics (${duo.length}/2)`}
+          <Button variant="primary" size="lg" block disabled={!duoReady} onClick={() => duoReady && go("/home")}>
+            {duoReady ? `Pick ${aName} & ${bName} 🎙️` : `Pick two comics (${duo.length}/2)`}
           </Button>
         )}
       </div>

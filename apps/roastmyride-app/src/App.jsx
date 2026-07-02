@@ -9,6 +9,7 @@ import {
   createHashRouter,
   RouterProvider,
   Outlet,
+  Navigate,
   useNavigate,
   useLocation,
 } from "react-router-dom";
@@ -19,7 +20,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { OfflineBanner } from "./components/OfflineBanner.jsx";
 import { isNative } from "./native.js";
 import { cfg } from "./subjects/index.js";
-import { Onboarding } from "./screens/Onboarding.jsx";
+import { Onboarding, hasOnboarded } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
 import { Chips } from "./screens/Chips.jsx";
 import { Cast } from "./screens/Cast.jsx";
@@ -125,7 +126,8 @@ const router = createHashRouter([
   {
     element: <Layout />,
     children: [
-      { index: true, element: <Onboarding /> },
+      // First launch: the 3-step intro. Every launch after: straight to the app.
+      { index: true, element: hasOnboarded() ? <Navigate to="/home" replace /> : <Onboarding /> },
       { path: "home", element: <Home /> },
       { path: "chips", element: <Chips /> },
       { path: "cast", element: <Cast /> },

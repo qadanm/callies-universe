@@ -20,9 +20,9 @@ export default {
     // The user CONFIRMS the exact car (required). Auto-ID pre-fills it as a guess,
     // but a wrong trim/year derails the whole roast, so we let the owner nail it.
     requireIdentity: true,
-    identityLabel: "What's the car? (year · make · model)",
+    identityLabel: "What is it?",
     identityPlaceholder: "e.g. 2015 Kia K900 V8",
-    identityHint: "Required, and we mean it. Our AI is good at spotting cars, but it can still miss a trim or a year, and the whole roast is built on this. We're car people; we'd rather you nail it. 🏁",
+    identityHint: "We guess from the photo. Fix anything we miss.",
     identityGuessing: "Taking a guess from your photo…",
     identityGuessed: "Our guess. Fix anything we got wrong:",
   },

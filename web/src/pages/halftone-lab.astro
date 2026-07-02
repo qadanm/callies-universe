@@ -1,11 +1,11 @@
 ---
-// Halftone STYLE SWATCHES on real components. No theme/copy — just the dot
+// Halftone STYLE SWATCHES on real components. No theme/copy: just the dot
 // system applied a few different ways to real .card/.btn/.band/tokens so you
 // can compare and pick. Built only on real tokens + the real .halftone util.
 import Base from "../layouts/Base.astro";
 
 const styles = [
-  { id: "0", name: "Baseline", use: "no halftone — reference" },
+  { id: "0", name: "Baseline", use: "no halftone: reference" },
   { id: "A", name: "Dot ground", use: "subtle field behind a card" },
   { id: "B", name: "Ben-Day header", use: "loud accent strip / callout" },
   { id: "C", name: "Corner flag", use: "badge / status wedge" },
@@ -17,7 +17,7 @@ const styles = [
   <section class="wrap container">
     <span class="eyebrow">Component swatches</span>
     <h1 class="gh">Halftone, six ways</h1>
-    <p class="gsub">Same dot system, different jobs — applied to the real <code>.card</code>, <code>.btn</code>, <code>.band</code> on real tokens. Pick the ones worth keeping.</p>
+    <p class="gsub">Same dot system, different jobs: applied to the real <code>.card</code>, <code>.btn</code>, <code>.band</code> on real tokens. Pick the ones worth keeping.</p>
 
     <div class="gal">
 
@@ -92,26 +92,26 @@ const styles = [
     .card.no-pad{ padding:0; overflow:hidden; }
     .card-pad{ padding:22px; }
 
-    /* A — dot ground */
+    /* A: dot ground */
     .ht-ground{ position:absolute; inset:0; color:var(--ink); opacity:.07; border-radius:var(--radius-lg); corner-shape:var(--corner-card); pointer-events:none; }
 
-    /* B — ben-day header */
+    /* B: ben-day header */
     .ht-head{ position:relative; overflow:hidden; background:var(--accent-700); color:#fff;
       padding:12px 22px; border-radius:var(--radius-lg) var(--radius-lg) 0 0; corner-shape:var(--corner-card); }
     .ht-head span{ position:relative; z-index:1; font-family:var(--font-display); font-weight:900; letter-spacing:.04em; }
     .ht-head__dots{ position:absolute; inset:0; color:#fff; opacity:.16; pointer-events:none; }
 
-    /* C — corner flag (clipped triangle of dots) */
+    /* C: corner flag (clipped triangle of dots) */
     .ht-flag{ position:absolute; top:0; right:0; width:120px; height:120px; overflow:hidden;
       clip-path:polygon(100% 0,0 0,100% 100%); pointer-events:none; }
     .ht-flag__dots{ position:absolute; inset:0; background-color:var(--accent-600); color:#fff; opacity:.9; }
     .ht-flag__dots.halftone{ background-image:radial-gradient(#fff 1.6px, transparent 2px); background-size:9px 9px; }
 
-    /* D — tonal fade (dots dissolve upward) */
+    /* D: tonal fade (dots dissolve upward) */
     .ht-fade{ position:absolute; left:0; right:0; bottom:0; height:70%; color:var(--accent-600); opacity:.5; pointer-events:none;
       -webkit-mask-image:linear-gradient(to top,#000,transparent); mask-image:linear-gradient(to top,#000,transparent); }
 
-    /* E — duotone halftone "photo" (Lean Rada / FM technique, brand tones) */
+    /* E: duotone halftone "photo" (Lean Rada / FM technique, brand tones) */
     .shot{ position:relative; }
     .shot__img{ aspect-ratio:4/3; border:var(--ink-outline); border-radius:var(--radius-lg); corner-shape:var(--corner-card);
       box-shadow:var(--shadow-sticker-md); overflow:hidden;

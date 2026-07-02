@@ -79,7 +79,7 @@ export function Paywall() {
     >
       <ScreenScroll style={{ paddingBottom: 0 }}>
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-          <CallieHost context="paywall" size={120} />
+          <CallieHost context="paywall" size={72} />
           <Eyebrow>{credits < 1 ? "You're out of roasts" : `${credits} ${credits === 1 ? "roast" : "roasts"} left`}</Eyebrow>
           <H style={{ fontSize: 34 }}>Stock up &amp; keep cooking</H>
           <p style={{ font: "var(--type-sm)", color: "var(--text-muted)", margin: 0, maxWidth: 280 }}>
