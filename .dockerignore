@@ -1,0 +1,16 @@
+# Keep the Docker build context lean: the image runs `pnpm install` itself
+# (services/api/Dockerfile does COPY . . then installs), so dependency trees
+# and build artifacts must never ride along in the context.
+node_modules
+**/node_modules
+**/dist
+**/.vite
+**/DerivedData
+**/DerivedData-device
+apps/roastmyride-app/ios
+web/dist
+preview/dist
+live-panel-out
+*.mp4
+.git
+.claude
