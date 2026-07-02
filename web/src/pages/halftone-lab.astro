@@ -1,0 +1,146 @@
+---
+// Halftone STYLE SWATCHES on real components. No theme/copy — just the dot
+// system applied a few different ways to real .card/.btn/.band/tokens so you
+// can compare and pick. Built only on real tokens + the real .halftone util.
+import Base from "../layouts/Base.astro";
+
+const styles = [
+  { id: "0", name: "Baseline", use: "no halftone — reference" },
+  { id: "A", name: "Dot ground", use: "subtle field behind a card" },
+  { id: "B", name: "Ben-Day header", use: "loud accent strip / callout" },
+  { id: "C", name: "Corner flag", use: "badge / status wedge" },
+  { id: "D", name: "Tonal fade", use: "divider / image bottom" },
+  { id: "E", name: "Duotone screen", use: "the uploaded photo pipeline" },
+];
+---
+<Base title="Halftone swatches">
+  <section class="wrap container">
+    <span class="eyebrow">Component swatches</span>
+    <h1 class="gh">Halftone, six ways</h1>
+    <p class="gsub">Same dot system, different jobs — applied to the real <code>.card</code>, <code>.btn</code>, <code>.band</code> on real tokens. Pick the ones worth keeping.</p>
+
+    <div class="gal">
+
+      <!-- 0 baseline -->
+      <figure class="cell"><figcaption>0 · Baseline <em>reference</em></figcaption>
+        <article class="card"><div class="char__tag">Loving-savage mom</div><h3 class="cn">Mama Denièce</h3><p class="cp">“Baby, I say this with love… no.”</p></article>
+      </figure>
+
+      <!-- A dot ground -->
+      <figure class="cell"><figcaption>A · Dot ground <em>cards, surfaces</em></figcaption>
+        <article class="card"><div class="ht-ground halftone" aria-hidden="true"></div><div class="char__tag">Deadpan analyst</div><h3 class="cn">Sir Reginald</h3><p class="cp">“Statistically, it should be embarrassed.”</p></article>
+      </figure>
+
+      <!-- B ben-day header -->
+      <figure class="cell"><figcaption>B · Ben-Day header <em>callouts, headers</em></figcaption>
+        <article class="card no-pad"><div class="ht-head"><div class="ht-head__dots halftone" aria-hidden="true"></div><span>HOT TAKE</span></div><div class="card-pad"><div class="char__tag">Hype man</div><h3 class="cn">Tony Two-Time</h3><p class="cp">“IT’S GIVING… financial regret.”</p></div></article>
+      </figure>
+
+      <!-- C corner flag -->
+      <figure class="cell"><figcaption>C · Corner flag <em>badges, status</em></figcaption>
+        <article class="card"><div class="ht-flag" aria-hidden="true"><div class="ht-flag__dots halftone"></div></div><div class="char__tag">Church-fan snap</div><h3 class="cn">Best value</h3><p class="cp">5 roasts · $3.99 · $0.80 each</p></article>
+      </figure>
+
+      <!-- D tonal fade -->
+      <figure class="cell"><figcaption>D · Tonal fade <em>dividers, fades</em></figcaption>
+        <article class="card"><div class="char__tag">Loading</div><h3 class="cn">Cooking…</h3><p class="cp">Dots dissolve toward the edge.</p><div class="ht-fade halftone" aria-hidden="true"></div></article>
+      </figure>
+
+      <!-- E duotone screen -->
+      <figure class="cell"><figcaption>E · Duotone screen <em>uploaded photos</em></figcaption>
+        <div class="shot"><div class="shot__img" aria-hidden="true"></div><span class="shot__cap">your ride, screened on upload</span></div>
+      </figure>
+
+    </div>
+
+    <!-- buttons + pills row -->
+    <h2 class="gh2">On controls</h2>
+    <div class="ctrls">
+      <a class="btn">Plain button</a>
+      <a class="btn has-ht">Halftone overlay <span class="btn-ht halftone" aria-hidden="true"></span></a>
+      <span class="pill">Plain pill</span>
+      <span class="pill has-ht">Halftone pill<span class="pill-ht halftone" aria-hidden="true"></span></span>
+    </div>
+
+    <!-- band density row -->
+    <h2 class="gh2">Band density (the existing <code>.band__dots</code>)</h2>
+    <div class="bands">
+      <div class="band band--s"><div class="band__dots halftone" style="--halftone-size:8px 8px;"></div><span>tight</span></div>
+      <div class="band band--m"><div class="band__dots halftone" style="--halftone-size:14px 14px;"></div><span>medium</span></div>
+      <div class="band band--l"><div class="band__dots halftone" style="--halftone-size:22px 22px;"></div><span>open</span></div>
+    </div>
+  </section>
+
+  <style>
+    .wrap{ padding:40px 0 80px; }
+    .gh{ font-size:clamp(30px,5vw,52px); }
+    .gsub{ color:color-mix(in srgb,var(--ink) 70%,transparent); max-width:640px; margin:10px 0 0; }
+    .gsub code, .gh2 code{ background:var(--cream-200); padding:1px 6px; border-radius:6px; font-size:.9em; }
+    .gh2{ font-size:22px; margin:48px 0 16px; }
+
+    .gal{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px 22px; margin-top:28px; }
+    @media (max-width:860px){ .gal{ grid-template-columns:1fr; } }
+    .cell{ margin:0; }
+    .cell figcaption{ font-size:12px; font-weight:800; letter-spacing:.02em; color:var(--ink); margin-bottom:10px; }
+    .cell figcaption em{ font-weight:600; font-style:normal; color:var(--ink-faint); }
+    .cn{ font-size:20px; margin:2px 0 6px; }
+    .cp{ font-size:13.5px; font-style:italic; color:color-mix(in srgb,var(--ink) 66%,transparent); margin:0; }
+
+    /* keep halftone layers BEHIND card content (card sets > * to z1) */
+    .card .halftone, .card .ht-flag, .card .ht-head{ z-index:0 !important; }
+    .card > .char__tag, .card > .cn, .card > .cp, .card > .card-pad{ position:relative; z-index:1; }
+    .card.no-pad{ padding:0; overflow:hidden; }
+    .card-pad{ padding:22px; }
+
+    /* A — dot ground */
+    .ht-ground{ position:absolute; inset:0; color:var(--ink); opacity:.07; border-radius:var(--radius-lg); corner-shape:var(--corner-card); pointer-events:none; }
+
+    /* B — ben-day header */
+    .ht-head{ position:relative; overflow:hidden; background:var(--accent-700); color:#fff;
+      padding:12px 22px; border-radius:var(--radius-lg) var(--radius-lg) 0 0; corner-shape:var(--corner-card); }
+    .ht-head span{ position:relative; z-index:1; font-family:var(--font-display); font-weight:900; letter-spacing:.04em; }
+    .ht-head__dots{ position:absolute; inset:0; color:#fff; opacity:.16; pointer-events:none; }
+
+    /* C — corner flag (clipped triangle of dots) */
+    .ht-flag{ position:absolute; top:0; right:0; width:120px; height:120px; overflow:hidden;
+      clip-path:polygon(100% 0,0 0,100% 100%); pointer-events:none; }
+    .ht-flag__dots{ position:absolute; inset:0; background-color:var(--accent-600); color:#fff; opacity:.9; }
+    .ht-flag__dots.halftone{ background-image:radial-gradient(#fff 1.6px, transparent 2px); background-size:9px 9px; }
+
+    /* D — tonal fade (dots dissolve upward) */
+    .ht-fade{ position:absolute; left:0; right:0; bottom:0; height:70%; color:var(--accent-600); opacity:.5; pointer-events:none;
+      -webkit-mask-image:linear-gradient(to top,#000,transparent); mask-image:linear-gradient(to top,#000,transparent); }
+
+    /* E — duotone halftone "photo" (Lean Rada / FM technique, brand tones) */
+    .shot{ position:relative; }
+    .shot__img{ aspect-ratio:4/3; border:var(--ink-outline); border-radius:var(--radius-lg); corner-shape:var(--corner-card);
+      box-shadow:var(--shadow-sticker-md); overflow:hidden;
+      background:
+        radial-gradient(closest-side,#6b6b6b,#fff) 0 0 / 5px 5px space,
+        radial-gradient(130% 120% at 30% 26%,#fff 0%,var(--ginger-300) 36%,var(--ginger-700) 72%,#190d06 100%);
+      background-blend-mode:multiply; filter:contrast(12); }
+    .shot__cap{ display:block; font-size:11.5px; font-style:italic; color:var(--canvas); background:var(--ink); padding:6px 10px;
+      border-radius:0 0 var(--radius-lg) var(--radius-lg); margin-top:-6px; position:relative; }
+
+    /* controls */
+    .ctrls{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+    .btn.has-ht{ position:relative; overflow:hidden; }
+    .btn-ht{ position:absolute; inset:0; color:#fff; opacity:.5; mix-blend-mode:overlay; pointer-events:none;
+      background-image:radial-gradient(#fff 1.4px, transparent 1.8px); background-size:8px 8px; }
+    .pill{ display:inline-flex; align-items:center; font-weight:800; font-size:14px; color:var(--accent-700);
+      background:var(--accent-soft); border:var(--ink-outline); padding:8px 16px; border-radius:999px; corner-shape:var(--corner-tag); }
+    .pill.has-ht{ position:relative; overflow:hidden; }
+    .pill-ht{ position:absolute; inset:0; color:var(--accent-700); opacity:.22; pointer-events:none;
+      background-image:radial-gradient(currentColor 1.2px,transparent 1.5px); background-size:6px 6px; }
+
+    /* band density */
+    .bands{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    @media (max-width:700px){ .bands{ grid-template-columns:1fr; } }
+    .band{ position:relative; overflow:hidden; height:84px; border-radius:var(--radius-lg); corner-shape:var(--corner-card);
+      background:var(--accent-700); display:grid; place-items:center; }
+    .band span{ position:relative; z-index:1; color:#fff; font-weight:800; letter-spacing:.04em; text-transform:uppercase; font-size:13px; }
+    .band__dots{ position:absolute; inset:0; color:#fff; opacity:.16; pointer-events:none; }
+
+    @media (prefers-contrast: more){ .halftone{ display:none; } }
+  </style>
+</Base>

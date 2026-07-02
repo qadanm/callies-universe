@@ -60,8 +60,8 @@ importers:
         specifier: ^8.0.2
         version: 8.0.2(@capacitor/core@8.4.1)
       '@revenuecat/purchases-capacitor':
-        specifier: ^13.2.0
-        version: 13.2.0(@capacitor/core@8.4.1)
+        specifier: ^13.2.1
+        version: 13.2.1(@capacitor/core@8.4.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1270,13 +1270,13 @@ packages:
   '@remotion/zod-types@4.0.484':
     resolution: {integrity: sha512-0Qi+5lIo02p/LBWI+WILrlPgUHPPIx5kjvULJHmxLS0BOGeD0i/9RzMSqbcr6Qq9r2zK7s/C14XKEohMge7VUw==}
 
-  '@revenuecat/purchases-capacitor@13.2.0':
-    resolution: {integrity: sha512-vRIEMkL3oqfdRWDU6FusGHV+iYyVPLMC7nVPyISw1iWmaa1gaETnLJumzmeQIrODTF2dYD20JFmWf1/hpNBUmQ==}
+  '@revenuecat/purchases-capacitor@13.2.1':
+    resolution: {integrity: sha512-NruMHWdDjt4lxteHumHU0h+H1v33/5esl6BQeb3Gd20dLyrvwCltnwNWh4eNymdBjfV5IwYmBJ7o8jPOBljTrA==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
-  '@revenuecat/purchases-typescript-internal-esm@18.15.1':
-    resolution: {integrity: sha512-hIjrJ5B1nJQWEdn3B7SBvY9iwVrjS+AwJOO2BpWvN+hlb9ovUfqpnLtSDpSRQNGSroTa2VtesKjjDdsfeyXo5A==}
+  '@revenuecat/purchases-typescript-internal-esm@18.18.0':
+    resolution: {integrity: sha512-MmjlKtFESIMpb3TGt2xGyQKVBwIII3GQ5jA5Zh3AAF5oSebQ4DR84ds2y4YMV8TsoCgCZvHP4wJN+oHp3I09Iw==}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -5718,12 +5718,12 @@ snapshots:
       - react
       - react-dom
 
-  '@revenuecat/purchases-capacitor@13.2.0(@capacitor/core@8.4.1)':
+  '@revenuecat/purchases-capacitor@13.2.1(@capacitor/core@8.4.1)':
     dependencies:
       '@capacitor/core': 8.4.1
-      '@revenuecat/purchases-typescript-internal-esm': 18.15.1
+      '@revenuecat/purchases-typescript-internal-esm': 18.18.0
 
-  '@revenuecat/purchases-typescript-internal-esm@18.15.1': {}
+  '@revenuecat/purchases-typescript-internal-esm@18.18.0': {}
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 

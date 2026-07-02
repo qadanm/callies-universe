@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd web && SITE=roastmyride npx astro dev --port 4329"],
+      "port": 4329
+    }
+  ]
+}

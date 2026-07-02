@@ -8,6 +8,7 @@ import { CreditTile } from "../components/CreditTile.jsx";
 import { ScreenScroll, Eyebrow, H } from "../components/ui.jsx";
 import { useFlow } from "../flow/FlowContext.jsx";
 import { buyBundle, restore } from "../services/purchases.js";
+import { trace } from "../trace.js";
 
 // productId must match the App Store Connect IAP product + the RevenueCat product.
 const BUNDLES = [
@@ -27,7 +28,7 @@ export function Paywall() {
   const buy = async () => {
     setBusy(true);
     try {
-      const r = await buyBundle(BUNDLES[sel]);
+      const r = await buyBundle(BUNDLES[sel], (s) => setMsg(`… ${s}`));
       if (r.granted) setCredits((c) => c + r.granted); // mock: instant local grant
       if (r.viaWebhook) {
         // Native IAP: credits are granted server-side (provider webhook → ledger);
@@ -42,7 +43,10 @@ export function Paywall() {
       if (!r.redirected) go("/home"); // web Stripe redirects to checkout instead
     } catch (e) {
       console.warn(`[paywall] purchase failed (${e && e.message})`);
-      setMsg("Purchase didn't go through. Try again");
+      // DIAGNOSTIC: surface the real error/code on screen so we can see why.
+      const code = e && (e.code || e.errorCode);
+      trace("buy: FAILED", `${code || "-"} ${(e && (e.message || e.underlyingErrorMessage)) || String(e)}`);
+      setMsg(`Purchase failed${code ? ` [${code}]` : ""}: ${(e && (e.message || e.underlyingErrorMessage)) || String(e)}`);
     } finally {
       setBusy(false);
     }

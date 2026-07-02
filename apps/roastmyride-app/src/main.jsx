@@ -28,6 +28,10 @@ if (subject && subject.theme && subject.theme.accent) {
 
 import { App } from "./App.jsx";
 import { initNativeChrome } from "./native.js";
+import { initTrace } from "./trace.js";
+
+// DIAGNOSTIC (inert unless VITE_TRACE_URL is set at build time).
+initTrace();
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
